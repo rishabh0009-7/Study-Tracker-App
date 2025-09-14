@@ -107,7 +107,7 @@ export default async function HistoryPage() {
         </div>
       </header>
 
-      <main className="relative z-10 container mx-auto px-6 py-12 md:py-12 pt-24 md:pt-12">
+      <main className="relative z-10 container mx-auto px-6 pt-24 pb-8 md:pt-28 md:pb-12">
         {/* Hero Section */}
         <div className="text-center mb-12 animate-fade-in-scale">
           <div className="flex items-center justify-center mb-6">

@@ -117,7 +117,7 @@ export default async function Dashboard() {
         </div>
       </header>
 
-      <main className="relative z-10 container mx-auto py-8 md:py-12">
+      <main className="relative z-10 container mx-auto pt-24 pb-8 md:pt-28 md:pb-12">
         {/* Hero Stats Section */}
         <div className="grid lg:grid-cols-3 gap-6 md:gap-8 mb-8 md:mb-12">
           <div className="lg:col-span-1 animate-fade-in-up">

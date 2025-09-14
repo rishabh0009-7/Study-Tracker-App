@@ -449,14 +449,15 @@ body {
     background: rgba(15, 23, 42, 0.95) !important;
     backdrop-filter: blur(20px) !important;
     border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+    height: auto !important;
   }
   
-  /* Ensure main content is below header */
+  /* Ensure main content is below header with proper spacing */
   main {
     position: relative;
     z-index: 10;
     margin-top: 0;
-    padding-top: 6rem; /* 96px for mobile header */
+    padding-top: 7rem !important; /* 112px for mobile header height */
   }
   
   /* Enhanced mobile container */
@@ -510,9 +511,7 @@ body {
 
 /* Tablet improvements */
 @media (min-width: 768px) and (max-width: 1024px) {
-  main {
-    padding-top: 5rem; /* 80px for tablet header */
-  }
+  /* Let Tailwind handle main padding */
   
   .container {
     padding-left: 2rem;
@@ -522,9 +521,7 @@ body {
 
 /* Desktop improvements */
 @media (min-width: 1024px) {
-  main {
-    padding-top: 4rem; /* 64px for desktop header */
-  }
+  /* Let Tailwind handle main padding */
   
   .card-premium {
     padding: 2.5rem;

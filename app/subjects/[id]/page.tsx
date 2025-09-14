@@ -115,7 +115,7 @@ export default async function SubjectPage({ params }: SubjectPageProps) {
         </div>
       </header>
 
-      <main className="relative z-10 container mx-auto px-6 py-12 md:py-12 pt-24 md:pt-12">
+      <main className="relative z-10 container mx-auto px-6 pt-24 pb-8 md:pt-28 md:pb-12">
         {/* Progress Overview */}
         <div className="card-premium rounded-2xl p-8 mb-12 animate-fade-in-scale">
           <div className="flex flex-col lg:flex-row lg:items-center justify-between mb-8">

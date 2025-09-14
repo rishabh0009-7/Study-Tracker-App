@@ -70,7 +70,7 @@ export default async function StudyPage() {
         </div>
       </header>
 
-      <main className="relative z-10 container mx-auto py-8 md:py-12">
+      <main className="relative z-10 container mx-auto pt-24 pb-8 md:pt-28 md:pb-12">
         <div className="max-w-4xl mx-auto">
           {/* Hero Section */}
           <div className="text-center mb-8 md:mb-12 animate-fade-in-scale">
