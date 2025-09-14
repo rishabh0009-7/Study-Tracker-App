@@ -12,8 +12,9 @@ import {
 import { formatStudyTime } from "@/lib/utils";
 import { seedDatabase } from "@/lib/seed";
 import { UserButton } from "@clerk/nextjs";
-import { BookOpen, Clock, BarChart3, History } from "lucide-react";
+import { BookOpen, Clock, BarChart3, History, Menu, X } from "lucide-react";
 import Link from "next/link";
+import { MobileNav } from "@/components/MobileNav";
 
 export default async function Dashboard() {
   const { userId } = await auth();
@@ -85,10 +86,17 @@ export default async function Dashboard() {
                 >
                   History
                 </Link>
+                <Link
+                  href="/subjects"
+                  className="text-muted-foreground hover:text-white transition-colors duration-300 px-4 py-2 rounded-lg hover:bg-white/5"
+                >
+                  Subjects
+                </Link>
               </nav>
               <div className="flex items-center space-x-4">
                 <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse shadow-glow-green"></div>
                 <UserButton />
+                <MobileNav />
               </div>
             </div>
           </div>

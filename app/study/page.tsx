@@ -6,6 +6,7 @@ import { formatStudyTime } from "@/lib/utils";
 import { UserButton } from "@clerk/nextjs";
 import { ArrowLeft, Clock, BarChart3 } from "lucide-react";
 import Link from "next/link";
+import { MobileNav } from "@/components/MobileNav";
 
 export default async function StudyPage() {
   const { userId } = await auth();
@@ -51,6 +52,7 @@ export default async function StudyPage() {
             <div className="flex items-center space-x-4">
               <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse shadow-glow-green"></div>
               <UserButton />
+              <MobileNav />
             </div>
           </div>
         </div>

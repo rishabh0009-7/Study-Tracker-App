@@ -2,10 +2,19 @@ import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 import { getSubjectWithProgress } from "@/lib/actions";
 import { UserButton } from "@clerk/nextjs";
-import { ArrowLeft, BookOpen, CheckCircle, BarChart3, Target, Clock, Trophy } from "lucide-react";
+import {
+  ArrowLeft,
+  BookOpen,
+  CheckCircle,
+  BarChart3,
+  Target,
+  Clock,
+  Trophy,
+} from "lucide-react";
 import Link from "next/link";
 import { ChapterCheckbox } from "@/components/ChapterCheckbox";
 import { MockCheckbox } from "@/components/MockCheckbox";
+import { MobileNav } from "@/components/MobileNav";
 
 interface SubjectPageProps {
   params: {
@@ -63,9 +72,18 @@ export default async function SubjectPage({ params }: SubjectPageProps) {
         ></div>
         {/* Floating Elements */}
         <div className="absolute top-20 left-10 w-20 h-20 bg-gradient-primary rounded-full opacity-20 animate-float"></div>
-        <div className="absolute top-40 right-20 w-16 h-16 bg-gradient-accent rounded-full opacity-30 animate-float" style={{ animationDelay: '2s' }}></div>
-        <div className="absolute bottom-40 left-20 w-12 h-12 bg-gradient-success rounded-full opacity-25 animate-float" style={{ animationDelay: '4s' }}></div>
-        <div className="absolute bottom-20 right-10 w-24 h-24 bg-gradient-warning rounded-full opacity-20 animate-float" style={{ animationDelay: '1s' }}></div>
+        <div
+          className="absolute top-40 right-20 w-16 h-16 bg-gradient-accent rounded-full opacity-30 animate-float"
+          style={{ animationDelay: "2s" }}
+        ></div>
+        <div
+          className="absolute bottom-40 left-20 w-12 h-12 bg-gradient-success rounded-full opacity-25 animate-float"
+          style={{ animationDelay: "4s" }}
+        ></div>
+        <div
+          className="absolute bottom-20 right-10 w-24 h-24 bg-gradient-warning rounded-full opacity-20 animate-float"
+          style={{ animationDelay: "1s" }}
+        ></div>
       </div>
 
       {/* Navigation */}
@@ -83,12 +101,15 @@ export default async function SubjectPage({ params }: SubjectPageProps) {
                 <h1 className="text-3xl font-bold gradient-text">
                   {subject.name}
                 </h1>
-                <p className="text-sm text-muted-foreground">Track your progress and manage tasks</p>
+                <p className="text-sm text-muted-foreground">
+                  Track your progress and manage tasks
+                </p>
               </div>
             </div>
             <div className="flex items-center space-x-4">
               <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse shadow-glow-green"></div>
               <UserButton />
+              <MobileNav />
             </div>
           </div>
         </div>
@@ -99,8 +120,12 @@ export default async function SubjectPage({ params }: SubjectPageProps) {
         <div className="card-premium rounded-2xl p-8 mb-12 animate-fade-in-scale">
           <div className="flex flex-col lg:flex-row lg:items-center justify-between mb-8">
             <div className="mb-6 lg:mb-0">
-              <h2 className="text-3xl font-bold text-white mb-4">Progress Overview</h2>
-              <p className="text-xl text-muted-foreground leading-relaxed">{subject.description}</p>
+              <h2 className="text-3xl font-bold text-white mb-4">
+                Progress Overview
+              </h2>
+              <p className="text-xl text-muted-foreground leading-relaxed">
+                {subject.description}
+              </p>
             </div>
             <div className="text-center lg:text-right">
               <div className="text-6xl font-bold gradient-text mb-2">
@@ -115,12 +140,15 @@ export default async function SubjectPage({ params }: SubjectPageProps) {
           {/* Progress Bar */}
           <div className="relative">
             <div className="w-full bg-white/10 rounded-full h-4 overflow-hidden">
-              <div 
+              <div
                 className={`h-full rounded-full transition-all duration-2000 ease-out ${
-                  progress >= 80 ? 'bg-gradient-success shadow-glow-green' :
-                  progress >= 50 ? 'bg-gradient-accent shadow-glow' :
-                  progress >= 25 ? 'bg-gradient-warning shadow-glow-purple' :
-                  'bg-gradient-to-r from-gray-500 to-gray-600'
+                  progress >= 80
+                    ? "bg-gradient-success shadow-glow-green"
+                    : progress >= 50
+                    ? "bg-gradient-accent shadow-glow"
+                    : progress >= 25
+                    ? "bg-gradient-warning shadow-glow-purple"
+                    : "bg-gradient-to-r from-gray-500 to-gray-600"
                 }`}
                 style={{ width: `${progress}%` }}
               >
@@ -131,28 +159,42 @@ export default async function SubjectPage({ params }: SubjectPageProps) {
         </div>
 
         {/* Stats Grid */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-12 animate-fade-in-scale" style={{ animationDelay: '0.1s' }}>
+        <div
+          className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-12 animate-fade-in-scale"
+          style={{ animationDelay: "0.1s" }}
+        >
           <div className="text-center p-6 rounded-xl bg-white/5 backdrop-blur-sm border border-white/10">
-            <div className="text-3xl font-bold gradient-text-success mb-2">{subject.chapters.length}</div>
+            <div className="text-3xl font-bold gradient-text-success mb-2">
+              {subject.chapters.length}
+            </div>
             <div className="text-sm text-muted-foreground">Chapters</div>
           </div>
           <div className="text-center p-6 rounded-xl bg-white/5 backdrop-blur-sm border border-white/10">
-            <div className="text-3xl font-bold gradient-text-accent mb-2">{subject.mockTests.length}</div>
+            <div className="text-3xl font-bold gradient-text-accent mb-2">
+              {subject.mockTests.length}
+            </div>
             <div className="text-sm text-muted-foreground">Mock Tests</div>
           </div>
           <div className="text-center p-6 rounded-xl bg-white/5 backdrop-blur-sm border border-white/10">
-            <div className="text-3xl font-bold gradient-text mb-2">{totalTasks}</div>
+            <div className="text-3xl font-bold gradient-text mb-2">
+              {totalTasks}
+            </div>
             <div className="text-sm text-muted-foreground">Total Tasks</div>
           </div>
           <div className="text-center p-6 rounded-xl bg-white/5 backdrop-blur-sm border border-white/10">
-            <div className="text-3xl font-bold gradient-text-warning mb-2">{completedTasks}</div>
+            <div className="text-3xl font-bold gradient-text-warning mb-2">
+              {completedTasks}
+            </div>
             <div className="text-sm text-muted-foreground">Completed</div>
           </div>
         </div>
 
         <div className="grid lg:grid-cols-2 gap-8">
           {/* Chapters Section */}
-          <div className="animate-slide-in-up" style={{ animationDelay: '0.2s' }}>
+          <div
+            className="animate-slide-in-up"
+            style={{ animationDelay: "0.2s" }}
+          >
             <div className="card-premium rounded-2xl p-8">
               <div className="flex items-center mb-8">
                 <div className="w-12 h-12 bg-gradient-primary rounded-2xl flex items-center justify-center shadow-glow mr-4">
@@ -167,10 +209,19 @@ export default async function SubjectPage({ params }: SubjectPageProps) {
                   const revision1 = chapterProgress?.revision1 || false;
                   const revision2 = chapterProgress?.revision2 || false;
                   const revision3 = chapterProgress?.revision3 || false;
-                  const chapterProgressPercent = ((chapterCompleted ? 1 : 0) + (revision1 ? 1 : 0) + (revision2 ? 1 : 0) + (revision3 ? 1 : 0)) / 4 * 100;
-                  
+                  const chapterProgressPercent =
+                    (((chapterCompleted ? 1 : 0) +
+                      (revision1 ? 1 : 0) +
+                      (revision2 ? 1 : 0) +
+                      (revision3 ? 1 : 0)) /
+                      4) *
+                    100;
+
                   return (
-                    <div key={chapter.id} className="card-premium rounded-xl p-6 border border-white/10">
+                    <div
+                      key={chapter.id}
+                      className="card-premium rounded-xl p-6 border border-white/10"
+                    >
                       <div className="flex items-center justify-between mb-4">
                         <h4 className="text-lg font-semibold text-white">
                           {index + 1}. {chapter.name}
@@ -213,7 +264,10 @@ export default async function SubjectPage({ params }: SubjectPageProps) {
           </div>
 
           {/* Mock Tests Section */}
-          <div className="animate-slide-in-up" style={{ animationDelay: '0.3s' }}>
+          <div
+            className="animate-slide-in-up"
+            style={{ animationDelay: "0.3s" }}
+          >
             <div className="card-premium rounded-2xl p-8">
               <div className="flex items-center mb-8">
                 <div className="w-12 h-12 bg-gradient-success rounded-2xl flex items-center justify-center shadow-glow-green mr-4">
@@ -225,15 +279,24 @@ export default async function SubjectPage({ params }: SubjectPageProps) {
                 {subject.mockTests.map((mock, index) => {
                   const mockProgress = mock.progress?.[0];
                   const mockCompleted = mockProgress?.completed || false;
-                  
+
                   return (
-                    <div key={mock.id} className="card-premium rounded-xl p-6 border border-white/10">
+                    <div
+                      key={mock.id}
+                      className="card-premium rounded-xl p-6 border border-white/10"
+                    >
                       <div className="flex items-center justify-between mb-4">
                         <h4 className="text-lg font-semibold text-white">
                           {index + 1}. {mock.name}
                         </h4>
-                        <div className={`text-sm font-bold ${mockCompleted ? 'gradient-text-success' : 'text-muted-foreground'}`}>
-                          {mockCompleted ? 'Completed' : 'Pending'}
+                        <div
+                          className={`text-sm font-bold ${
+                            mockCompleted
+                              ? "gradient-text-success"
+                              : "text-muted-foreground"
+                          }`}
+                        >
+                          {mockCompleted ? "Completed" : "Pending"}
                         </div>
                       </div>
                       <MockCheckbox

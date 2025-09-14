@@ -5,6 +5,7 @@ import { SubjectCard } from "@/components/SubjectCard";
 import { UserButton } from "@clerk/nextjs";
 import { BookOpen, ArrowLeft, BarChart3, Clock, Target } from "lucide-react";
 import Link from "next/link";
+import { MobileNav } from "@/components/MobileNav";
 
 export default async function SubjectsPage() {
   const { userId } = await auth();
@@ -27,9 +28,18 @@ export default async function SubjectsPage() {
         ></div>
         {/* Floating Elements */}
         <div className="absolute top-20 left-10 w-20 h-20 bg-gradient-primary rounded-full opacity-20 animate-float"></div>
-        <div className="absolute top-40 right-20 w-16 h-16 bg-gradient-accent rounded-full opacity-30 animate-float" style={{ animationDelay: '2s' }}></div>
-        <div className="absolute bottom-40 left-20 w-12 h-12 bg-gradient-success rounded-full opacity-25 animate-float" style={{ animationDelay: '4s' }}></div>
-        <div className="absolute bottom-20 right-10 w-24 h-24 bg-gradient-warning rounded-full opacity-20 animate-float" style={{ animationDelay: '1s' }}></div>
+        <div
+          className="absolute top-40 right-20 w-16 h-16 bg-gradient-accent rounded-full opacity-30 animate-float"
+          style={{ animationDelay: "2s" }}
+        ></div>
+        <div
+          className="absolute bottom-40 left-20 w-12 h-12 bg-gradient-success rounded-full opacity-25 animate-float"
+          style={{ animationDelay: "4s" }}
+        ></div>
+        <div
+          className="absolute bottom-20 right-10 w-24 h-24 bg-gradient-warning rounded-full opacity-20 animate-float"
+          style={{ animationDelay: "1s" }}
+        ></div>
       </div>
 
       {/* Navigation */}
@@ -44,13 +54,18 @@ export default async function SubjectsPage() {
                 <ArrowLeft className="h-5 w-5 text-white" />
               </Link>
               <div>
-                <h1 className="text-3xl font-bold gradient-text">All Subjects</h1>
-                <p className="text-sm text-muted-foreground">Manage your CS Executive subjects</p>
+                <h1 className="text-3xl font-bold gradient-text">
+                  All Subjects
+                </h1>
+                <p className="text-sm text-muted-foreground">
+                  Manage your CS Executive subjects
+                </p>
               </div>
             </div>
             <div className="flex items-center space-x-4">
               <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse shadow-glow-green"></div>
               <UserButton />
+              <MobileNav />
             </div>
           </div>
         </div>
@@ -68,51 +83,69 @@ export default async function SubjectsPage() {
             </h2>
           </div>
           <p className="text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
-            Click on any subject to view and manage chapters, revisions, and mock tests. 
-            Track your progress and achieve excellence in each subject.
+            Click on any subject to view and manage chapters, revisions, and
+            mock tests. Track your progress and achieve excellence in each
+            subject.
           </p>
         </div>
 
         {/* Quick Stats */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-12 animate-fade-in-scale" style={{ animationDelay: '0.1s' }}>
+        <div
+          className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-12 animate-fade-in-scale"
+          style={{ animationDelay: "0.1s" }}
+        >
           <div className="text-center p-6 rounded-xl bg-white/5 backdrop-blur-sm border border-white/10">
-            <div className="text-3xl font-bold gradient-text-success mb-2">{subjects.length}</div>
+            <div className="text-3xl font-bold gradient-text-success mb-2">
+              {subjects.length}
+            </div>
             <div className="text-sm text-muted-foreground">Total Subjects</div>
           </div>
           <div className="text-center p-6 rounded-xl bg-white/5 backdrop-blur-sm border border-white/10">
             <div className="text-3xl font-bold gradient-text-accent mb-2">
-              {subjects.reduce((acc, subject) => acc + subject.chapters.length, 0)}
+              {subjects.reduce(
+                (acc, subject) => acc + subject.chapters.length,
+                0
+              )}
             </div>
             <div className="text-sm text-muted-foreground">Total Chapters</div>
           </div>
           <div className="text-center p-6 rounded-xl bg-white/5 backdrop-blur-sm border border-white/10">
             <div className="text-3xl font-bold gradient-text mb-2">
-              {subjects.reduce((acc, subject) => acc + subject.mockTests.length, 0)}
+              {subjects.reduce(
+                (acc, subject) => acc + subject.mockTests.length,
+                0
+              )}
             </div>
             <div className="text-sm text-muted-foreground">Mock Tests</div>
           </div>
           <div className="text-center p-6 rounded-xl bg-white/5 backdrop-blur-sm border border-white/10">
             <div className="text-3xl font-bold gradient-text-warning mb-2">
-              {Math.round(subjects.reduce((acc, subject) => {
-                const chapterTasks = subject.chapters.length * 4;
-                const mockTasks = subject.mockTests.length;
-                const totalTasks = chapterTasks + mockTasks;
-                let completedTasks = 0;
-                subject.chapters.forEach((chapter) => {
-                  const progress = chapter.progress?.[0];
-                  if (progress) {
-                    if (progress.completed) completedTasks++;
-                    if (progress.revision1) completedTasks++;
-                    if (progress.revision2) completedTasks++;
-                    if (progress.revision3) completedTasks++;
-                  }
-                });
-                subject.mockTests.forEach((mock) => {
-                  const progress = mock.progress?.[0];
-                  if (progress?.completed) completedTasks++;
-                });
-                return acc + (totalTasks > 0 ? (completedTasks / totalTasks) * 100 : 0);
-              }, 0) / subjects.length)}%
+              {Math.round(
+                subjects.reduce((acc, subject) => {
+                  const chapterTasks = subject.chapters.length * 4;
+                  const mockTasks = subject.mockTests.length;
+                  const totalTasks = chapterTasks + mockTasks;
+                  let completedTasks = 0;
+                  subject.chapters.forEach((chapter) => {
+                    const progress = chapter.progress?.[0];
+                    if (progress) {
+                      if (progress.completed) completedTasks++;
+                      if (progress.revision1) completedTasks++;
+                      if (progress.revision2) completedTasks++;
+                      if (progress.revision3) completedTasks++;
+                    }
+                  });
+                  subject.mockTests.forEach((mock) => {
+                    const progress = mock.progress?.[0];
+                    if (progress?.completed) completedTasks++;
+                  });
+                  return (
+                    acc +
+                    (totalTasks > 0 ? (completedTasks / totalTasks) * 100 : 0)
+                  );
+                }, 0) / subjects.length
+              )}
+              %
             </div>
             <div className="text-sm text-muted-foreground">Avg Progress</div>
           </div>
@@ -148,9 +181,9 @@ export default async function SubjectsPage() {
               totalTasks > 0 ? (completedTasks / totalTasks) * 100 : 0;
 
             return (
-              <div 
-                key={subject.id} 
-                className="animate-slide-in-up" 
+              <div
+                key={subject.id}
+                className="animate-slide-in-up"
                 style={{ animationDelay: `${0.2 + index * 0.1}s` }}
               >
                 <SubjectCard

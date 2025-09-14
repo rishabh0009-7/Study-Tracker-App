@@ -13,6 +13,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { StudyHistoryChart } from "@/components/StudyHistoryChart";
+import { MobileNav } from "@/components/MobileNav";
 
 export default async function HistoryPage() {
   const { userId } = await auth();
@@ -102,6 +103,7 @@ export default async function HistoryPage() {
             <div className="flex items-center space-x-4">
               <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse shadow-glow-green"></div>
               <UserButton />
+              <MobileNav />
             </div>
           </div>
         </div>
