@@ -85,7 +85,7 @@ export function ProgressBar({ progress, total, completed }: ProgressBarProps) {
         <div className="text-center">
           {progress >= 80 && (
             <div className="text-green-400 font-medium">
-              🎉 Excellent progress! You're almost there!
+              🎉 Excellent progress! You&apos;re almost there!
             </div>
           )}
           {progress >= 50 && progress < 80 && (
@@ -95,12 +95,12 @@ export function ProgressBar({ progress, total, completed }: ProgressBarProps) {
           )}
           {progress >= 25 && progress < 50 && (
             <div className="text-yellow-400 font-medium">
-              🚀 Good start! You're making steady progress!
+              🚀 Good start! You&apos;re making steady progress!
             </div>
           )}
           {progress < 25 && (
             <div className="text-purple-400 font-medium">
-              🌟 Ready to begin your journey? Let's start studying!
+              🌟 Ready to begin your journey? Let&apos;s start studying!
             </div>
           )}
         </div>

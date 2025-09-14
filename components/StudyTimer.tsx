@@ -94,7 +94,9 @@ export function StudyTimer({ todayTotalHours }: StudyTimerProps) {
       <div className="text-center">
         <div className="inline-flex items-center space-x-2 px-6 py-3 rounded-xl bg-white/5 backdrop-blur-sm border border-white/10">
           <Clock className="h-4 w-4 text-green-400" />
-          <span className="text-sm text-muted-foreground">Today's total:</span>
+          <span className="text-sm text-muted-foreground">
+            Today&apos;s total:
+          </span>
           <span className="text-lg font-bold gradient-text-success">
             {formatStudyTime(todayTotalHours * 60)}
           </span>

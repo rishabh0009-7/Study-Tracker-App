@@ -144,7 +144,7 @@ export default async function Dashboard() {
             <div className="flex items-center justify-between mb-8">
               <div>
                 <h2 className="text-3xl font-bold text-white mb-2">
-                  Today's Summary
+                  Today&apos;s Summary
                 </h2>
                 <p className="text-muted-foreground">
                   Track your daily progress and achievements

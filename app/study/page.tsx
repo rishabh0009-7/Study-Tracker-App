@@ -108,7 +108,7 @@ export default async function StudyPage() {
                   <BarChart3 className="h-6 w-6 text-white" />
                 </div>
                 <h3 className="text-2xl font-bold text-white">
-                  Today's Progress
+                  Today&apos;s Progress
                 </h3>
               </div>
               <div className="text-5xl font-bold gradient-text-accent mb-4">
