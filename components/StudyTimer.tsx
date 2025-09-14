@@ -1,41 +1,16 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+import { useTimer } from "@/contexts/TimerContext";
 import { formatStudyTime } from "@/lib/utils";
-import { Play, Pause, Square } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Clock } from "lucide-react";
 
 interface StudyTimerProps {
-  onSessionComplete: (duration: number) => void;
   todayTotalHours: number;
 }
 
-export function StudyTimer({
-  onSessionComplete,
-  todayTotalHours,
-}: StudyTimerProps) {
-  const [isRunning, setIsRunning] = useState(false);
-  const [time, setTime] = useState(0);
-  const intervalRef = useRef<NodeJS.Timeout | null>(null);
-
-  useEffect(() => {
-    if (isRunning) {
-      intervalRef.current = setInterval(() => {
-        setTime((prev) => prev + 1);
-      }, 1000);
-    } else {
-      if (intervalRef.current) {
-        clearInterval(intervalRef.current);
-      }
-    }
-
-    return () => {
-      if (intervalRef.current) {
-        clearInterval(intervalRef.current);
-      }
-    };
-  }, [isRunning]);
+export function StudyTimer({ todayTotalHours }: StudyTimerProps) {
+  const { isRunning, time, startTimer, pauseTimer, stopTimer } = useTimer();
 
   const formatTime = (seconds: number) => {
     const hours = Math.floor(seconds / 3600);
@@ -46,70 +21,85 @@ export function StudyTimer({
       .padStart(2, "0")}:${secs.toString().padStart(2, "0")}`;
   };
 
-  const handleStart = () => {
-    setIsRunning(true);
-  };
-
-  const handlePause = () => {
-    setIsRunning(false);
-  };
-
-  const handleStop = () => {
-    setIsRunning(false);
-    if (time > 0) {
-      onSessionComplete(time);
-      setTime(0);
-    }
-  };
-
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Study Timer</CardTitle>
-      </CardHeader>
-      <CardContent className="space-y-6">
-        <div className="text-center">
-          <div className="text-6xl font-mono font-bold text-primary mb-2">
+    <div className="card-premium rounded-2xl p-8 card-hover">
+      <div className="text-center mb-8">
+        <div className="flex items-center justify-center mb-4">
+          <div className="w-12 h-12 bg-gradient-primary rounded-2xl flex items-center justify-center shadow-glow mr-4">
+            <Clock className="h-6 w-6 text-white" />
+          </div>
+          <h2 className="text-2xl font-bold text-white">Study Timer</h2>
+        </div>
+        <p className="text-muted-foreground">
+          Focus on your studies with our premium timer
+        </p>
+      </div>
+
+      <div className="text-center mb-8">
+        <div className="relative inline-block">
+          <div className="text-8xl font-mono font-bold gradient-text mb-4 text-shadow">
             {formatTime(time)}
           </div>
-          <div className="text-sm text-muted-foreground">
-            {isRunning ? "Study session in progress..." : "Ready to study"}
+          <div className="absolute inset-0 text-8xl font-mono font-bold text-white/10 blur-sm">
+            {formatTime(time)}
           </div>
         </div>
+        <div className="flex items-center justify-center space-x-2 text-muted-foreground">
+          <div
+            className={`w-2 h-2 rounded-full ${
+              isRunning
+                ? "bg-green-400 animate-pulse shadow-glow-green"
+                : "bg-gray-400"
+            }`}
+          ></div>
+          <span className="text-sm font-medium">
+            {isRunning ? "Study session in progress..." : "Ready to study"}
+          </span>
+        </div>
+      </div>
 
-        <div className="flex justify-center space-x-2">
-          {!isRunning ? (
-            <Button onClick={handleStart} size="lg" className="px-8">
-              <Play className="h-4 w-4 mr-2" />
-              Start
-            </Button>
-          ) : (
-            <Button
-              onClick={handlePause}
-              variant="outline"
-              size="lg"
-              className="px-8"
-            >
-              <Pause className="h-4 w-4 mr-2" />
-              Pause
-            </Button>
-          )}
+      <div className="flex justify-center space-x-4 mb-8">
+        {!isRunning ? (
           <Button
-            onClick={handleStop}
-            variant="destructive"
+            onClick={startTimer}
             size="lg"
-            className="px-8"
-            disabled={time === 0}
+            className="px-12 py-4 bg-gradient-success hover:shadow-glow-green btn-premium text-white font-semibold rounded-xl"
           >
-            <Square className="h-4 w-4 mr-2" />
-            Stop
+            <Clock className="h-5 w-5 mr-3" />
+            Start Session
           </Button>
-        </div>
+        ) : (
+          <Button
+            onClick={pauseTimer}
+            variant="outline"
+            size="lg"
+            className="px-12 py-4 border-white/20 hover:bg-white/10 btn-premium text-white font-semibold rounded-xl"
+          >
+            <Clock className="h-5 w-5 mr-3" />
+            Pause
+          </Button>
+        )}
+        <Button
+          onClick={stopTimer}
+          variant="destructive"
+          size="lg"
+          className="px-12 py-4 bg-gradient-to-r from-red-500 to-pink-500 hover:shadow-lg btn-premium text-white font-semibold rounded-xl disabled:opacity-50 disabled:cursor-not-allowed"
+          disabled={time === 0}
+        >
+          <Clock className="h-5 w-5 mr-3" />
+          Stop
+        </Button>
+      </div>
 
-        <div className="text-center text-sm text-muted-foreground">
-          Today's total: {formatStudyTime(todayTotalHours * 60)}
+      <div className="text-center">
+        <div className="inline-flex items-center space-x-2 px-6 py-3 rounded-xl bg-white/5 backdrop-blur-sm border border-white/10">
+          <Clock className="h-4 w-4 text-green-400" />
+          <span className="text-sm text-muted-foreground">Today's total:</span>
+          <span className="text-lg font-bold gradient-text-success">
+            {formatStudyTime(todayTotalHours * 60)}
+          </span>
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   );
 }

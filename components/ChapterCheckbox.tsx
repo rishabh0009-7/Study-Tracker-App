@@ -33,11 +33,17 @@ export function ChapterCheckbox({
   };
 
   return (
-    <Checkbox
-      checked={isChecked}
-      onChange={handleChange}
-      disabled={isLoading}
-      label={label}
-    />
+    <div className="flex items-center space-x-3 p-3 rounded-xl bg-white/5 backdrop-blur-sm border border-white/10 hover:bg-white/10 transition-all duration-300">
+      <Checkbox
+        checked={isChecked}
+        onChange={handleChange}
+        disabled={isLoading}
+        className="data-[state=checked]:bg-gradient-success data-[state=checked]:border-green-400"
+      />
+      <span className="text-white font-medium flex-1">{label}</span>
+      {isLoading && (
+        <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+      )}
+    </div>
   );
 }

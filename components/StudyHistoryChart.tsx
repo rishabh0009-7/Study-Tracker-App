@@ -41,17 +41,27 @@ export function StudyHistoryChart({ data }: StudyHistoryChartProps) {
           data={data}
           margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
         >
-          <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
+          <CartesianGrid
+            strokeDasharray="3 3"
+            stroke="rgba(255, 255, 255, 0.1)"
+          />
           <XAxis
             dataKey="date"
             tickFormatter={formatDate}
-            stroke="#666"
+            stroke="rgba(255, 255, 255, 0.6)"
             fontSize={12}
+            tick={{ fill: "rgba(255, 255, 255, 0.8)" }}
           />
           <YAxis
-            stroke="#666"
+            stroke="rgba(255, 255, 255, 0.6)"
             fontSize={12}
-            label={{ value: "Hours", angle: -90, position: "insideLeft" }}
+            tick={{ fill: "rgba(255, 255, 255, 0.8)" }}
+            label={{
+              value: "Hours",
+              angle: -90,
+              position: "insideLeft",
+              style: { textAnchor: "middle", fill: "rgba(255, 255, 255, 0.8)" },
+            }}
           />
           <Tooltip
             labelFormatter={(value) => formatTooltipDate(value)}
@@ -60,20 +70,35 @@ export function StudyHistoryChart({ data }: StudyHistoryChartProps) {
               name === "hours" ? "Study Hours" : "Sessions",
             ]}
             contentStyle={{
-              backgroundColor: "white",
-              border: "1px solid #e5e7eb",
-              borderRadius: "8px",
-              boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.1)",
+              backgroundColor: "rgba(15, 23, 42, 0.95)",
+              border: "1px solid rgba(255, 255, 255, 0.1)",
+              borderRadius: "12px",
+              boxShadow:
+                "0 20px 25px -5px rgba(0, 0, 0, 0.3), 0 10px 10px -5px rgba(0, 0, 0, 0.1)",
+              backdropFilter: "blur(10px)",
+              color: "white",
             }}
+            labelStyle={{ color: "white" }}
           />
           <Line
             type="monotone"
             dataKey="hours"
-            stroke="#3b82f6"
-            strokeWidth={2}
-            dot={{ fill: "#3b82f6", strokeWidth: 2, r: 4 }}
-            activeDot={{ r: 6, stroke: "#3b82f6", strokeWidth: 2 }}
+            stroke="url(#gradient)"
+            strokeWidth={3}
+            dot={{ fill: "#4facfe", strokeWidth: 2, r: 5 }}
+            activeDot={{
+              r: 8,
+              stroke: "#4facfe",
+              strokeWidth: 3,
+              fill: "#4facfe",
+            }}
           />
+          <defs>
+            <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" stopColor="#4facfe" />
+              <stop offset="100%" stopColor="#00f2fe" />
+            </linearGradient>
+          </defs>
         </LineChart>
       </ResponsiveContainer>
     </div>

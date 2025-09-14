@@ -1,6 +1,9 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { ClerkProvider } from "@clerk/nextjs";
+import { TimerProvider } from "@/contexts/TimerContext";
+import { TimerIndicator } from "@/components/TimerIndicator";
+import { createStudySession } from "@/lib/actions";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -14,8 +17,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "CS Executive Study Tracker",
-  description: "Track your CS Executive exam preparation progress",
+  title: "CS Executive Study Tracker - Premium Study Management",
+  description:
+    "Professional study management platform for CS Executive exam preparation with advanced tracking and analytics",
 };
 
 export default function RootLayout({
@@ -25,11 +29,14 @@ export default function RootLayout({
 }>) {
   return (
     <ClerkProvider>
-      <html lang="en">
+      <html lang="en" className="dark">
         <body
-          className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+          className={`${geistSans.variable} ${geistMono.variable} antialiased dark`}
         >
-          {children}
+          <TimerProvider onSessionComplete={createStudySession}>
+            {children}
+            <TimerIndicator />
+          </TimerProvider>
         </body>
       </html>
     </ClerkProvider>

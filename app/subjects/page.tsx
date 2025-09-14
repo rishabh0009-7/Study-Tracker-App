@@ -3,7 +3,7 @@ import { redirect } from "next/navigation";
 import { getSubjects } from "@/lib/actions";
 import { SubjectCard } from "@/components/SubjectCard";
 import { UserButton } from "@clerk/nextjs";
-import { BookOpen, ArrowLeft } from "lucide-react";
+import { BookOpen, ArrowLeft, BarChart3, Clock, Target } from "lucide-react";
 import Link from "next/link";
 
 export default async function SubjectsPage() {
@@ -16,40 +16,111 @@ export default async function SubjectsPage() {
   const subjects = await getSubjects();
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <header className="bg-white shadow-sm border-b">
-        <div className="container mx-auto px-4 py-4">
+    <div className="min-h-screen relative overflow-hidden">
+      {/* Animated Background */}
+      <div className="absolute inset-0 bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
+        <div
+          className="absolute inset-0 opacity-20"
+          style={{
+            backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%239C92AC' fill-opacity='0.05'%3E%3Ccircle cx='30' cy='30' r='2'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
+          }}
+        ></div>
+        {/* Floating Elements */}
+        <div className="absolute top-20 left-10 w-20 h-20 bg-gradient-primary rounded-full opacity-20 animate-float"></div>
+        <div className="absolute top-40 right-20 w-16 h-16 bg-gradient-accent rounded-full opacity-30 animate-float" style={{ animationDelay: '2s' }}></div>
+        <div className="absolute bottom-40 left-20 w-12 h-12 bg-gradient-success rounded-full opacity-25 animate-float" style={{ animationDelay: '4s' }}></div>
+        <div className="absolute bottom-20 right-10 w-24 h-24 bg-gradient-warning rounded-full opacity-20 animate-float" style={{ animationDelay: '1s' }}></div>
+      </div>
+
+      {/* Navigation */}
+      <header className="relative z-10 glass border-b border-white/10">
+        <div className="container mx-auto px-6 py-6">
           <div className="flex justify-between items-center">
             <div className="flex items-center space-x-4">
               <Link
                 href="/dashboard"
-                className="text-gray-600 hover:text-gray-900"
+                className="p-2 rounded-xl bg-white/10 hover:bg-white/20 transition-all duration-300 backdrop-blur-sm"
               >
-                <ArrowLeft className="h-5 w-5" />
+                <ArrowLeft className="h-5 w-5 text-white" />
               </Link>
-              <h1 className="text-2xl font-bold text-gray-900">All Subjects</h1>
+              <div>
+                <h1 className="text-3xl font-bold gradient-text">All Subjects</h1>
+                <p className="text-sm text-muted-foreground">Manage your CS Executive subjects</p>
+              </div>
             </div>
-            <UserButton />
+            <div className="flex items-center space-x-4">
+              <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse shadow-glow-green"></div>
+              <UserButton />
+            </div>
           </div>
         </div>
       </header>
 
-      <main className="container mx-auto px-4 py-8">
-        <div className="mb-8">
-          <div className="flex items-center mb-2">
-            <BookOpen className="h-6 w-6 text-blue-600 mr-2" />
-            <h2 className="text-xl font-semibold text-gray-900">
+      <main className="relative z-10 container mx-auto px-6 py-12">
+        {/* Hero Section */}
+        <div className="text-center mb-12 animate-fade-in-scale">
+          <div className="flex items-center justify-center mb-6">
+            <div className="w-16 h-16 bg-gradient-primary rounded-2xl flex items-center justify-center shadow-glow mr-4">
+              <BookOpen className="h-8 w-8 text-white" />
+            </div>
+            <h2 className="text-4xl font-bold text-white">
               CS Executive Subjects
             </h2>
           </div>
-          <p className="text-gray-600">
-            Click on any subject to view and manage chapters, revisions, and
-            mock tests.
+          <p className="text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
+            Click on any subject to view and manage chapters, revisions, and mock tests. 
+            Track your progress and achieve excellence in each subject.
           </p>
         </div>
 
-        <div className="grid md:grid-cols-2 gap-6">
-          {subjects.map((subject) => {
+        {/* Quick Stats */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-12 animate-fade-in-scale" style={{ animationDelay: '0.1s' }}>
+          <div className="text-center p-6 rounded-xl bg-white/5 backdrop-blur-sm border border-white/10">
+            <div className="text-3xl font-bold gradient-text-success mb-2">{subjects.length}</div>
+            <div className="text-sm text-muted-foreground">Total Subjects</div>
+          </div>
+          <div className="text-center p-6 rounded-xl bg-white/5 backdrop-blur-sm border border-white/10">
+            <div className="text-3xl font-bold gradient-text-accent mb-2">
+              {subjects.reduce((acc, subject) => acc + subject.chapters.length, 0)}
+            </div>
+            <div className="text-sm text-muted-foreground">Total Chapters</div>
+          </div>
+          <div className="text-center p-6 rounded-xl bg-white/5 backdrop-blur-sm border border-white/10">
+            <div className="text-3xl font-bold gradient-text mb-2">
+              {subjects.reduce((acc, subject) => acc + subject.mockTests.length, 0)}
+            </div>
+            <div className="text-sm text-muted-foreground">Mock Tests</div>
+          </div>
+          <div className="text-center p-6 rounded-xl bg-white/5 backdrop-blur-sm border border-white/10">
+            <div className="text-3xl font-bold gradient-text-warning mb-2">
+              {Math.round(subjects.reduce((acc, subject) => {
+                const chapterTasks = subject.chapters.length * 4;
+                const mockTasks = subject.mockTests.length;
+                const totalTasks = chapterTasks + mockTasks;
+                let completedTasks = 0;
+                subject.chapters.forEach((chapter) => {
+                  const progress = chapter.progress?.[0];
+                  if (progress) {
+                    if (progress.completed) completedTasks++;
+                    if (progress.revision1) completedTasks++;
+                    if (progress.revision2) completedTasks++;
+                    if (progress.revision3) completedTasks++;
+                  }
+                });
+                subject.mockTests.forEach((mock) => {
+                  const progress = mock.progress?.[0];
+                  if (progress?.completed) completedTasks++;
+                });
+                return acc + (totalTasks > 0 ? (completedTasks / totalTasks) * 100 : 0);
+              }, 0) / subjects.length)}%
+            </div>
+            <div className="text-sm text-muted-foreground">Avg Progress</div>
+          </div>
+        </div>
+
+        {/* Subjects Grid */}
+        <div className="grid md:grid-cols-2 gap-8">
+          {subjects.map((subject, index) => {
             const chapterTasks = subject.chapters.length * 4;
             const mockTasks = subject.mockTests.length;
             const totalTasks = chapterTasks + mockTasks;
@@ -77,16 +148,21 @@ export default async function SubjectsPage() {
               totalTasks > 0 ? (completedTasks / totalTasks) * 100 : 0;
 
             return (
-              <SubjectCard
-                key={subject.id}
-                id={subject.id}
-                name={subject.name}
-                description={subject.description}
-                progress={progress}
-                completed={completedTasks}
-                total={totalTasks}
-                todayHours={0}
-              />
+              <div 
+                key={subject.id} 
+                className="animate-slide-in-up" 
+                style={{ animationDelay: `${0.2 + index * 0.1}s` }}
+              >
+                <SubjectCard
+                  id={subject.id}
+                  name={subject.name}
+                  description={subject.description}
+                  progress={progress}
+                  completed={completedTasks}
+                  total={totalTasks}
+                  todayHours={0}
+                />
+              </div>
             );
           })}
         </div>

@@ -2,10 +2,8 @@ import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 import { getSubjectWithProgress } from "@/lib/actions";
 import { UserButton } from "@clerk/nextjs";
-import { ArrowLeft, BookOpen, CheckCircle } from "lucide-react";
+import { ArrowLeft, BookOpen, CheckCircle, BarChart3, Target, Clock, Trophy } from "lucide-react";
 import Link from "next/link";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Progress } from "@/components/ui/progress";
 import { ChapterCheckbox } from "@/components/ChapterCheckbox";
 import { MockCheckbox } from "@/components/MockCheckbox";
 
@@ -54,125 +52,200 @@ export default async function SubjectPage({ params }: SubjectPageProps) {
   const progress = totalTasks > 0 ? (completedTasks / totalTasks) * 100 : 0;
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <header className="bg-white shadow-sm border-b">
-        <div className="container mx-auto px-4 py-4">
+    <div className="min-h-screen relative overflow-hidden">
+      {/* Animated Background */}
+      <div className="absolute inset-0 bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
+        <div
+          className="absolute inset-0 opacity-20"
+          style={{
+            backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%239C92AC' fill-opacity='0.05'%3E%3Ccircle cx='30' cy='30' r='2'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
+          }}
+        ></div>
+        {/* Floating Elements */}
+        <div className="absolute top-20 left-10 w-20 h-20 bg-gradient-primary rounded-full opacity-20 animate-float"></div>
+        <div className="absolute top-40 right-20 w-16 h-16 bg-gradient-accent rounded-full opacity-30 animate-float" style={{ animationDelay: '2s' }}></div>
+        <div className="absolute bottom-40 left-20 w-12 h-12 bg-gradient-success rounded-full opacity-25 animate-float" style={{ animationDelay: '4s' }}></div>
+        <div className="absolute bottom-20 right-10 w-24 h-24 bg-gradient-warning rounded-full opacity-20 animate-float" style={{ animationDelay: '1s' }}></div>
+      </div>
+
+      {/* Navigation */}
+      <header className="relative z-10 glass border-b border-white/10">
+        <div className="container mx-auto px-6 py-6">
           <div className="flex justify-between items-center">
             <div className="flex items-center space-x-4">
               <Link
                 href="/subjects"
-                className="text-gray-600 hover:text-gray-900"
+                className="p-2 rounded-xl bg-white/10 hover:bg-white/20 transition-all duration-300 backdrop-blur-sm"
               >
-                <ArrowLeft className="h-5 w-5" />
+                <ArrowLeft className="h-5 w-5 text-white" />
               </Link>
-              <h1 className="text-2xl font-bold text-gray-900">
-                {subject.name}
-              </h1>
+              <div>
+                <h1 className="text-3xl font-bold gradient-text">
+                  {subject.name}
+                </h1>
+                <p className="text-sm text-muted-foreground">Track your progress and manage tasks</p>
+              </div>
             </div>
-            <UserButton />
+            <div className="flex items-center space-x-4">
+              <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse shadow-glow-green"></div>
+              <UserButton />
+            </div>
           </div>
         </div>
       </header>
 
-      <main className="container mx-auto px-4 py-8">
-        <div className="mb-8">
-          <div className="flex items-center justify-between mb-6">
-            <div>
-              <h2 className="text-xl font-semibold text-gray-900 mb-2">
-                Progress Overview
-              </h2>
-              <p className="text-gray-600">{subject.description}</p>
+      <main className="relative z-10 container mx-auto px-6 py-12">
+        {/* Progress Overview */}
+        <div className="card-premium rounded-2xl p-8 mb-12 animate-fade-in-scale">
+          <div className="flex flex-col lg:flex-row lg:items-center justify-between mb-8">
+            <div className="mb-6 lg:mb-0">
+              <h2 className="text-3xl font-bold text-white mb-4">Progress Overview</h2>
+              <p className="text-xl text-muted-foreground leading-relaxed">{subject.description}</p>
             </div>
-            <div className="text-right">
-              <div className="text-2xl font-bold text-blue-600">
-                {progress.toFixed(1)}%
+            <div className="text-center lg:text-right">
+              <div className="text-6xl font-bold gradient-text mb-2">
+                {Math.round(progress)}%
               </div>
-              <div className="text-sm text-gray-600">
-                {completedTasks} / {totalTasks} tasks
+              <div className="text-lg text-muted-foreground">
+                {completedTasks} / {totalTasks} tasks completed
               </div>
             </div>
           </div>
 
-          <Progress value={progress} className="h-3" />
+          {/* Progress Bar */}
+          <div className="relative">
+            <div className="w-full bg-white/10 rounded-full h-4 overflow-hidden">
+              <div 
+                className={`h-full rounded-full transition-all duration-2000 ease-out ${
+                  progress >= 80 ? 'bg-gradient-success shadow-glow-green' :
+                  progress >= 50 ? 'bg-gradient-accent shadow-glow' :
+                  progress >= 25 ? 'bg-gradient-warning shadow-glow-purple' :
+                  'bg-gradient-to-r from-gray-500 to-gray-600'
+                }`}
+                style={{ width: `${progress}%` }}
+              >
+                <div className="h-full w-full bg-gradient-to-r from-transparent via-white/30 to-transparent animate-shimmer"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Stats Grid */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-12 animate-fade-in-scale" style={{ animationDelay: '0.1s' }}>
+          <div className="text-center p-6 rounded-xl bg-white/5 backdrop-blur-sm border border-white/10">
+            <div className="text-3xl font-bold gradient-text-success mb-2">{subject.chapters.length}</div>
+            <div className="text-sm text-muted-foreground">Chapters</div>
+          </div>
+          <div className="text-center p-6 rounded-xl bg-white/5 backdrop-blur-sm border border-white/10">
+            <div className="text-3xl font-bold gradient-text-accent mb-2">{subject.mockTests.length}</div>
+            <div className="text-sm text-muted-foreground">Mock Tests</div>
+          </div>
+          <div className="text-center p-6 rounded-xl bg-white/5 backdrop-blur-sm border border-white/10">
+            <div className="text-3xl font-bold gradient-text mb-2">{totalTasks}</div>
+            <div className="text-sm text-muted-foreground">Total Tasks</div>
+          </div>
+          <div className="text-center p-6 rounded-xl bg-white/5 backdrop-blur-sm border border-white/10">
+            <div className="text-3xl font-bold gradient-text-warning mb-2">{completedTasks}</div>
+            <div className="text-sm text-muted-foreground">Completed</div>
+          </div>
         </div>
 
         <div className="grid lg:grid-cols-2 gap-8">
-          <div>
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center">
-                  <BookOpen className="h-5 w-5 mr-2" />
-                  Chapters
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  {subject.chapters.map((chapter, index) => {
-                    const chapterProgress = chapter.progress?.[0];
-                    return (
-                      <div key={chapter.id} className="border rounded-lg p-4">
-                        <h4 className="font-medium mb-3">
+          {/* Chapters Section */}
+          <div className="animate-slide-in-up" style={{ animationDelay: '0.2s' }}>
+            <div className="card-premium rounded-2xl p-8">
+              <div className="flex items-center mb-8">
+                <div className="w-12 h-12 bg-gradient-primary rounded-2xl flex items-center justify-center shadow-glow mr-4">
+                  <BookOpen className="h-6 w-6 text-white" />
+                </div>
+                <h3 className="text-2xl font-bold text-white">Chapters</h3>
+              </div>
+              <div className="space-y-6">
+                {subject.chapters.map((chapter, index) => {
+                  const chapterProgress = chapter.progress?.[0];
+                  const chapterCompleted = chapterProgress?.completed || false;
+                  const revision1 = chapterProgress?.revision1 || false;
+                  const revision2 = chapterProgress?.revision2 || false;
+                  const revision3 = chapterProgress?.revision3 || false;
+                  const chapterProgressPercent = ((chapterCompleted ? 1 : 0) + (revision1 ? 1 : 0) + (revision2 ? 1 : 0) + (revision3 ? 1 : 0)) / 4 * 100;
+                  
+                  return (
+                    <div key={chapter.id} className="card-premium rounded-xl p-6 border border-white/10">
+                      <div className="flex items-center justify-between mb-4">
+                        <h4 className="text-lg font-semibold text-white">
                           {index + 1}. {chapter.name}
                         </h4>
-                        <div className="space-y-2">
-                          <ChapterCheckbox
-                            chapterId={chapter.id}
-                            field="completed"
-                            checked={chapterProgress?.completed || false}
-                            label="✅ Completed"
-                          />
-                          <ChapterCheckbox
-                            chapterId={chapter.id}
-                            field="revision1"
-                            checked={chapterProgress?.revision1 || false}
-                            label="🔁 Revision 1"
-                          />
-                          <ChapterCheckbox
-                            chapterId={chapter.id}
-                            field="revision2"
-                            checked={chapterProgress?.revision2 || false}
-                            label="🔁 Revision 2"
-                          />
-                          <ChapterCheckbox
-                            chapterId={chapter.id}
-                            field="revision3"
-                            checked={chapterProgress?.revision3 || false}
-                            label="🔁 Revision 3"
-                          />
+                        <div className="text-sm font-bold gradient-text">
+                          {Math.round(chapterProgressPercent)}%
                         </div>
                       </div>
-                    );
-                  })}
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-
-          <div>
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center">
-                  <CheckCircle className="h-5 w-5 mr-2" />
-                  Mock Tests
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  {subject.mockTests.map((mock, index) => {
-                    const mockProgress = mock.progress?.[0];
-                    return (
-                      <div key={mock.id} className="border rounded-lg p-4">
-                        <MockCheckbox
-                          mockTestId={mock.id}
-                          checked={mockProgress?.completed || false}
-                          label={`${index + 1}. ${mock.name}`}
+                      <div className="space-y-3">
+                        <ChapterCheckbox
+                          chapterId={chapter.id}
+                          field="completed"
+                          checked={chapterCompleted}
+                          label="✅ Completed"
+                        />
+                        <ChapterCheckbox
+                          chapterId={chapter.id}
+                          field="revision1"
+                          checked={revision1}
+                          label="🔁 Revision 1"
+                        />
+                        <ChapterCheckbox
+                          chapterId={chapter.id}
+                          field="revision2"
+                          checked={revision2}
+                          label="🔁 Revision 2"
+                        />
+                        <ChapterCheckbox
+                          chapterId={chapter.id}
+                          field="revision3"
+                          checked={revision3}
+                          label="🔁 Revision 3"
                         />
                       </div>
-                    );
-                  })}
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          </div>
+
+          {/* Mock Tests Section */}
+          <div className="animate-slide-in-up" style={{ animationDelay: '0.3s' }}>
+            <div className="card-premium rounded-2xl p-8">
+              <div className="flex items-center mb-8">
+                <div className="w-12 h-12 bg-gradient-success rounded-2xl flex items-center justify-center shadow-glow-green mr-4">
+                  <Target className="h-6 w-6 text-white" />
                 </div>
-              </CardContent>
-            </Card>
+                <h3 className="text-2xl font-bold text-white">Mock Tests</h3>
+              </div>
+              <div className="space-y-6">
+                {subject.mockTests.map((mock, index) => {
+                  const mockProgress = mock.progress?.[0];
+                  const mockCompleted = mockProgress?.completed || false;
+                  
+                  return (
+                    <div key={mock.id} className="card-premium rounded-xl p-6 border border-white/10">
+                      <div className="flex items-center justify-between mb-4">
+                        <h4 className="text-lg font-semibold text-white">
+                          {index + 1}. {mock.name}
+                        </h4>
+                        <div className={`text-sm font-bold ${mockCompleted ? 'gradient-text-success' : 'text-muted-foreground'}`}>
+                          {mockCompleted ? 'Completed' : 'Pending'}
+                        </div>
+                      </div>
+                      <MockCheckbox
+                        mockTestId={mock.id}
+                        checked={mockCompleted}
+                        label=""
+                      />
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
           </div>
         </div>
       </main>
