@@ -1,0 +1,117 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+    provider = "prisma-client-js"
+}
+
+datasource db {
+    provider = "postgresql"
+    url      = env("DATABASE_URL")
+}
+
+model User {
+    id        String   @id @default(cuid())
+    clerkId   String   @unique
+    email     String   @unique
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    subjects        Subject[]
+    studySessions   StudySession[]
+    chapterProgress ChapterProgress[]
+    mockProgress    MockProgress[]
+
+    @@map("users")
+}
+
+model Subject {
+    id          String   @id @default(cuid())
+    name        String
+    description String?
+    createdAt   DateTime @default(now())
+    updatedAt   DateTime @updatedAt
+
+    userId    String
+    user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+    chapters  Chapter[]
+    mockTests MockTest[]
+
+    @@map("subjects")
+}
+
+model Chapter {
+    id        String   @id @default(cuid())
+    name      String
+    order     Int
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    subjectId String
+    subject   Subject @relation(fields: [subjectId], references: [id], onDelete: Cascade)
+
+    progress ChapterProgress[]
+
+    @@map("chapters")
+}
+
+model ChapterProgress {
+    id        String   @id @default(cuid())
+    completed Boolean  @default(false)
+    revision1 Boolean  @default(false)
+    revision2 Boolean  @default(false)
+    revision3 Boolean  @default(false)
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    userId    String
+    user      User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+    chapterId String
+    chapter   Chapter @relation(fields: [chapterId], references: [id], onDelete: Cascade)
+
+    @@unique([userId, chapterId])
+    @@map("chapter_progress")
+}
+
+model MockTest {
+    id        String   @id @default(cuid())
+    name      String
+    order     Int
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    subjectId String
+    subject   Subject @relation(fields: [subjectId], references: [id], onDelete: Cascade)
+
+    progress MockProgress[]
+
+    @@map("mock_tests")
+}
+
+model MockProgress {
+    id        String   @id @default(cuid())
+    completed Boolean  @default(false)
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    userId     String
+    user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+    mockTestId String
+    mockTest   MockTest @relation(fields: [mockTestId], references: [id], onDelete: Cascade)
+
+    @@unique([userId, mockTestId])
+    @@map("mock_progress")
+}
+
+model StudySession {
+    id        String   @id @default(cuid())
+    duration  Int // Duration in minutes
+    date      DateTime @default(now())
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    userId String
+    user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    @@map("study_sessions")
+}
