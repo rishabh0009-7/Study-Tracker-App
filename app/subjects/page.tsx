@@ -17,47 +17,45 @@ export default async function SubjectsPage() {
   const subjects = await getSubjects();
 
   return (
-    <div className="min-h-screen relative overflow-hidden">
-      {/* Animated Background */}
-      <div className="absolute inset-0 bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
+    <div className="min-h-screen relative overflow-hidden bg-black">
+      {/* Black background with subtle pattern */}
+      <div className="absolute inset-0 bg-black">
         <div
-          className="absolute inset-0 opacity-20"
+          className="absolute inset-0 opacity-10"
           style={{
-            backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%239C92AC' fill-opacity='0.05'%3E%3Ccircle cx='30' cy='30' r='2'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
+            backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Ccircle cx='30' cy='30' r='2'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
           }}
         ></div>
-        {/* Floating Elements */}
-        <div className="absolute top-20 left-10 w-20 h-20 bg-gradient-primary rounded-full opacity-20 animate-float"></div>
+        {/* Subtle floating elements */}
+        <div className="absolute top-20 left-10 w-20 h-20 bg-blue-500 rounded-full opacity-10 animate-float"></div>
         <div
-          className="absolute top-40 right-20 w-16 h-16 bg-gradient-accent rounded-full opacity-30 animate-float"
+          className="absolute top-40 right-20 w-16 h-16 bg-blue-400 rounded-full opacity-15 animate-float"
           style={{ animationDelay: "2s" }}
         ></div>
         <div
-          className="absolute bottom-40 left-20 w-12 h-12 bg-gradient-success rounded-full opacity-25 animate-float"
+          className="absolute bottom-40 left-20 w-12 h-12 bg-blue-600 rounded-full opacity-10 animate-float"
           style={{ animationDelay: "4s" }}
         ></div>
         <div
-          className="absolute bottom-20 right-10 w-24 h-24 bg-gradient-warning rounded-full opacity-20 animate-float"
+          className="absolute bottom-20 right-10 w-24 h-24 bg-blue-500 rounded-full opacity-8 animate-float"
           style={{ animationDelay: "1s" }}
         ></div>
       </div>
 
       {/* Navigation */}
-      <header className="relative z-50 glass border-b border-white/10">
+      <header className="relative z-50 bg-black/90 backdrop-blur-sm border-b border-white/10">
         <div className="container mx-auto px-6 py-6">
           <div className="flex justify-between items-center">
             <div className="flex items-center space-x-4">
               <Link
                 href="/dashboard"
-                className="p-2 rounded-xl bg-white/10 hover:bg-white/20 transition-all duration-300 backdrop-blur-sm"
+                className="p-2 rounded-xl bg-blue-600/20 hover:bg-blue-600/30 transition-all duration-300 backdrop-blur-sm"
               >
                 <ArrowLeft className="h-5 w-5 text-white" />
               </Link>
               <div>
-                <h1 className="text-3xl font-bold gradient-text">
-                  All Subjects
-                </h1>
-                <p className="text-sm text-muted-foreground">
+                <h1 className="text-3xl font-bold text-white">All Subjects</h1>
+                <p className="text-sm text-gray-300">
                   Manage your CS Executive subjects
                 </p>
               </div>
@@ -71,18 +69,18 @@ export default async function SubjectsPage() {
         </div>
       </header>
 
-      <main className="relative z-10 container mx-auto px-6 py-12 md:py-12 pt-24 md:pt-12">
+      <main className="relative z-10 container mx-auto py-8 md:py-12">
         {/* Hero Section */}
-        <div className="text-center mb-12 animate-fade-in-scale">
+        <div className="text-center mb-8 md:mb-12 animate-fade-in-scale">
           <div className="flex items-center justify-center mb-6">
-            <div className="w-16 h-16 bg-gradient-primary rounded-2xl flex items-center justify-center shadow-glow mr-4">
-              <BookOpen className="h-8 w-8 text-white" />
+            <div className="w-12 h-12 md:w-16 md:h-16 bg-blue-600 rounded-2xl flex items-center justify-center mr-4">
+              <BookOpen className="h-6 w-6 md:h-8 md:w-8 text-white" />
             </div>
-            <h2 className="text-4xl font-bold text-white">
+            <h2 className="text-3xl md:text-4xl font-bold text-white">
               CS Executive Subjects
             </h2>
           </div>
-          <p className="text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
+          <p className="text-lg md:text-xl text-gray-300 max-w-3xl mx-auto leading-relaxed">
             Click on any subject to view and manage chapters, revisions, and
             mock tests. Track your progress and achieve excellence in each
             subject.
@@ -91,7 +89,7 @@ export default async function SubjectsPage() {
 
         {/* Quick Stats */}
         <div
-          className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-12 animate-fade-in-scale"
+          className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 mb-8 md:mb-12 animate-fade-in-scale"
           style={{ animationDelay: "0.1s" }}
         >
           <div className="text-center p-6 rounded-xl bg-white/5 backdrop-blur-sm border border-white/10">
@@ -152,7 +150,7 @@ export default async function SubjectsPage() {
         </div>
 
         {/* Subjects Grid */}
-        <div className="grid md:grid-cols-2 gap-8">
+        <div className="grid sm:grid-cols-2 gap-4 md:gap-6">
           {subjects.map((subject, index) => {
             const chapterTasks = subject.chapters.length * 4;
             const mockTasks = subject.mockTests.length;

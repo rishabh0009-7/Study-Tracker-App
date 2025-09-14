@@ -40,29 +40,43 @@ export default async function Dashboard() {
   const todayMinutes = todayHours * 60; // Convert to minutes for formatting
 
   return (
-    <div className="min-h-screen relative overflow-hidden">
-      {/* Animated background */}
-      <div className="absolute inset-0 bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
+    <div className="min-h-screen relative overflow-hidden bg-black">
+      {/* Black background with subtle pattern */}
+      <div className="absolute inset-0 bg-black">
         <div
-          className="absolute inset-0 opacity-20"
+          className="absolute inset-0 opacity-10"
           style={{
-            backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%239C92AC' fill-opacity='0.05'%3E%3Ccircle cx='30' cy='30' r='2'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
+            backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Ccircle cx='30' cy='30' r='2'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
           }}
+        ></div>
+        {/* Subtle floating elements */}
+        <div className="absolute top-20 left-10 w-20 h-20 bg-blue-500 rounded-full opacity-10 animate-float"></div>
+        <div
+          className="absolute top-40 right-20 w-16 h-16 bg-blue-400 rounded-full opacity-15 animate-float"
+          style={{ animationDelay: "2s" }}
+        ></div>
+        <div
+          className="absolute bottom-40 left-20 w-12 h-12 bg-blue-600 rounded-full opacity-10 animate-float"
+          style={{ animationDelay: "4s" }}
+        ></div>
+        <div
+          className="absolute bottom-20 right-10 w-24 h-24 bg-blue-500 rounded-full opacity-8 animate-float"
+          style={{ animationDelay: "1s" }}
         ></div>
       </div>
 
-      <header className="relative z-50 glass border-b border-white/10">
+      <header className="relative z-50 bg-black/90 backdrop-blur-sm border-b border-white/10">
         <div className="container mx-auto px-6 py-6">
           <div className="flex justify-between items-center">
             <div className="flex items-center space-x-4">
-              <div className="w-10 h-10 bg-gradient-primary rounded-xl flex items-center justify-center shadow-glow">
+              <div className="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center">
                 <BookOpen className="h-6 w-6 text-white" />
               </div>
               <div>
-                <h1 className="text-3xl font-bold gradient-text">
+                <h1 className="text-3xl font-bold text-white">
                   CS Executive Tracker
                 </h1>
-                <p className="text-sm text-muted-foreground">
+                <p className="text-sm text-gray-300">
                   Professional Study Management
                 </p>
               </div>
@@ -70,25 +84,25 @@ export default async function Dashboard() {
             <div className="flex items-center space-x-6">
               <nav className="hidden md:flex space-x-8">
                 <Link href="/dashboard" className="relative group">
-                  <span className="text-white font-medium px-4 py-2 rounded-lg bg-white/10 backdrop-blur-sm transition-all duration-300 group-hover:bg-white/20">
+                  <span className="text-white font-medium px-4 py-2 rounded-lg bg-blue-600/20 backdrop-blur-sm transition-all duration-300 group-hover:bg-blue-600/30">
                     Dashboard
                   </span>
                 </Link>
                 <Link
                   href="/study"
-                  className="text-muted-foreground hover:text-white transition-colors duration-300 px-4 py-2 rounded-lg hover:bg-white/5"
+                  className="text-gray-300 hover:text-white transition-colors duration-300 px-4 py-2 rounded-lg hover:bg-blue-600/10"
                 >
                   Study Timer
                 </Link>
                 <Link
                   href="/history"
-                  className="text-muted-foreground hover:text-white transition-colors duration-300 px-4 py-2 rounded-lg hover:bg-white/5"
+                  className="text-gray-300 hover:text-white transition-colors duration-300 px-4 py-2 rounded-lg hover:bg-blue-600/10"
                 >
                   History
                 </Link>
                 <Link
                   href="/subjects"
-                  className="text-muted-foreground hover:text-white transition-colors duration-300 px-4 py-2 rounded-lg hover:bg-white/5"
+                  className="text-gray-300 hover:text-white transition-colors duration-300 px-4 py-2 rounded-lg hover:bg-blue-600/10"
                 >
                   Subjects
                 </Link>
@@ -103,14 +117,14 @@ export default async function Dashboard() {
         </div>
       </header>
 
-      <main className="relative z-10 container mx-auto px-6 py-12 md:py-12 pt-24 md:pt-12">
+      <main className="relative z-10 container mx-auto py-8 md:py-12">
         {/* Hero Stats Section */}
-        <div className="grid lg:grid-cols-3 gap-8 mb-12">
-          <div className="lg:col-span-1 animate-slide-in-up">
+        <div className="grid lg:grid-cols-3 gap-6 md:gap-8 mb-8 md:mb-12">
+          <div className="lg:col-span-1 animate-fade-in-up">
             <Countdown />
           </div>
           <div
-            className="lg:col-span-2 animate-slide-in-up"
+            className="lg:col-span-2 animate-fade-in-up"
             style={{ animationDelay: "0.1s" }}
           >
             <ProgressBar
@@ -203,7 +217,7 @@ export default async function Dashboard() {
             </div>
           </div>
 
-          <div className="grid md:grid-cols-2 gap-8">
+          <div className="grid sm:grid-cols-2 gap-4 md:gap-6">
             {subjects.map((subject, index) => {
               const chapterTasks = subject.chapters.length * 4;
               const mockTasks = subject.mockTests.length;

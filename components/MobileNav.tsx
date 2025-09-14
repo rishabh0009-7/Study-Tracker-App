@@ -73,14 +73,14 @@ export function MobileNav() {
               {/* Header */}
               <div className="flex items-center justify-between p-6 border-b border-white/10">
                 <div className="flex items-center space-x-3">
-                  <div className="w-10 h-10 bg-gradient-primary rounded-xl flex items-center justify-center shadow-glow">
+                  <div className="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center">
                     <BookOpen className="h-6 w-6 text-white" />
                   </div>
                   <div>
                     <h2 className="text-xl font-bold text-white">
                       CS Executive
                     </h2>
-                    <p className="text-xs text-white/80">Study Tracker</p>
+                    <p className="text-xs text-gray-300">Study Tracker</p>
                   </div>
                 </div>
                 <button
@@ -101,9 +101,9 @@ export function MobileNav() {
                       key={item.href}
                       href={item.href}
                       onClick={() => setIsOpen(false)}
-                      className="flex items-center space-x-4 p-4 rounded-xl bg-white/10 hover:bg-white/20 transition-all duration-300 group border border-white/10"
+                      className="flex items-center space-x-4 p-4 rounded-xl bg-blue-600/10 hover:bg-blue-600/20 transition-all duration-300 group border border-blue-600/20"
                     >
-                      <div className="w-10 h-10 bg-gradient-primary rounded-xl flex items-center justify-center shadow-glow group-hover:shadow-glow-green transition-all duration-300">
+                      <div className="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center group-hover:bg-blue-700 transition-all duration-300">
                         <Icon className="h-5 w-5 text-white" />
                       </div>
                       <span className="text-white font-medium text-lg">

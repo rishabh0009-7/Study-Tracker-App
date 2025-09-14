@@ -30,40 +30,40 @@ export default async function Home() {
   }
 
   return (
-    <div className="min-h-screen relative overflow-hidden">
-      {/* Animated Background */}
-      <div className="absolute inset-0 bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
+    <div className="min-h-screen relative overflow-hidden bg-black">
+      {/* Black Background with subtle pattern */}
+      <div className="absolute inset-0 bg-black">
         <div
-          className="absolute inset-0 opacity-20"
+          className="absolute inset-0 opacity-10"
           style={{
-            backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%239C92AC' fill-opacity='0.05'%3E%3Ccircle cx='30' cy='30' r='2'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
+            backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Ccircle cx='30' cy='30' r='2'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
           }}
         ></div>
-        {/* Floating Elements */}
-        <div className="absolute top-20 left-10 w-20 h-20 bg-gradient-primary rounded-full opacity-20 animate-float"></div>
+        {/* Subtle floating elements */}
+        <div className="absolute top-20 left-10 w-20 h-20 bg-blue-500 rounded-full opacity-10 animate-float"></div>
         <div
-          className="absolute top-40 right-20 w-16 h-16 bg-gradient-accent rounded-full opacity-30 animate-float"
+          className="absolute top-40 right-20 w-16 h-16 bg-blue-400 rounded-full opacity-15 animate-float"
           style={{ animationDelay: "2s" }}
         ></div>
         <div
-          className="absolute bottom-40 left-20 w-12 h-12 bg-gradient-success rounded-full opacity-25 animate-float"
+          className="absolute bottom-40 left-20 w-12 h-12 bg-blue-600 rounded-full opacity-10 animate-float"
           style={{ animationDelay: "4s" }}
         ></div>
         <div
-          className="absolute bottom-20 right-10 w-24 h-24 bg-gradient-warning rounded-full opacity-20 animate-float"
+          className="absolute bottom-20 right-10 w-24 h-24 bg-blue-500 rounded-full opacity-8 animate-float"
           style={{ animationDelay: "1s" }}
         ></div>
       </div>
 
       {/* Navigation */}
-      <nav className="relative z-10 glass border-b border-white/10">
+      <nav className="relative z-10 bg-black/90 backdrop-blur-sm border-b border-white/10">
         <div className="container mx-auto px-6 py-4">
           <div className="flex justify-between items-center">
             <div className="flex items-center space-x-3">
-              <div className="w-10 h-10 bg-gradient-primary rounded-xl flex items-center justify-center shadow-glow">
+              <div className="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center">
                 <BookOpen className="h-6 w-6 text-white" />
               </div>
-              <span className="text-2xl font-bold gradient-text">
+              <span className="text-2xl font-bold text-white">
                 CS Executive Tracker
               </span>
             </div>
@@ -77,7 +77,7 @@ export default async function Home() {
                 </Button>
               </SignInButton>
               <SignUpButton>
-                <Button className="bg-gradient-primary hover:shadow-glow btn-premium text-white">
+                <Button className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg transition-colors">
                   Get Started
                 </Button>
               </SignUpButton>
@@ -87,22 +87,22 @@ export default async function Home() {
       </nav>
 
       {/* Hero Section */}
-      <section className="relative z-10 pt-32 pb-32">
-        <div className="container mx-auto px-6">
-          <div className="text-center max-w-4xl mx-auto">
+      <section className="relative z-10 pt-20 pb-20 md:pt-32 md:pb-32">
+        <div className="container mx-auto">
+          <div className="text-center max-w-5xl mx-auto space-y-8">
             {/* Main Headline */}
-            <h1 className="text-6xl md:text-7xl font-bold text-white mb-8 leading-tight animate-slide-in-up">
+            <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-white leading-tight animate-fade-in-up">
               CS Executive
-              <span className="block gradient-text">Study Tracker</span>
+              <span className="block text-blue-400 mt-2">Study Tracker</span>
             </h1>
 
             {/* Subtitle */}
             <p
-              className="text-xl md:text-2xl text-muted-foreground mb-12 leading-relaxed animate-fade-in-scale"
+              className="text-lg sm:text-xl md:text-2xl text-gray-300 leading-relaxed max-w-3xl mx-auto animate-fade-in-scale"
               style={{ animationDelay: "0.2s" }}
             >
               Track your progress, manage study time, and ace your CS Executive
-              exam
+              exam with our professional study management platform
             </p>
 
             {/* Start Button */}
@@ -113,9 +113,9 @@ export default async function Home() {
               <SignUpButton>
                 <Button
                   size="lg"
-                  className="px-12 py-6 text-lg bg-gradient-success hover:shadow-glow-green btn-premium text-white font-semibold rounded-2xl"
+                  className="px-8 py-4 md:px-12 md:py-6 text-base md:text-lg bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-2xl transition-all duration-300 shadow-lg hover:shadow-blue-500/25 hover:scale-105 btn-premium"
                 >
-                  <Play className="h-6 w-6 mr-3" />
+                  <Play className="h-5 w-5 md:h-6 md:w-6 mr-3" />
                   Get Started
                 </Button>
               </SignUpButton>
