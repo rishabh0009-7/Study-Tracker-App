@@ -87,7 +87,7 @@ export default async function SubjectPage({ params }: SubjectPageProps) {
       </div>
 
       {/* Navigation */}
-      <header className="relative z-10 glass border-b border-white/10">
+      <header className="relative z-50 glass border-b border-white/10">
         <div className="container mx-auto px-6 py-6">
           <div className="flex justify-between items-center">
             <div className="flex items-center space-x-4">
@@ -115,7 +115,7 @@ export default async function SubjectPage({ params }: SubjectPageProps) {
         </div>
       </header>
 
-      <main className="relative z-10 container mx-auto px-6 py-12">
+      <main className="relative z-10 container mx-auto px-6 py-12 md:py-12 pt-24 md:pt-12">
         {/* Progress Overview */}
         <div className="card-premium rounded-2xl p-8 mb-12 animate-fade-in-scale">
           <div className="flex flex-col lg:flex-row lg:items-center justify-between mb-8">

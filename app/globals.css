@@ -187,6 +187,17 @@ html {
   }
 }
 
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-100%);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
 .animate-float {
   animation: float 6s ease-in-out infinite;
 }
@@ -211,6 +222,86 @@ html {
 
 .animate-fade-in-scale {
   animation: fadeInScale 0.4s ease-out;
+}
+
+.animate-slide-in-left {
+  animation: slideInLeft 0.3s ease-out;
+}
+
+/* Mobile navigation improvements */
+@media (max-width: 768px) {
+  /* Ensure mobile nav doesn't interfere with content */
+  body {
+    padding-top: 0;
+  }
+  
+  /* Fixed header positioning */
+  header {
+    position: fixed !important;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 50 !important;
+    background: rgba(15, 23, 42, 0.95) !important;
+    backdrop-filter: blur(20px) !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+  }
+  
+  /* Ensure main content is below header */
+  main {
+    position: relative;
+    z-index: 10;
+    margin-top: 0; /* Remove margin since we're using padding */
+  }
+  
+  /* Mobile navigation button positioning */
+  .mobile-nav-button {
+    position: relative;
+    z-index: 60;
+  }
+  
+  /* Mobile menu overlay */
+  .mobile-menu-overlay {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    z-index: 9999 !important;
+  }
+  
+  /* Mobile menu panel */
+  .mobile-menu-panel {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    height: 100vh !important;
+    width: 320px !important;
+    max-width: 85vw !important;
+    background: rgb(15, 23, 42) !important;
+    z-index: 10000 !important;
+    transform: translateX(0) !important;
+    transition: transform 300ms ease-in-out !important;
+  }
+  
+  /* Smooth mobile menu transitions */
+  .mobile-menu-enter {
+    transform: translateX(-100%);
+  }
+  
+  .mobile-menu-enter-active {
+    transform: translateX(0);
+    transition: transform 300ms ease-in-out;
+  }
+  
+  .mobile-menu-exit {
+    transform: translateX(0);
+  }
+  
+  .mobile-menu-exit-active {
+    transform: translateX(-100%);
+    transition: transform 300ms ease-in-out;
+  }
 }
 
 /* Premium button styles */

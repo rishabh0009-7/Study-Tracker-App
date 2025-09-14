@@ -51,7 +51,7 @@ export default async function Dashboard() {
         ></div>
       </div>
 
-      <header className="relative z-10 glass border-b border-white/10">
+      <header className="relative z-50 glass border-b border-white/10">
         <div className="container mx-auto px-6 py-6">
           <div className="flex justify-between items-center">
             <div className="flex items-center space-x-4">
@@ -103,7 +103,7 @@ export default async function Dashboard() {
         </div>
       </header>
 
-      <main className="relative z-10 container mx-auto px-6 py-12">
+      <main className="relative z-10 container mx-auto px-6 py-12 md:py-12 pt-24 md:pt-12">
         {/* Hero Stats Section */}
         <div className="grid lg:grid-cols-3 gap-8 mb-12">
           <div className="lg:col-span-1 animate-slide-in-up">
