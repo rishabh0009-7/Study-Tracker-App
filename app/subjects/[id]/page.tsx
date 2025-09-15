@@ -15,6 +15,7 @@ import Link from "next/link";
 import { ChapterCheckbox } from "@/components/ChapterCheckbox";
 import { MockCheckbox } from "@/components/MockCheckbox";
 import { MobileNav } from "@/components/MobileNav";
+import { DynamicHeaderPadding } from "@/components/DynamicHeaderPadding";
 
 interface SubjectPageProps {
   params: {
@@ -87,7 +88,10 @@ export default async function SubjectPage({ params }: SubjectPageProps) {
       </div>
 
       {/* Navigation */}
-      <header className="relative z-50 bg-black/90 backdrop-blur-sm border-b border-white/10">
+      <header
+        className="relative z-50 bg-black/90 backdrop-blur-sm border-b border-white/10"
+        id="dynamic-header"
+      >
         <div className="container mx-auto px-6 py-6">
           <div className="flex justify-between items-center">
             <div className="flex items-center space-x-4">
@@ -115,7 +119,13 @@ export default async function SubjectPage({ params }: SubjectPageProps) {
         </div>
       </header>
 
-      <main className="relative z-10 container mx-auto px-6 pt-24 pb-8 md:pt-28 md:pb-12">
+      <DynamicHeaderPadding />
+
+      <main
+        className="relative z-10 container mx-auto px-6 pb-8 md:pb-12"
+        id="main-content"
+        style={{ paddingTop: "200px" }}
+      >
         {/* Progress Overview */}
         <div className="card-premium rounded-2xl p-8 mb-12 animate-fade-in-scale">
           <div className="flex flex-col lg:flex-row lg:items-center justify-between mb-8">

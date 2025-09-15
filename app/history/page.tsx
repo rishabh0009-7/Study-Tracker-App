@@ -150,7 +150,7 @@ export default async function HistoryPage() {
         backHref="/dashboard"
       />
 
-      <main className="relative z-10 container mx-auto px-6 pt-24 pb-8 md:pt-28 md:pb-12">
+      <main className="relative z-10 container mx-auto px-6 pb-8 md:pb-12">
         {/* Hero Section */}
         <div className="text-center mb-12 animate-fade-in-scale">
           <div className="flex items-center justify-center mb-6">

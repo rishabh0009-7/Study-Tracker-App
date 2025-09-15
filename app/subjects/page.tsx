@@ -7,6 +7,7 @@ import { UserButton } from "@clerk/nextjs";
 import { BookOpen, ArrowLeft, BarChart3, Clock, Target } from "lucide-react";
 import Link from "next/link";
 import { MobileNav } from "@/components/MobileNav";
+import { DynamicHeaderPadding } from "@/components/DynamicHeaderPadding";
 
 export default async function SubjectsPage() {
   const { userId } = await auth();
@@ -44,7 +45,10 @@ export default async function SubjectsPage() {
       </div>
 
       {/* Navigation */}
-      <header className="relative z-50 bg-black/90 backdrop-blur-sm border-b border-white/10">
+      <header
+        className="relative z-50 bg-black/90 backdrop-blur-sm border-b border-white/10"
+        id="dynamic-header"
+      >
         <div className="container mx-auto px-6 py-6">
           <div className="flex justify-between items-center">
             <div className="flex items-center space-x-4">
@@ -70,7 +74,13 @@ export default async function SubjectsPage() {
         </div>
       </header>
 
-      <main className="relative z-10 container mx-auto pt-24 pb-8 md:pt-28 md:pb-12">
+      <DynamicHeaderPadding />
+
+      <main
+        className="relative z-10 container mx-auto pb-8 md:pb-12"
+        id="main-content"
+        style={{ paddingTop: "200px" }}
+      >
         {/* Hero Section */}
         <div className="text-center mb-8 md:mb-12 animate-fade-in-scale">
           <div className="flex items-center justify-center mb-6">
