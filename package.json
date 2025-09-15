@@ -4,13 +4,18 @@
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",
+    "dev:fast": "next dev --turbopack --port 3000",
     "build": "next build --turbopack",
+    "build:analyze": "ANALYZE=true next build --turbopack",
     "start": "next start",
+    "start:fast": "next start --port 3000",
     "lint": "eslint",
+    "lint:fix": "eslint --fix",
     "setup": "node scripts/setup.js",
     "db:generate": "prisma generate",
     "db:push": "prisma db push",
-    "db:seed": "tsx scripts/seed.ts"
+    "db:seed": "tsx scripts/seed.ts",
+    "db:reseed": "node scripts/reseed.js"
   },
   "dependencies": {
     "@clerk/nextjs": "^6.32.0",

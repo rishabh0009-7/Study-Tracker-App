@@ -1,6 +1,7 @@
 import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 import { getSubjects } from "@/lib/actions";
+import { calculateSubjectProgress } from "@/lib/utils";
 import { SubjectCard } from "@/components/SubjectCard";
 import { UserButton } from "@clerk/nextjs";
 import { BookOpen, ArrowLeft, BarChart3, Clock, Target } from "lucide-react";
@@ -152,31 +153,7 @@ export default async function SubjectsPage() {
         {/* Subjects Grid */}
         <div className="grid sm:grid-cols-2 gap-4 md:gap-6">
           {subjects.map((subject, index) => {
-            const chapterTasks = subject.chapters.length * 4;
-            const mockTasks = subject.mockTests.length;
-            const totalTasks = chapterTasks + mockTasks;
-
-            let completedTasks = 0;
-
-            // Count completed chapter tasks
-            subject.chapters.forEach((chapter) => {
-              const progress = chapter.progress?.[0];
-              if (progress) {
-                if (progress.completed) completedTasks++;
-                if (progress.revision1) completedTasks++;
-                if (progress.revision2) completedTasks++;
-                if (progress.revision3) completedTasks++;
-              }
-            });
-
-            // Count completed mock tests
-            subject.mockTests.forEach((mock) => {
-              const progress = mock.progress?.[0];
-              if (progress?.completed) completedTasks++;
-            });
-
-            const progress =
-              totalTasks > 0 ? (completedTasks / totalTasks) * 100 : 0;
+            const subjectProgress = calculateSubjectProgress(subject);
 
             return (
               <div
@@ -188,9 +165,9 @@ export default async function SubjectsPage() {
                   id={subject.id}
                   name={subject.name}
                   description={subject.description}
-                  progress={progress}
-                  completed={completedTasks}
-                  total={totalTasks}
+                  progress={subjectProgress.progress}
+                  completed={subjectProgress.completed}
+                  total={subjectProgress.total}
                   todayHours={0}
                 />
               </div>

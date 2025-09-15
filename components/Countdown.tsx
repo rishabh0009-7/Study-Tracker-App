@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
-const EXAM_DATE = new Date("2025-12-01");
+const EXAM_DATE = new Date("2025-12-22");
 
 export function Countdown() {
   const [timeLeft, setTimeLeft] = useState({
@@ -85,7 +85,7 @@ export function Countdown() {
         <div className="text-center">
           <div className="text-sm text-muted-foreground mb-2">Exam Date</div>
           <div className="text-lg font-semibold text-white">
-            December 1, 2025
+            December 22, 2025
           </div>
         </div>
 

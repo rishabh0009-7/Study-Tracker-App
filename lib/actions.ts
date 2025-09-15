@@ -36,9 +36,19 @@ export async function getSubjects() {
     include: {
       chapters: {
         orderBy: { order: "asc" },
+        include: {
+          progress: {
+            where: { userId: user.id },
+          },
+        },
       },
       mockTests: {
         orderBy: { order: "asc" },
+        include: {
+          progress: {
+            where: { userId: user.id },
+          },
+        },
       },
       _count: {
         select: {

@@ -1,4 +1,6 @@
-import { prisma } from "./prisma";
+const { PrismaClient } = require("@prisma/client");
+
+const prisma = new PrismaClient();
 
 const subjectsData = [
   {
@@ -183,115 +185,100 @@ const subjectsData = [
   },
 ];
 
-export async function seedDatabase(userId: string) {
-  // Check if user already has subjects
-  const existingSubjects = await prisma.subject.findMany({
-    where: { userId },
-  });
+async function reseedDatabase() {
+  try {
+    console.log("Starting database reseed...");
 
-  // If user has subjects, check if we need to add missing subjects
-  if (existingSubjects.length > 0) {
-    const hasJurisprudence = existingSubjects.some(
-      (subject) =>
-        subject.name === "Jurisprudence, Interpretation & General Laws"
-    );
-    const hasTaxLaws = existingSubjects.some(
-      (subject) => subject.name === "Tax Laws (Direct & Indirect Taxation)"
-    );
+    // Get all users
+    const users = await prisma.user.findMany();
 
-    if (hasJurisprudence && hasTaxLaws) {
-      console.log("User already has all subjects, skipping seed");
-      return;
-    }
+    for (const user of users) {
+      console.log(`Processing user: ${user.email}`);
 
-    // Add missing subjects
-    const missingSubjects = [];
-
-    if (!hasJurisprudence) {
-      const jurisprudenceData = subjectsData.find(
-        (subject) =>
-          subject.name === "Jurisprudence, Interpretation & General Laws"
-      );
-      if (jurisprudenceData) missingSubjects.push(judisprudenceData);
-    }
-
-    if (!hasTaxLaws) {
-      const taxLawsData = subjectsData.find(
-        (subject) => subject.name === "Tax Laws (Direct & Indirect Taxation)"
-      );
-      if (taxLawsData) missingSubjects.push(taxLawsData);
-    }
-
-    for (const subjectData of missingSubjects) {
-      console.log(`Adding missing subject: ${subjectData.name}`);
-
-      const subject = await prisma.subject.create({
-        data: {
-          name: subjectData.name,
-          description: subjectData.description,
-          userId,
+      // Check which subjects the user already has
+      const existingJurisprudence = await prisma.subject.findFirst({
+        where: {
+          userId: user.id,
+          name: "Jurisprudence, Interpretation & General Laws",
         },
       });
 
-      // Create chapters
-      for (let i = 0; i < subjectData.chapters.length; i++) {
-        await prisma.chapter.create({
-          data: {
-            name: subjectData.chapters[i],
-            order: i + 1,
-            subjectId: subject.id,
-          },
-        });
+      const existingTaxLaws = await prisma.subject.findFirst({
+        where: {
+          userId: user.id,
+          name: "Tax Laws (Direct & Indirect Taxation)",
+        },
+      });
+
+      // Determine which subjects to add
+      const subjectsToAdd = [];
+
+      if (!existingJurisprudence) {
+        const jurisprudenceData = subjectsData.find(
+          (subject) =>
+            subject.name === "Jurisprudence, Interpretation & General Laws"
+        );
+        if (jurisprudenceData) subjectsToAdd.push(jurisprudenceData);
       }
 
-      // Create mock tests
-      for (let i = 0; i < subjectData.mockTests.length; i++) {
-        await prisma.mockTest.create({
-          data: {
-            name: subjectData.mockTests[i],
-            order: i + 1,
-            subjectId: subject.id,
-          },
-        });
+      if (!existingTaxLaws) {
+        const taxLawsData = subjectsData.find(
+          (subject) => subject.name === "Tax Laws (Direct & Indirect Taxation)"
+        );
+        if (taxLawsData) subjectsToAdd.push(taxLawsData);
       }
 
-      console.log(`${subjectData.name} subject added successfully`);
+      if (subjectsToAdd.length === 0) {
+        console.log(`User ${user.email} already has all subjects, skipping...`);
+        continue;
+      }
+
+      // Add missing subjects
+      for (const subjectData of subjectsToAdd) {
+        console.log(`Adding ${subjectData.name} for user: ${user.email}`);
+
+        const subject = await prisma.subject.create({
+          data: {
+            name: subjectData.name,
+            description: subjectData.description,
+            userId: user.id,
+          },
+        });
+
+        // Create chapters
+        for (let i = 0; i < subjectData.chapters.length; i++) {
+          await prisma.chapter.create({
+            data: {
+              name: subjectData.chapters[i],
+              order: i + 1,
+              subjectId: subject.id,
+            },
+          });
+        }
+
+        // Create mock tests
+        for (let i = 0; i < subjectData.mockTests.length; i++) {
+          await prisma.mockTest.create({
+            data: {
+              name: subjectData.mockTests[i],
+              order: i + 1,
+              subjectId: subject.id,
+            },
+          });
+        }
+
+        console.log(
+          `Added ${subjectData.name} subject for user: ${user.email}`
+        );
+      }
     }
 
-    return;
+    console.log("Database reseed completed successfully!");
+  } catch (error) {
+    console.error("Error during reseed:", error);
+  } finally {
+    await prisma.$disconnect();
   }
-
-  for (const subjectData of subjectsData) {
-    const subject = await prisma.subject.create({
-      data: {
-        name: subjectData.name,
-        description: subjectData.description,
-        userId,
-      },
-    });
-
-    // Create chapters
-    for (let i = 0; i < subjectData.chapters.length; i++) {
-      await prisma.chapter.create({
-        data: {
-          name: subjectData.chapters[i],
-          order: i + 1,
-          subjectId: subject.id,
-        },
-      });
-    }
-
-    // Create mock tests
-    for (let i = 0; i < subjectData.mockTests.length; i++) {
-      await prisma.mockTest.create({
-        data: {
-          name: subjectData.mockTests[i],
-          order: i + 1,
-          subjectId: subject.id,
-        },
-      });
-    }
-  }
-
-  console.log("Database seeded successfully");
 }
+
+reseedDatabase();
