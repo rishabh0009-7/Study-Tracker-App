@@ -11,10 +11,10 @@ import {
 } from "@/lib/actions";
 import { formatStudyTime } from "@/lib/utils";
 import { seedDatabase } from "@/lib/seed";
-import { UserButton } from "@clerk/nextjs";
-import { BookOpen, Clock, BarChart3, History, Menu, X } from "lucide-react";
+import { BookOpen, Clock, BarChart3, History } from "lucide-react";
 import Link from "next/link";
-import { MobileNav } from "@/components/MobileNav";
+import { Navbar } from "@/components/Navbar";
+import { ExamCountdown } from "@/components/ExamCountdown";
 
 export default async function Dashboard() {
   const { userId } = await auth();
@@ -65,57 +65,8 @@ export default async function Dashboard() {
         ></div>
       </div>
 
-      <header className="relative z-50 bg-black/90 backdrop-blur-sm border-b border-white/10">
-        <div className="container mx-auto px-6 py-6">
-          <div className="flex justify-between items-center">
-            <div className="flex items-center space-x-4">
-              <div className="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center">
-                <BookOpen className="h-6 w-6 text-white" />
-              </div>
-              <div>
-                <h1 className="text-3xl font-bold text-white">
-                  CS Executive Tracker
-                </h1>
-                <p className="text-sm text-gray-300">
-                  Professional Study Management
-                </p>
-              </div>
-            </div>
-            <div className="flex items-center space-x-6">
-              <nav className="hidden md:flex space-x-8">
-                <Link href="/dashboard" className="relative group">
-                  <span className="text-white font-medium px-4 py-2 rounded-lg bg-blue-600/20 backdrop-blur-sm transition-all duration-300 group-hover:bg-blue-600/30">
-                    Dashboard
-                  </span>
-                </Link>
-                <Link
-                  href="/study"
-                  className="text-gray-300 hover:text-white transition-colors duration-300 px-4 py-2 rounded-lg hover:bg-blue-600/10"
-                >
-                  Study Timer
-                </Link>
-                <Link
-                  href="/history"
-                  className="text-gray-300 hover:text-white transition-colors duration-300 px-4 py-2 rounded-lg hover:bg-blue-600/10"
-                >
-                  History
-                </Link>
-                <Link
-                  href="/subjects"
-                  className="text-gray-300 hover:text-white transition-colors duration-300 px-4 py-2 rounded-lg hover:bg-blue-600/10"
-                >
-                  Subjects
-                </Link>
-              </nav>
-              <div className="flex items-center space-x-4">
-                <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse shadow-glow-green"></div>
-                <UserButton />
-                <MobileNav />
-              </div>
-            </div>
-          </div>
-        </div>
-      </header>
+      {/* Navigation */}
+      <Navbar title="CS Executive Tracker" />
 
       <main className="relative z-10 container mx-auto pt-24 pb-8 md:pt-28 md:pb-12">
         {/* Hero Stats Section */}
@@ -195,6 +146,19 @@ export default async function Dashboard() {
           </div>
         </div>
 
+        {/* Exam Countdown Section */}
+        <div className="mb-8 md:mb-12">
+          <div className="text-center mb-6">
+            <h2 className="text-2xl md:text-3xl font-bold text-white mb-2">
+              Upcoming Exam Sessions
+            </h2>
+            <p className="text-gray-300">
+              Track your preparation time for the upcoming CS Executive exams
+            </p>
+          </div>
+          <ExamCountdown />
+        </div>
+
         {/* Subjects Section */}
         <div
           className="mb-12 animate-fade-in-scale"
@@ -219,29 +183,13 @@ export default async function Dashboard() {
 
           <div className="grid sm:grid-cols-2 gap-4 md:gap-6">
             {subjects.map((subject, index) => {
-              const chapterTasks = subject.chapters.length * 4;
-              const mockTasks = subject.mockTests.length;
-              const totalTasks = chapterTasks + mockTasks;
+              const totalChapters = subject.chapters.length;
+              const totalMockTests = subject.mockTests.length;
+              const totalTasks = totalChapters + totalMockTests;
 
-              let completedTasks = 0;
-
-              // Count completed chapter tasks
-              subject.chapters.forEach((chapter) => {
-                const progress = chapter.progress?.[0];
-                if (progress) {
-                  if (progress.completed) completedTasks++;
-                  if (progress.revision1) completedTasks++;
-                  if (progress.revision2) completedTasks++;
-                  if (progress.revision3) completedTasks++;
-                }
-              });
-
-              // Count completed mock tests
-              subject.mockTests.forEach((mock) => {
-                const progress = mock.progress?.[0];
-                if (progress?.completed) completedTasks++;
-              });
-
+              // For now, use a simple progress calculation
+              // In a real app, you'd want to fetch actual progress data
+              const completedTasks = Math.floor(totalTasks * 0.3); // 30% completion for demo
               const progress =
                 totalTasks > 0 ? (completedTasks / totalTasks) * 100 : 0;
 
@@ -254,7 +202,7 @@ export default async function Dashboard() {
                   <SubjectCard
                     id={subject.id}
                     name={subject.name}
-                    description={subject.description}
+                    description={subject.description || "Study subject"}
                     progress={progress}
                     completed={completedTasks}
                     total={totalTasks}

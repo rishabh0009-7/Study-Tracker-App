@@ -3,10 +3,9 @@ import { redirect } from "next/navigation";
 import { StudyTimer } from "@/components/StudyTimer";
 import { getTodayStudyHours } from "@/lib/actions";
 import { formatStudyTime } from "@/lib/utils";
-import { UserButton } from "@clerk/nextjs";
-import { ArrowLeft, Clock, BarChart3 } from "lucide-react";
+import { Clock, BarChart3 } from "lucide-react";
 import Link from "next/link";
-import { MobileNav } from "@/components/MobileNav";
+import { Navbar } from "@/components/Navbar";
 
 export default async function StudyPage() {
   const { userId } = await auth();
@@ -44,31 +43,8 @@ export default async function StudyPage() {
         ></div>
       </div>
 
-      <header className="relative z-50 bg-black/90 backdrop-blur-sm border-b border-white/10">
-        <div className="container mx-auto px-6 py-6">
-          <div className="flex justify-between items-center">
-            <div className="flex items-center space-x-4">
-              <Link
-                href="/dashboard"
-                className="p-2 rounded-xl bg-blue-600/20 hover:bg-blue-600/30 transition-all duration-300 backdrop-blur-sm"
-              >
-                <ArrowLeft className="h-5 w-5 text-white" />
-              </Link>
-              <div>
-                <h1 className="text-3xl font-bold text-white">Study Timer</h1>
-                <p className="text-sm text-gray-300">
-                  Focus and track your study sessions
-                </p>
-              </div>
-            </div>
-            <div className="flex items-center space-x-4">
-              <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse shadow-glow-green"></div>
-              <UserButton />
-              <MobileNav />
-            </div>
-          </div>
-        </div>
-      </header>
+      {/* Navigation */}
+      <Navbar title="Study Timer" showBackButton={true} backHref="/dashboard" />
 
       <main className="relative z-10 container mx-auto pt-24 pb-8 md:pt-28 md:pb-12">
         <div className="max-w-4xl mx-auto">

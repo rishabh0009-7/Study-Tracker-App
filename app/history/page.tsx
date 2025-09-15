@@ -1,9 +1,7 @@
 import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 import { getStudyHistory } from "@/lib/actions";
-import { UserButton } from "@clerk/nextjs";
 import {
-  ArrowLeft,
   BarChart3,
   Calendar,
   Clock,
@@ -13,7 +11,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { StudyHistoryChart } from "@/components/StudyHistoryChart";
-import { MobileNav } from "@/components/MobileNav";
+import { Navbar } from "@/components/Navbar";
 
 export default async function HistoryPage() {
   const { userId } = await auth();
@@ -146,31 +144,11 @@ export default async function HistoryPage() {
       </div>
 
       {/* Navigation */}
-      <header className="relative z-50 bg-black/90 backdrop-blur-sm border-b border-white/10">
-        <div className="container mx-auto px-6 py-6">
-          <div className="flex justify-between items-center">
-            <div className="flex items-center space-x-4">
-              <Link
-                href="/dashboard"
-                className="p-2 rounded-xl bg-blue-600/20 hover:bg-blue-600/30 transition-all duration-300 backdrop-blur-sm"
-              >
-                <ArrowLeft className="h-5 w-5 text-white" />
-              </Link>
-              <div>
-                <h1 className="text-3xl font-bold text-white">Study History</h1>
-                <p className="text-sm text-gray-300">
-                  Track your study patterns and progress
-                </p>
-              </div>
-            </div>
-            <div className="flex items-center space-x-4">
-              <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse shadow-glow-green"></div>
-              <UserButton />
-              <MobileNav />
-            </div>
-          </div>
-        </div>
-      </header>
+      <Navbar
+        title="Study History"
+        showBackButton={true}
+        backHref="/dashboard"
+      />
 
       <main className="relative z-10 container mx-auto px-6 pt-24 pb-8 md:pt-28 md:pb-12">
         {/* Hero Section */}
