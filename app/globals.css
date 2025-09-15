@@ -620,6 +620,76 @@ body {
   box-shadow: var(--shadow-glow);
 }
 
+/* Draggable timer styles */
+.draggable-timer {
+  transition: transform 0.1s ease-out, box-shadow 0.1s ease-out;
+  user-select: none;
+}
+
+.draggable-timer:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(59, 130, 246, 0.2);
+}
+
+.draggable-timer.dragging {
+  transform: scale(1.02);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(59, 130, 246, 0.3);
+  z-index: 9999;
+}
+
+.drag-handle {
+  transition: color 0.2s ease;
+}
+
+.drag-handle:hover {
+  color: rgba(255, 255, 255, 0.9) !important;
+}
+
+/* Mobile timer styles */
+@media (max-width: 768px) {
+  .draggable-timer {
+    /* Ensure timer is visible on mobile */
+    min-width: 280px;
+    max-width: calc(100vw - 32px);
+    z-index: 100 !important;
+    position: fixed !important;
+  }
+  
+  .draggable-timer .card-premium {
+    padding: 0.75rem;
+    border-radius: 1rem;
+    background: rgba(15, 23, 42, 0.95) !important;
+    border: 2px solid rgba(59, 130, 246, 0.3) !important;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(59, 130, 246, 0.2) !important;
+  }
+  
+  .draggable-timer .flex.items-center.space-x-4 {
+    gap: 0.75rem;
+  }
+  
+  .draggable-timer .text-lg {
+    font-size: 1rem;
+  }
+  
+  .draggable-timer .w-10.h-10 {
+    width: 2rem;
+    height: 2rem;
+  }
+  
+  .draggable-timer .w-6.h-6 {
+    width: 1.25rem;
+    height: 1.25rem;
+  }
+  
+  /* Make drag handle more visible on mobile */
+  .draggable-timer .drag-handle {
+    color: rgba(255, 255, 255, 0.8) !important;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 0.25rem;
+    padding: 0.125rem;
+  }
+}
+
 @layer utilities {
   .text-balance {
     text-wrap: balance;

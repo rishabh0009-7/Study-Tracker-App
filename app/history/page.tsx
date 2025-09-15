@@ -24,18 +24,39 @@ export default async function HistoryPage() {
 
   const sessions = await getStudyHistory();
 
-  // Group sessions by date
+  // Enhanced date grouping with today, yesterday, and date-wise sections
+  const now = new Date();
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const yesterday = new Date(today);
+  yesterday.setDate(yesterday.getDate() - 1);
+
   const sessionsByDate = sessions.reduce((acc, session) => {
-    const date = new Date(session.date).toISOString().split("T")[0];
-    if (!acc[date]) {
-      acc[date] = [];
+    const sessionDate = new Date(session.date);
+    const sessionDateOnly = new Date(
+      sessionDate.getFullYear(),
+      sessionDate.getMonth(),
+      sessionDate.getDate()
+    );
+
+    let dateKey: string;
+    if (sessionDateOnly.getTime() === today.getTime()) {
+      dateKey = "today";
+    } else if (sessionDateOnly.getTime() === yesterday.getTime()) {
+      dateKey = "yesterday";
+    } else {
+      dateKey = sessionDateOnly.toISOString().split("T")[0];
     }
-    acc[date].push(session);
+
+    if (!acc[dateKey]) {
+      acc[dateKey] = [];
+    }
+    acc[dateKey].push(session);
     return acc;
   }, {} as Record<string, typeof sessions>);
 
-  // Calculate daily totals
+  // Calculate daily totals for chart
   const dailyData = Object.entries(sessionsByDate)
+    .filter(([key]) => key !== "today" && key !== "yesterday")
     .map(([date, daySessions]) => {
       const totalMinutes = daySessions.reduce(
         (sum, session) => sum + session.duration,
@@ -49,10 +70,54 @@ export default async function HistoryPage() {
     })
     .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
 
+  // Add today and yesterday data to chart if they exist
+  if (sessionsByDate.today) {
+    const todayMinutes = sessionsByDate.today.reduce(
+      (sum, session) => sum + session.duration,
+      0
+    );
+    dailyData.push({
+      date: today.toISOString().split("T")[0],
+      hours: todayMinutes / 60,
+      sessions: sessionsByDate.today.length,
+    });
+  }
+
+  if (sessionsByDate.yesterday) {
+    const yesterdayMinutes = sessionsByDate.yesterday.reduce(
+      (sum, session) => sum + session.duration,
+      0
+    );
+    dailyData.push({
+      date: yesterday.toISOString().split("T")[0],
+      hours: yesterdayMinutes / 60,
+      sessions: sessionsByDate.yesterday.length,
+    });
+  }
+
+  // Sort chart data by date
+  dailyData.sort(
+    (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
+  );
+
   const totalHours =
     sessions.reduce((sum, session) => sum + session.duration, 0) / 60;
   const averageHours = sessions.length > 0 ? totalHours / sessions.length : 0;
   const totalSessions = sessions.length;
+
+  // Calculate today's and yesterday's stats
+  const todayHours = sessionsByDate.today
+    ? sessionsByDate.today.reduce((sum, session) => sum + session.duration, 0) /
+      60
+    : 0;
+  const yesterdayHours = sessionsByDate.yesterday
+    ? sessionsByDate.yesterday.reduce(
+        (sum, session) => sum + session.duration,
+        0
+      ) / 60
+    : 0;
+  const todaySessions = sessionsByDate.today?.length || 0;
+  const yesterdaySessions = sessionsByDate.yesterday?.length || 0;
 
   return (
     <div className="min-h-screen relative overflow-hidden bg-black">
@@ -126,46 +191,69 @@ export default async function HistoryPage() {
 
         {/* Stats Grid */}
         <div
-          className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12 animate-fade-in-scale"
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12 animate-fade-in-scale"
           style={{ animationDelay: "0.1s" }}
         >
-          <div className="card-premium rounded-2xl p-8 text-center">
-            <div className="w-16 h-16 bg-gradient-accent rounded-2xl flex items-center justify-center shadow-glow mx-auto mb-6">
-              <Clock className="h-8 w-8 text-white" />
+          {/* Today's Study Time */}
+          <div className="card-premium rounded-2xl p-6 text-center">
+            <div className="w-12 h-12 bg-gradient-success rounded-xl flex items-center justify-center shadow-glow-green mx-auto mb-4">
+              <Clock className="h-6 w-6 text-white" />
             </div>
-            <div className="text-4xl font-bold gradient-text-accent mb-2">
+            <div className="text-3xl font-bold gradient-text-success mb-2">
+              {todayHours.toFixed(1)}h
+            </div>
+            <div className="text-sm text-muted-foreground mb-1">
+              Today's Study Time
+            </div>
+            <div className="text-xs text-muted-foreground">
+              {todaySessions} session{todaySessions !== 1 ? "s" : ""}
+            </div>
+          </div>
+
+          {/* Yesterday's Study Time */}
+          <div className="card-premium rounded-2xl p-6 text-center">
+            <div className="w-12 h-12 bg-gradient-accent rounded-xl flex items-center justify-center shadow-glow mx-auto mb-4">
+              <Calendar className="h-6 w-6 text-white" />
+            </div>
+            <div className="text-3xl font-bold gradient-text-accent mb-2">
+              {yesterdayHours.toFixed(1)}h
+            </div>
+            <div className="text-sm text-muted-foreground mb-1">
+              Yesterday's Study Time
+            </div>
+            <div className="text-xs text-muted-foreground">
+              {yesterdaySessions} session{yesterdaySessions !== 1 ? "s" : ""}
+            </div>
+          </div>
+
+          {/* Total Study Time */}
+          <div className="card-premium rounded-2xl p-6 text-center">
+            <div className="w-12 h-12 bg-gradient-primary rounded-xl flex items-center justify-center shadow-glow mx-auto mb-4">
+              <BarChart3 className="h-6 w-6 text-white" />
+            </div>
+            <div className="text-3xl font-bold gradient-text mb-2">
               {totalHours.toFixed(1)}h
             </div>
-            <div className="text-lg text-muted-foreground mb-2">
+            <div className="text-sm text-muted-foreground mb-1">
               Total Study Time
             </div>
-            <div className="text-sm text-muted-foreground">All time</div>
+            <div className="text-xs text-muted-foreground">All time</div>
           </div>
 
-          <div className="card-premium rounded-2xl p-8 text-center">
-            <div className="w-16 h-16 bg-gradient-success rounded-2xl flex items-center justify-center shadow-glow-green mx-auto mb-6">
-              <TrendingUp className="h-8 w-8 text-white" />
+          {/* Total Sessions */}
+          <div className="card-premium rounded-2xl p-6 text-center">
+            <div className="w-12 h-12 bg-gradient-warning rounded-xl flex items-center justify-center shadow-glow-purple mx-auto mb-4">
+              <Award className="h-6 w-6 text-white" />
             </div>
-            <div className="text-4xl font-bold gradient-text-success mb-2">
-              {averageHours.toFixed(1)}h
-            </div>
-            <div className="text-lg text-muted-foreground mb-2">
-              Average Session
-            </div>
-            <div className="text-sm text-muted-foreground">Per session</div>
-          </div>
-
-          <div className="card-premium rounded-2xl p-8 text-center">
-            <div className="w-16 h-16 bg-gradient-warning rounded-2xl flex items-center justify-center shadow-glow-purple mx-auto mb-6">
-              <Award className="h-8 w-8 text-white" />
-            </div>
-            <div className="text-4xl font-bold gradient-text-warning mb-2">
+            <div className="text-3xl font-bold gradient-text-warning mb-2">
               {totalSessions}
             </div>
-            <div className="text-lg text-muted-foreground mb-2">
+            <div className="text-sm text-muted-foreground mb-1">
               Total Sessions
             </div>
-            <div className="text-sm text-muted-foreground">Completed</div>
+            <div className="text-xs text-muted-foreground">
+              {averageHours.toFixed(1)}h avg
+            </div>
           </div>
         </div>
 
@@ -189,7 +277,7 @@ export default async function HistoryPage() {
             </div>
           </div>
 
-          {/* Recent Sessions */}
+          {/* Date-wise Study Sessions */}
           <div
             className="lg:col-span-2 animate-slide-in-up"
             style={{ animationDelay: "0.3s" }}
@@ -200,7 +288,7 @@ export default async function HistoryPage() {
                   <Calendar className="h-6 w-6 text-white" />
                 </div>
                 <h3 className="text-2xl font-bold text-white">
-                  Recent Sessions
+                  Study Sessions by Date
                 </h3>
               </div>
               {sessions.length === 0 ? (
@@ -223,38 +311,208 @@ export default async function HistoryPage() {
                   </Link>
                 </div>
               ) : (
-                <div className="space-y-4">
-                  {sessions.slice(0, 10).map((session, index) => (
+                <div className="space-y-8">
+                  {/* Today's Sessions */}
+                  {sessionsByDate.today && (
                     <div
-                      key={session.id}
-                      className="card-premium rounded-xl p-6 border border-white/10 animate-slide-in-up"
-                      style={{ animationDelay: `${0.4 + index * 0.05}s` }}
+                      className="animate-slide-in-up"
+                      style={{ animationDelay: "0.4s" }}
                     >
-                      <div className="flex justify-between items-center">
-                        <div className="flex items-center space-x-4">
-                          <div className="w-10 h-10 bg-gradient-success rounded-xl flex items-center justify-center shadow-glow-green">
-                            <Clock className="h-5 w-5 text-white" />
-                          </div>
-                          <div>
-                            <div className="font-semibold text-white">
-                              {new Date(session.date).toLocaleDateString()}
-                            </div>
-                            <div className="text-sm text-muted-foreground">
-                              {new Date(session.date).toLocaleTimeString()}
-                            </div>
-                          </div>
+                      <div className="flex items-center mb-4">
+                        <div className="w-8 h-8 bg-gradient-success rounded-lg flex items-center justify-center shadow-glow-green mr-3">
+                          <Clock className="h-4 w-4 text-white" />
                         </div>
-                        <div className="text-right">
-                          <div className="text-2xl font-bold gradient-text-success">
-                            {(session.duration / 60).toFixed(1)}h
-                          </div>
-                          <div className="text-sm text-muted-foreground">
-                            {session.duration} minutes
-                          </div>
+                        <h4 className="text-xl font-bold text-white">Today</h4>
+                        <div className="ml-auto text-sm text-muted-foreground">
+                          {sessionsByDate.today.reduce(
+                            (sum, session) => sum + session.duration,
+                            0
+                          ) / 60}{" "}
+                          hours
                         </div>
                       </div>
+                      <div className="space-y-3">
+                        {sessionsByDate.today.map((session, index) => (
+                          <div
+                            key={session.id}
+                            className="card-premium rounded-xl p-4 border border-green-500/20 bg-green-500/5 animate-slide-in-up"
+                            style={{ animationDelay: `${0.5 + index * 0.05}s` }}
+                          >
+                            <div className="flex justify-between items-center">
+                              <div className="flex items-center space-x-3">
+                                <div className="w-8 h-8 bg-gradient-success rounded-lg flex items-center justify-center shadow-glow-green">
+                                  <Clock className="h-4 w-4 text-white" />
+                                </div>
+                                <div>
+                                  <div className="font-semibold text-white">
+                                    {new Date(session.date).toLocaleTimeString(
+                                      [],
+                                      {
+                                        hour: "2-digit",
+                                        minute: "2-digit",
+                                      }
+                                    )}
+                                  </div>
+                                  <div className="text-xs text-muted-foreground">
+                                    Session {index + 1}
+                                  </div>
+                                </div>
+                              </div>
+                              <div className="text-right">
+                                <div className="text-lg font-bold gradient-text-success">
+                                  {(session.duration / 60).toFixed(1)}h
+                                </div>
+                                <div className="text-xs text-muted-foreground">
+                                  {session.duration} min
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
                     </div>
-                  ))}
+                  )}
+
+                  {/* Yesterday's Sessions */}
+                  {sessionsByDate.yesterday && (
+                    <div
+                      className="animate-slide-in-up"
+                      style={{ animationDelay: "0.6s" }}
+                    >
+                      <div className="flex items-center mb-4">
+                        <div className="w-8 h-8 bg-gradient-accent rounded-lg flex items-center justify-center shadow-glow mr-3">
+                          <Calendar className="h-4 w-4 text-white" />
+                        </div>
+                        <h4 className="text-xl font-bold text-white">
+                          Yesterday
+                        </h4>
+                        <div className="ml-auto text-sm text-muted-foreground">
+                          {sessionsByDate.yesterday.reduce(
+                            (sum, session) => sum + session.duration,
+                            0
+                          ) / 60}{" "}
+                          hours
+                        </div>
+                      </div>
+                      <div className="space-y-3">
+                        {sessionsByDate.yesterday.map((session, index) => (
+                          <div
+                            key={session.id}
+                            className="card-premium rounded-xl p-4 border border-white/10 animate-slide-in-up"
+                            style={{ animationDelay: `${0.7 + index * 0.05}s` }}
+                          >
+                            <div className="flex justify-between items-center">
+                              <div className="flex items-center space-x-3">
+                                <div className="w-8 h-8 bg-gradient-accent rounded-lg flex items-center justify-center shadow-glow">
+                                  <Clock className="h-4 w-4 text-white" />
+                                </div>
+                                <div>
+                                  <div className="font-semibold text-white">
+                                    {new Date(session.date).toLocaleTimeString(
+                                      [],
+                                      {
+                                        hour: "2-digit",
+                                        minute: "2-digit",
+                                      }
+                                    )}
+                                  </div>
+                                  <div className="text-xs text-muted-foreground">
+                                    Session {index + 1}
+                                  </div>
+                                </div>
+                              </div>
+                              <div className="text-right">
+                                <div className="text-lg font-bold gradient-text-accent">
+                                  {(session.duration / 60).toFixed(1)}h
+                                </div>
+                                <div className="text-xs text-muted-foreground">
+                                  {session.duration} min
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Other Dates */}
+                  {Object.entries(sessionsByDate)
+                    .filter(([key]) => key !== "today" && key !== "yesterday")
+                    .sort(
+                      ([a], [b]) =>
+                        new Date(b).getTime() - new Date(a).getTime()
+                    )
+                    .map(([date, daySessions], dateIndex) => (
+                      <div
+                        key={date}
+                        className="animate-slide-in-up"
+                        style={{ animationDelay: `${0.8 + dateIndex * 0.1}s` }}
+                      >
+                        <div className="flex items-center mb-4">
+                          <div className="w-8 h-8 bg-gradient-primary rounded-lg flex items-center justify-center shadow-glow mr-3">
+                            <Calendar className="h-4 w-4 text-white" />
+                          </div>
+                          <h4 className="text-xl font-bold text-white">
+                            {new Date(date).toLocaleDateString("en-US", {
+                              weekday: "long",
+                              year: "numeric",
+                              month: "long",
+                              day: "numeric",
+                            })}
+                          </h4>
+                          <div className="ml-auto text-sm text-muted-foreground">
+                            {daySessions.reduce(
+                              (sum, session) => sum + session.duration,
+                              0
+                            ) / 60}{" "}
+                            hours
+                          </div>
+                        </div>
+                        <div className="space-y-3">
+                          {daySessions.map((session, sessionIndex) => (
+                            <div
+                              key={session.id}
+                              className="card-premium rounded-xl p-4 border border-white/10 animate-slide-in-up"
+                              style={{
+                                animationDelay: `${
+                                  0.9 + dateIndex * 0.1 + sessionIndex * 0.05
+                                }s`,
+                              }}
+                            >
+                              <div className="flex justify-between items-center">
+                                <div className="flex items-center space-x-3">
+                                  <div className="w-8 h-8 bg-gradient-primary rounded-lg flex items-center justify-center shadow-glow">
+                                    <Clock className="h-4 w-4 text-white" />
+                                  </div>
+                                  <div>
+                                    <div className="font-semibold text-white">
+                                      {new Date(
+                                        session.date
+                                      ).toLocaleTimeString([], {
+                                        hour: "2-digit",
+                                        minute: "2-digit",
+                                      })}
+                                    </div>
+                                    <div className="text-xs text-muted-foreground">
+                                      Session {sessionIndex + 1}
+                                    </div>
+                                  </div>
+                                </div>
+                                <div className="text-right">
+                                  <div className="text-lg font-bold gradient-text">
+                                    {(session.duration / 60).toFixed(1)}h
+                                  </div>
+                                  <div className="text-xs text-muted-foreground">
+                                    {session.duration} min
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    ))}
                 </div>
               )}
             </div>
