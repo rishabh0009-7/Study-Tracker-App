@@ -4,7 +4,7 @@ import { getSubjects } from "@/lib/actions";
 import { calculateSubjectProgress } from "@/lib/utils";
 import { SubjectCard } from "@/components/SubjectCard";
 import { UserButton } from "@clerk/nextjs";
-import { BookOpen, ArrowLeft, BarChart3, Clock, Target } from "lucide-react";
+import { BookOpen, ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import { MobileNav } from "@/components/MobileNav";
 import { DynamicHeaderPadding } from "@/components/DynamicHeaderPadding";
@@ -174,7 +174,7 @@ export default async function SubjectsPage() {
                 <SubjectCard
                   id={subject.id}
                   name={subject.name}
-                  description={subject.description}
+                  description={subject.description || undefined}
                   progress={subjectProgress.progress}
                   completed={subjectProgress.completed}
                   total={subjectProgress.total}

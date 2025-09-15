@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 const EXAM_DATE = new Date("2025-12-22");
 
@@ -100,7 +99,8 @@ export function Countdown() {
             {timeLeft.days <= 7 &&
               timeLeft.days > 0 &&
               "🔥 Last week! Review everything and stay confident."}
-            {timeLeft.days === 0 && "🎉 Today's the day! You've got this!"}
+            {timeLeft.days === 0 &&
+              "🎉 Today&apos;s the day! You&apos;ve got this!"}
           </div>
         </div>
       </div>

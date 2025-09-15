@@ -1,14 +1,7 @@
 import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 import { getStudyHistory } from "@/lib/actions";
-import {
-  BarChart3,
-  Calendar,
-  Clock,
-  TrendingUp,
-  Target,
-  Award,
-} from "lucide-react";
+import { BarChart3, Calendar, Clock, Award } from "lucide-react";
 import Link from "next/link";
 import { StudyHistoryChart } from "@/components/StudyHistoryChart";
 import { Navbar } from "@/components/Navbar";
@@ -103,7 +96,7 @@ export default async function HistoryPage() {
   const averageHours = sessions.length > 0 ? totalHours / sessions.length : 0;
   const totalSessions = sessions.length;
 
-  // Calculate today's and yesterday's stats
+  // Calculate today&apos;s and yesterday&apos;s stats
   const todayHours = sessionsByDate.today
     ? sessionsByDate.today.reduce((sum, session) => sum + session.duration, 0) /
       60
@@ -172,7 +165,7 @@ export default async function HistoryPage() {
           className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12 animate-fade-in-scale"
           style={{ animationDelay: "0.1s" }}
         >
-          {/* Today's Study Time */}
+          {/* Today&apos;s Study Time */}
           <div className="card-premium rounded-2xl p-6 text-center">
             <div className="w-12 h-12 bg-gradient-success rounded-xl flex items-center justify-center shadow-glow-green mx-auto mb-4">
               <Clock className="h-6 w-6 text-white" />
@@ -181,14 +174,14 @@ export default async function HistoryPage() {
               {todayHours.toFixed(1)}h
             </div>
             <div className="text-sm text-muted-foreground mb-1">
-              Today's Study Time
+              Today&apos;s Study Time
             </div>
             <div className="text-xs text-muted-foreground">
               {todaySessions} session{todaySessions !== 1 ? "s" : ""}
             </div>
           </div>
 
-          {/* Yesterday's Study Time */}
+          {/* Yesterday&apos;s Study Time */}
           <div className="card-premium rounded-2xl p-6 text-center">
             <div className="w-12 h-12 bg-gradient-accent rounded-xl flex items-center justify-center shadow-glow mx-auto mb-4">
               <Calendar className="h-6 w-6 text-white" />
@@ -197,7 +190,7 @@ export default async function HistoryPage() {
               {yesterdayHours.toFixed(1)}h
             </div>
             <div className="text-sm text-muted-foreground mb-1">
-              Yesterday's Study Time
+              Yesterday&apos;s Study Time
             </div>
             <div className="text-xs text-muted-foreground">
               {yesterdaySessions} session{yesterdaySessions !== 1 ? "s" : ""}
@@ -290,7 +283,7 @@ export default async function HistoryPage() {
                 </div>
               ) : (
                 <div className="space-y-8">
-                  {/* Today's Sessions */}
+                  {/* Today&apos;s Sessions */}
                   {sessionsByDate.today && (
                     <div
                       className="animate-slide-in-up"
@@ -351,7 +344,7 @@ export default async function HistoryPage() {
                     </div>
                   )}
 
-                  {/* Yesterday's Sessions */}
+                  {/* Yesterday&apos;s Sessions */}
                   {sessionsByDate.yesterday && (
                     <div
                       className="animate-slide-in-up"

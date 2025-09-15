@@ -1,8 +1,5 @@
 "use client";
 
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Progress } from "@/components/ui/progress";
-
 interface ProgressBarProps {
   progress: number;
   total: number;

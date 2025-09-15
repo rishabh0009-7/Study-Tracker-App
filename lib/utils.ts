@@ -5,7 +5,27 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-export function calculateSubjectProgress(subject: any) {
+interface Chapter {
+  progress?: Array<{
+    completed: boolean;
+    revision1: boolean;
+    revision2: boolean;
+    revision3: boolean;
+  }>;
+}
+
+interface MockTest {
+  progress?: Array<{
+    completed: boolean;
+  }>;
+}
+
+interface Subject {
+  chapters: Chapter[];
+  mockTests: MockTest[];
+}
+
+export function calculateSubjectProgress(subject: Subject) {
   const chapterTasks = subject.chapters.length * 4; // Each chapter has 4 tasks (completed + 3 revisions)
   const mockTasks = subject.mockTests.length; // Each mock test has 1 task
   const totalTasks = chapterTasks + mockTasks;
@@ -13,7 +33,7 @@ export function calculateSubjectProgress(subject: any) {
   let completedTasks = 0;
 
   // Count completed chapter tasks
-  subject.chapters.forEach((chapter: any) => {
+  subject.chapters.forEach((chapter: Chapter) => {
     const progress = chapter.progress?.[0];
     if (progress) {
       if (progress.completed) completedTasks++;
@@ -24,7 +44,7 @@ export function calculateSubjectProgress(subject: any) {
   });
 
   // Count completed mock tests
-  subject.mockTests.forEach((mock: any) => {
+  subject.mockTests.forEach((mock: MockTest) => {
     const progress = mock.progress?.[0];
     if (progress?.completed) completedTasks++;
   });

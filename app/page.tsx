@@ -1,26 +1,8 @@
-import { SignInButton, SignUpButton, UserButton } from "@clerk/nextjs";
+import { SignInButton, SignUpButton } from "@clerk/nextjs";
 import { currentUser } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import {
-  BookOpen,
-  Clock,
-  BarChart3,
-  Target,
-  Star,
-  Users,
-  Award,
-  CheckCircle,
-  ArrowRight,
-  Play,
-  Zap,
-  Shield,
-  TrendingUp,
-  Calendar,
-  Brain,
-  Trophy,
-  Sparkles,
-} from "lucide-react";
+import { BookOpen, Play } from "lucide-react";
 
 export default async function Home() {
   const user = await currentUser();

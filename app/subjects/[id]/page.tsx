@@ -2,15 +2,7 @@ import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 import { getSubjectWithProgress } from "@/lib/actions";
 import { UserButton } from "@clerk/nextjs";
-import {
-  ArrowLeft,
-  BookOpen,
-  CheckCircle,
-  BarChart3,
-  Target,
-  Clock,
-  Trophy,
-} from "lucide-react";
+import { ArrowLeft, BookOpen } from "lucide-react";
 import Link from "next/link";
 import { ChapterCheckbox } from "@/components/ChapterCheckbox";
 import { MockCheckbox } from "@/components/MockCheckbox";
@@ -281,7 +273,7 @@ export default async function SubjectPage({ params }: SubjectPageProps) {
             <div className="card-premium rounded-2xl p-8">
               <div className="flex items-center mb-8">
                 <div className="w-12 h-12 bg-gradient-success rounded-2xl flex items-center justify-center shadow-glow-green mr-4">
-                  <Target className="h-6 w-6 text-white" />
+                  <BookOpen className="h-6 w-6 text-white" />
                 </div>
                 <h3 className="text-2xl font-bold text-white">Mock Tests</h3>
               </div>

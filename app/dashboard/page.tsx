@@ -12,8 +12,7 @@ import {
 import { calculateSubjectProgress } from "@/lib/utils";
 import { formatStudyTime } from "@/lib/utils";
 import { seedDatabase } from "@/lib/seed";
-import { BookOpen, Clock, BarChart3, History } from "lucide-react";
-import Link from "next/link";
+import { Clock } from "lucide-react";
 import { Navbar } from "@/components/Navbar";
 import { Suspense } from "react";
 import { AuthLoading } from "@/components/AuthLoading";
@@ -96,7 +95,7 @@ async function DashboardContent() {
           </div>
         </div>
 
-        {/* Today's Summary Card */}
+        {/* Today&apos;s Summary Card */}
         <div
           className="mb-12 animate-fade-in-scale"
           style={{ animationDelay: "0.2s" }}

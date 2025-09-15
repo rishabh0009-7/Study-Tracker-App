@@ -212,7 +212,7 @@ export async function seedDatabase(userId: string) {
         (subject) =>
           subject.name === "Jurisprudence, Interpretation & General Laws"
       );
-      if (jurisprudenceData) missingSubjects.push(judisprudenceData);
+      if (jurisprudenceData) missingSubjects.push(jurisprudenceData);
     }
 
     if (!hasTaxLaws) {

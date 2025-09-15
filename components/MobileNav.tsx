@@ -2,15 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import {
-  Menu,
-  X,
-  BookOpen,
-  Clock,
-  BarChart3,
-  History,
-  Home,
-} from "lucide-react";
+import { Menu, X, BookOpen, Clock, BarChart3, Home } from "lucide-react";
 
 export function MobileNav() {
   const [isOpen, setIsOpen] = useState(false);

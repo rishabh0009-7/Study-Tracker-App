@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Calendar, Clock, AlertCircle } from "lucide-react";
+import { Calendar, AlertCircle } from "lucide-react";
 
 interface ExamSession {
   name: string;

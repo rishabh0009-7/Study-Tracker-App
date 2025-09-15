@@ -1,7 +1,6 @@
 "use client";
 
 import { UserButton, useUser } from "@clerk/nextjs";
-import { AuthLoading } from "./AuthLoading";
 
 export function OptimizedUserButton() {
   const { isLoaded, user } = useUser();

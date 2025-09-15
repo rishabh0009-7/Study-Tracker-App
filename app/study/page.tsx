@@ -77,7 +77,7 @@ export default async function StudyPage() {
             className="grid sm:grid-cols-2 gap-4 md:gap-8 mb-8 md:mb-12 animate-fade-in-scale"
             style={{ animationDelay: "0.2s" }}
           >
-            {/* Today's Progress Card */}
+            {/* Today&apos;s Progress Card */}
             <div className="card-premium rounded-2xl p-8 card-hover">
               <div className="flex items-center mb-6">
                 <div className="w-12 h-12 bg-gradient-accent rounded-2xl flex items-center justify-center shadow-glow mr-4">

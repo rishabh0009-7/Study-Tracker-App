@@ -1,8 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Progress } from "@/components/ui/progress";
 import { BookOpen, Clock } from "lucide-react";
 
 interface SubjectCardProps {
@@ -100,7 +98,7 @@ export function SubjectCard({
             </div>
           </div>
 
-          {/* Today's Study Time */}
+          {/* Today&apos;s Study Time */}
           {todayHours > 0 && (
             <div className="flex items-center justify-center space-x-2 px-4 py-2 rounded-xl bg-white/5 backdrop-blur-sm border border-white/10">
               <Clock className="h-4 w-4 text-green-400" />

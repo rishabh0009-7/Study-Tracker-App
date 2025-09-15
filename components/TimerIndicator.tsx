@@ -3,7 +3,6 @@
 import { useTimer } from "@/contexts/TimerContext";
 import { Clock, Play, Pause, Square, GripVertical } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { formatStudyTime } from "@/lib/utils";
 import { useState, useEffect, useRef } from "react";
 
 export function TimerIndicator() {
