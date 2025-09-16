@@ -18,11 +18,11 @@ export default function SignInPage() {
                 card: "bg-black/50 backdrop-blur-sm border border-white/10 shadow-2xl",
               },
             }}
-            fallbackRedirectUrl="/dashboard"
+            signInFallbackRedirectUrl="/dashboard"
           />
         </SignedOut>
         <SignedIn>
-          <RedirectToSignIn fallbackRedirectUrl="/dashboard" />
+          <RedirectToSignIn redirectUrl="/dashboard" />
         </SignedIn>
       </div>
     </div>

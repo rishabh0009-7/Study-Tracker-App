@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { Calendar, AlertCircle } from "lucide-react";
 
 interface ExamSession {
@@ -20,22 +20,25 @@ export function ExamCountdown() {
     june: { days: 0, hours: 0, minutes: 0, seconds: 0 },
   });
 
-  const examSessions: ExamSession[] = [
-    {
-      name: "December Session 2025",
-      date: new Date("2025-12-22T00:00:00"),
-      color: "text-red-400",
-      bgColor: "bg-red-500/10",
-      borderColor: "border-red-500/30",
-    },
-    {
-      name: "June Session 2026",
-      date: new Date("2026-06-01T00:00:00"),
-      color: "text-blue-400",
-      bgColor: "bg-blue-500/10",
-      borderColor: "border-blue-500/30",
-    },
-  ];
+  const examSessions: ExamSession[] = useMemo(
+    () => [
+      {
+        name: "December Session 2025",
+        date: new Date("2025-12-22T00:00:00"),
+        color: "text-red-400",
+        bgColor: "bg-red-500/10",
+        borderColor: "border-red-500/30",
+      },
+      {
+        name: "June Session 2026",
+        date: new Date("2026-06-01T00:00:00"),
+        color: "text-blue-400",
+        bgColor: "bg-blue-500/10",
+        borderColor: "border-blue-500/30",
+      },
+    ],
+    []
+  );
 
   useEffect(() => {
     const calculateTimeLeft = () => {

@@ -16,7 +16,8 @@
     "db:push": "prisma db push",
     "db:seed": "tsx scripts/seed.ts",
     "db:reseed": "node scripts/reseed.js",
-    "postinstall": "prisma generate"
+    "postinstall": "prisma generate",
+    "upgrade-clerk": "node scripts/upgrade-clerk.js"
   },
   "dependencies": {
     "@clerk/nextjs": "^6.32.0",
