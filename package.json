@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "next dev --turbopack",
     "dev:fast": "next dev --turbopack --port 3000",
-    "build": "next build --turbopack",
+    "build": "prisma generate && next build",
     "build:analyze": "ANALYZE=true next build --turbopack",
     "start": "next start",
     "start:fast": "next start --port 3000",
@@ -15,7 +15,8 @@
     "db:generate": "prisma generate",
     "db:push": "prisma db push",
     "db:seed": "tsx scripts/seed.ts",
-    "db:reseed": "node scripts/reseed.js"
+    "db:reseed": "node scripts/reseed.js",
+    "postinstall": "prisma generate"
   },
   "dependencies": {
     "@clerk/nextjs": "^6.32.0",
