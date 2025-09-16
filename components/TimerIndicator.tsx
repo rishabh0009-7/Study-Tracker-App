@@ -161,14 +161,6 @@ export function TimerIndicator() {
     };
   }, [isDragging, dragOffset]);
 
-  // Debug: Log timer visibility on mobile
-  useEffect(() => {
-    if (typeof window !== "undefined" && window.innerWidth <= 768) {
-      console.log("Timer position on mobile:", position);
-      console.log("Timer ref:", timerRef.current);
-    }
-  }, [position]);
-
   if (time === 0 && !isRunning) {
     return null; // Don't show if timer hasn't been started
   }
