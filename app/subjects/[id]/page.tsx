@@ -10,19 +10,20 @@ import { MobileNav } from "@/components/MobileNav";
 import { DynamicHeaderPadding } from "@/components/DynamicHeaderPadding";
 
 interface SubjectPageProps {
-  params: {
+  params: Promise<{
     id: string;
-  };
+  }>;
 }
 
 export default async function SubjectPage({ params }: SubjectPageProps) {
   const { userId } = await auth();
+  const { id } = await params;
 
   if (!userId) {
     redirect("/");
   }
 
-  const subject = await getSubjectWithProgress(params.id);
+  const subject = await getSubjectWithProgress(id);
 
   if (!subject) {
     redirect("/subjects");

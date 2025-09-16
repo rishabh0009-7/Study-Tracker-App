@@ -98,7 +98,7 @@ export function ExamCountdown() {
     const timer = setInterval(calculateTimeLeft, 1000);
 
     return () => clearInterval(timer);
-  }, []);
+  }, [examSessions]);
 
   const formatTime = (time: {
     days: number;
