@@ -18,7 +18,7 @@ export default function SignInPage() {
                 card: "bg-black/50 backdrop-blur-sm border border-white/10 shadow-2xl",
               },
             }}
-            signInFallbackRedirectUrl="/dashboard"
+            afterSignInUrl="/dashboard"
           />
         </SignedOut>
         <SignedIn>
