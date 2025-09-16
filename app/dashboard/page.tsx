@@ -10,9 +10,7 @@ import {
   getOrCreateUser,
 } from "@/lib/actions";
 import { calculateSubjectProgress } from "@/lib/utils";
-import { formatStudyTime } from "@/lib/utils";
 import { seedDatabase } from "@/lib/seed";
-import { Clock } from "lucide-react";
 import { Navbar } from "@/components/Navbar";
 import { Suspense } from "react";
 import { AuthLoading } from "@/components/AuthLoading";
@@ -40,13 +38,10 @@ async function DashboardContent() {
     console.error("Error seeding database:", error);
   }
 
-  const [subjects, overallProgress, todayHours] = await Promise.all([
+  const [subjects, overallProgress] = await Promise.all([
     getSubjects(),
     calculateOverallProgress(),
-    getTodayStudyHours(),
   ]);
-
-  const todayMinutes = todayHours * 60; // Convert to minutes for formatting
 
   return (
     <div className="min-h-screen relative overflow-hidden bg-black">
@@ -95,74 +90,10 @@ async function DashboardContent() {
           </div>
         </div>
 
-        {/* Today&apos;s Summary Card */}
-        <div
-          className="mb-12 animate-fade-in-scale"
-          style={{ animationDelay: "0.2s" }}
-        >
-          <div className="card-premium rounded-2xl p-8 card-hover">
-            <div className="flex items-center justify-between mb-8">
-              <div>
-                <h2 className="text-3xl font-bold text-white mb-2">
-                  Today&apos;s Summary
-                </h2>
-                <p className="text-muted-foreground">
-                  Track your daily progress and achievements
-                </p>
-              </div>
-              <div className="flex items-center space-x-4">
-                <div className="relative w-16 h-16 bg-gradient-to-br from-emerald-400 via-green-500 to-teal-600 rounded-2xl flex items-center justify-center shadow-glow-green animate-float">
-                  <div className="relative">
-                    <Clock className="h-8 w-8 text-white drop-shadow-lg" />
-                    <div className="absolute -top-1 -right-1 w-3 h-3 bg-yellow-400 rounded-full animate-pulse shadow-lg"></div>
-                    <div className="absolute -bottom-1 -left-1 w-2 h-2 bg-white/80 rounded-full animate-ping"></div>
-                  </div>
-                </div>
-                <div className="text-right">
-                  <div className="text-4xl font-bold gradient-text-success">
-                    {formatStudyTime(todayMinutes)}
-                  </div>
-                  <div className="text-sm text-muted-foreground">
-                    studied today
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Quick Stats Grid */}
-            <div className="grid md:grid-cols-4 gap-6">
-              <div className="text-center p-6 rounded-xl bg-white/5 backdrop-blur-sm border border-white/10">
-                <div className="text-2xl font-bold text-white mb-1">
-                  {subjects.length}
-                </div>
-                <div className="text-sm text-muted-foreground">Subjects</div>
-              </div>
-              <div className="text-center p-6 rounded-xl bg-white/5 backdrop-blur-sm border border-white/10">
-                <div className="text-2xl font-bold gradient-text-accent mb-1">
-                  {overallProgress.completed}
-                </div>
-                <div className="text-sm text-muted-foreground">Completed</div>
-              </div>
-              <div className="text-center p-6 rounded-xl bg-white/5 backdrop-blur-sm border border-white/10">
-                <div className="text-2xl font-bold text-white mb-1">
-                  {overallProgress.total}
-                </div>
-                <div className="text-sm text-muted-foreground">Total Tasks</div>
-              </div>
-              <div className="text-center p-6 rounded-xl bg-white/5 backdrop-blur-sm border border-white/10">
-                <div className="text-2xl font-bold gradient-text mb-1">
-                  {Math.round(overallProgress.progress)}%
-                </div>
-                <div className="text-sm text-muted-foreground">Progress</div>
-              </div>
-            </div>
-          </div>
-        </div>
-
         {/* Subjects Section */}
         <div
           className="mb-12 animate-fade-in-scale"
-          style={{ animationDelay: "0.3s" }}
+          style={{ animationDelay: "0.2s" }}
         >
           <div className="flex items-center justify-between mb-8">
             <div>
@@ -189,7 +120,7 @@ async function DashboardContent() {
                 <div
                   key={subject.id}
                   className="animate-slide-in-up"
-                  style={{ animationDelay: `${0.4 + index * 0.1}s` }}
+                  style={{ animationDelay: `${0.3 + index * 0.1}s` }}
                 >
                   <SubjectCard
                     id={subject.id}

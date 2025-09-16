@@ -12,7 +12,7 @@ export default async function Home() {
   }
 
   return (
-    <div className="min-h-screen relative overflow-hidden bg-black">
+    <div className="min-h-screen relative overflow-hidden bg-black m-0 p-0">
       {/* Black Background with subtle pattern */}
       <div className="absolute inset-0 bg-black">
         <div
@@ -38,9 +38,9 @@ export default async function Home() {
       </div>
 
       {/* Navigation */}
-      <nav className="relative z-10 bg-black/90 backdrop-blur-sm border-b border-white/10">
-        <div className="container mx-auto px-6 py-4">
-          <div className="flex justify-between items-center">
+      <nav className="fixed top-0 left-0 right-0 z-50 bg-black/95 backdrop-blur-xl border-b border-white/10 shadow-lg">
+        <div className="w-full px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center h-16 lg:h-20">
             <div className="flex items-center space-x-3">
               <div className="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center">
                 <BookOpen className="h-6 w-6 text-white" />
@@ -69,7 +69,7 @@ export default async function Home() {
       </nav>
 
       {/* Hero Section */}
-      <section className="relative z-10 pt-20 pb-20 md:pt-32 md:pb-32">
+      <section className="relative z-10 pt-16 pb-20 lg:pt-20 lg:pb-32">
         <div className="container mx-auto">
           <div className="text-center max-w-5xl mx-auto space-y-8">
             {/* Main Headline */}
