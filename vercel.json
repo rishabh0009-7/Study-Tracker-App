@@ -13,8 +13,7 @@
     }
   },
   "env": {
-    "NEXT_PUBLIC_VERCEL_URL": "https://your-app-name.vercel.app",
-    "DATABASE_URL": "file:./dev.db"
+    "DATABASE_URL": "postgresql://postgres:ndn9fgGJPt0kAjLE@db.stdqhbqpcrccgguaqxuq.supabase.co:5432/postgres"
   },
   "headers": [
     {

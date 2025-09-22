@@ -22,13 +22,13 @@ git push origin main
 
 In your Vercel project dashboard, go to **Settings > Environment Variables** and add:
 
-**For SQLite (Development/Testing):**
+**For PostgreSQL (Production - Already Configured):**
 
 ```
-DATABASE_URL=file:./dev.db
+DATABASE_URL=postgresql://postgres:ndn9fgGJPt0kAjLE@db.stdqhbqpcrccgguaqxuq.supabase.co:5432/postgres
 ```
 
-**Note:** The `vercel.json` file already includes this environment variable, so you don't need to manually add it unless you want to use a different database.
+**Note:** The `vercel.json` file already includes this PostgreSQL connection string, so you don't need to manually add it.
 
 **For Production Database (Recommended):**
 

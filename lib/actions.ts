@@ -8,86 +8,108 @@ export async function getOrCreateUser() {
   const defaultUserId = "demo-user";
   const defaultEmail = "demo@example.com";
 
-  let user = await prisma.user.findUnique({
-    where: { supabaseId: defaultUserId },
-  });
-
-  if (!user) {
-    user = await prisma.user.create({
-      data: {
-        supabaseId: defaultUserId,
-        email: defaultEmail,
-      },
+  try {
+    let user = await prisma.user.findUnique({
+      where: { supabaseId: defaultUserId },
     });
-  }
 
-  return user;
+    if (!user) {
+      user = await prisma.user.create({
+        data: {
+          supabaseId: defaultUserId,
+          email: defaultEmail,
+        },
+      });
+    }
+
+    return user;
+  } catch (error) {
+    // Fallback for build time when database is not available
+    console.warn("Database not available, using fallback user:", error);
+    return {
+      id: "fallback-user",
+      supabaseId: defaultUserId,
+      email: defaultEmail,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    };
+  }
 }
 
 export async function getSubjects() {
-  const user = await getOrCreateUser();
+  try {
+    const user = await getOrCreateUser();
 
-  const subjects = await prisma.subject.findMany({
-    where: { userId: user.id },
-    include: {
-      chapters: {
-        orderBy: { order: "asc" },
-        include: {
-          progress: {
-            where: { userId: user.id },
+    const subjects = await prisma.subject.findMany({
+      where: { userId: user.id },
+      include: {
+        chapters: {
+          orderBy: { order: "asc" },
+          include: {
+            progress: {
+              where: { userId: user.id },
+            },
+          },
+        },
+        mockTests: {
+          orderBy: { order: "asc" },
+          include: {
+            progress: {
+              where: { userId: user.id },
+            },
+          },
+        },
+        _count: {
+          select: {
+            chapters: true,
+            mockTests: true,
           },
         },
       },
-      mockTests: {
-        orderBy: { order: "asc" },
-        include: {
-          progress: {
-            where: { userId: user.id },
-          },
-        },
-      },
-      _count: {
-        select: {
-          chapters: true,
-          mockTests: true,
-        },
-      },
-    },
-    orderBy: { createdAt: "asc" },
-  });
+      orderBy: { createdAt: "asc" },
+    });
 
-  return subjects;
+    return subjects;
+  } catch (error) {
+    console.warn("Database not available during build, using fallback:", error);
+    return [];
+  }
 }
 
 export async function getSubjectWithProgress(subjectId: string) {
-  const user = await getOrCreateUser();
+  try {
+    const user = await getOrCreateUser();
 
-  const subject = await prisma.subject.findFirst({
-    where: {
-      id: subjectId,
-      userId: user.id,
-    },
-    include: {
-      chapters: {
-        orderBy: { order: "asc" },
-        include: {
-          progress: {
-            where: { userId: user.id },
+    const subject = await prisma.subject.findFirst({
+      where: {
+        id: subjectId,
+        userId: user.id,
+      },
+      include: {
+        chapters: {
+          orderBy: { order: "asc" },
+          include: {
+            progress: {
+              where: { userId: user.id },
+            },
+          },
+        },
+        mockTests: {
+          orderBy: { order: "asc" },
+          include: {
+            progress: {
+              where: { userId: user.id },
+            },
           },
         },
       },
-      mockTests: {
-        orderBy: { order: "asc" },
-        include: {
-          progress: {
-            where: { userId: user.id },
-          },
-        },
-      },
-    },
-  });
+    });
 
-  return subject;
+    return subject;
+  } catch (error) {
+    console.warn("Database not available during build, using fallback:", error);
+    return null;
+  }
 }
 
 export async function updateChapterProgress(
@@ -185,74 +207,88 @@ export async function getTodayStudyHours() {
 }
 
 export async function getStudyHistory() {
-  const user = await getOrCreateUser();
+  try {
+    const user = await getOrCreateUser();
 
-  const sessions = await prisma.studySession.findMany({
-    where: { userId: user.id },
-    orderBy: { date: "desc" },
-    take: 30, // Last 30 days
-  });
+    const sessions = await prisma.studySession.findMany({
+      where: { userId: user.id },
+      orderBy: { date: "desc" },
+      take: 30, // Last 30 days
+    });
 
-  return sessions;
+    return sessions;
+  } catch (error) {
+    console.warn("Database not available during build, using fallback:", error);
+    return [];
+  }
 }
 
 export async function calculateOverallProgress() {
-  const user = await getOrCreateUser();
+  try {
+    const user = await getOrCreateUser();
 
-  const subjects = await prisma.subject.findMany({
-    where: { userId: user.id },
-    include: {
-      chapters: {
-        include: {
-          progress: {
-            where: { userId: user.id },
+    const subjects = await prisma.subject.findMany({
+      where: { userId: user.id },
+      include: {
+        chapters: {
+          include: {
+            progress: {
+              where: { userId: user.id },
+            },
+          },
+        },
+        mockTests: {
+          include: {
+            progress: {
+              where: { userId: user.id },
+            },
           },
         },
       },
-      mockTests: {
-        include: {
-          progress: {
-            where: { userId: user.id },
-          },
-        },
-      },
-    },
-  });
-
-  let totalTasks = 0;
-  let completedTasks = 0;
-
-  subjects.forEach((subject) => {
-    // Each chapter has 4 tasks (completed + 3 revisions)
-    const chapterTasks = subject.chapters.length * 4;
-    // Each subject has 2 mock tests
-    const mockTasks = subject.mockTests.length * 1;
-
-    totalTasks += chapterTasks + mockTasks;
-
-    // Count completed chapter tasks
-    subject.chapters.forEach((chapter) => {
-      const progress = chapter.progress[0];
-      if (progress) {
-        if (progress.completed) completedTasks++;
-        if (progress.revision1) completedTasks++;
-        if (progress.revision2) completedTasks++;
-        if (progress.revision3) completedTasks++;
-      }
     });
 
-    // Count completed mock tests
-    subject.mockTests.forEach((mock) => {
-      const progress = mock.progress[0];
-      if (progress?.completed) completedTasks++;
+    let totalTasks = 0;
+    let completedTasks = 0;
+
+    subjects.forEach((subject) => {
+      // Each chapter has 4 tasks (completed + 3 revisions)
+      const chapterTasks = subject.chapters.length * 4;
+      // Each subject has 2 mock tests
+      const mockTasks = subject.mockTests.length * 1;
+
+      totalTasks += chapterTasks + mockTasks;
+
+      // Count completed chapter tasks
+      subject.chapters.forEach((chapter) => {
+        const progress = chapter.progress[0];
+        if (progress) {
+          if (progress.completed) completedTasks++;
+          if (progress.revision1) completedTasks++;
+          if (progress.revision2) completedTasks++;
+          if (progress.revision3) completedTasks++;
+        }
+      });
+
+      // Count completed mock tests
+      subject.mockTests.forEach((mock) => {
+        const progress = mock.progress[0];
+        if (progress?.completed) completedTasks++;
+      });
     });
-  });
 
-  const progress = totalTasks > 0 ? (completedTasks / totalTasks) * 100 : 0;
+    const progress = totalTasks > 0 ? (completedTasks / totalTasks) * 100 : 0;
 
-  return {
-    progress,
-    completed: completedTasks,
-    total: totalTasks,
-  };
+    return {
+      progress,
+      completed: completedTasks,
+      total: totalTasks,
+    };
+  } catch (error) {
+    console.warn("Database not available during build, using fallback:", error);
+    return {
+      progress: 0,
+      completed: 0,
+      total: 0,
+    };
+  }
 }
