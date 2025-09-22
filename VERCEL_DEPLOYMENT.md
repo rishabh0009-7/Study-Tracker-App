@@ -28,6 +28,8 @@ In your Vercel project dashboard, go to **Settings > Environment Variables** and
 DATABASE_URL=file:./dev.db
 ```
 
+**Note:** The `vercel.json` file already includes this environment variable, so you don't need to manually add it unless you want to use a different database.
+
 **For Production Database (Recommended):**
 
 Choose one of these cloud databases:
