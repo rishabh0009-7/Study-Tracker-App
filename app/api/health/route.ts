@@ -5,8 +5,8 @@ export async function GET() {
     // Check if required environment variables are present
     const requiredEnvVars = [
       "DATABASE_URL",
-      "NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY",
-      "CLERK_SECRET_KEY",
+      "NEXT_PUBLIC_SUPABASE_URL",
+      "NEXT_PUBLIC_SUPABASE_ANON_KEY",
     ];
 
     const missingVars = requiredEnvVars.filter(

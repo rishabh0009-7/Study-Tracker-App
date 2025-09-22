@@ -1,13 +1,15 @@
-import { SignInButton, SignUpButton } from "@clerk/nextjs";
-import { currentUser } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
+import { supabase } from "@/lib/supabaseClient";
 import { Button } from "@/components/ui/button";
 import { BookOpen, Play } from "lucide-react";
+import Link from "next/link";
 
 export default async function Home() {
-  const user = await currentUser();
+  const {
+    data: { session },
+  } = await supabase.auth.getSession();
 
-  if (user) {
+  if (session) {
     redirect("/dashboard");
   }
 
@@ -50,19 +52,19 @@ export default async function Home() {
               </span>
             </div>
             <div className="flex items-center space-x-4">
-              <SignInButton>
+              <Link href="/sign-in">
                 <Button
                   variant="ghost"
                   className="text-white hover:bg-white/10"
                 >
                   Sign In
                 </Button>
-              </SignInButton>
-              <SignUpButton>
+              </Link>
+              <Link href="/sign-up">
                 <Button className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg transition-colors">
                   Get Started
                 </Button>
-              </SignUpButton>
+              </Link>
             </div>
           </div>
         </div>
@@ -92,7 +94,7 @@ export default async function Home() {
               className="animate-fade-in-scale"
               style={{ animationDelay: "0.4s" }}
             >
-              <SignUpButton>
+              <Link href="/sign-up">
                 <Button
                   size="lg"
                   className="px-8 py-4 md:px-12 md:py-6 text-base md:text-lg bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-2xl transition-all duration-300 shadow-lg hover:shadow-blue-500/25 hover:scale-105 btn-premium"
@@ -100,7 +102,7 @@ export default async function Home() {
                   <Play className="h-5 w-5 md:h-6 md:w-6 mr-3" />
                   Get Started
                 </Button>
-              </SignUpButton>
+              </Link>
             </div>
           </div>
         </div>

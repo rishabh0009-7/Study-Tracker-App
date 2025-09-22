@@ -1,26 +1,27 @@
 "use server";
 
-import { auth } from "@clerk/nextjs/server";
+import { supabase } from "./supabaseClient";
 import { prisma } from "./prisma";
 import { revalidatePath } from "next/cache";
 
 export async function getOrCreateUser() {
-  const { userId } = await auth();
-  if (!userId) throw new Error("Unauthorized");
+  const {
+    data: { session },
+  } = await supabase.auth.getSession();
+  if (!session?.user) throw new Error("Unauthorized");
+
+  const userId = session.user.id;
+  const email = session.user.email || "";
 
   let user = await prisma.user.findUnique({
-    where: { clerkId: userId },
+    where: { supabaseId: userId },
   });
 
   if (!user) {
-    // Get user info from Clerk
-    const { currentUser } = await import("@clerk/nextjs/server");
-    const clerkUserData = await currentUser();
-
     user = await prisma.user.create({
       data: {
-        clerkId: userId,
-        email: clerkUserData?.emailAddresses[0]?.emailAddress || "",
+        supabaseId: userId,
+        email: email,
       },
     });
   }

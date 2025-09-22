@@ -1,5 +1,5 @@
-import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
+import { supabase } from "@/lib/supabaseClient";
 import { Countdown } from "@/components/Countdown";
 import { ProgressBar } from "@/components/ProgressBar";
 import { SubjectCard } from "@/components/SubjectCard";
@@ -16,10 +16,12 @@ import { Suspense } from "react";
 import { AuthLoading } from "@/components/AuthLoading";
 
 export default async function Dashboard() {
-  const { userId } = await auth();
+  const {
+    data: { session },
+  } = await supabase.auth.getSession();
 
-  if (!userId) {
-    redirect("/");
+  if (!session) {
+    redirect("/sign-in");
   }
 
   return (

@@ -1,4 +1,56 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Study Tracker App
+
+A comprehensive study tracking application built with Next.js, Supabase, and Clerk authentication.
+
+## Quick Setup
+
+### 1. Environment Variables
+
+Create a `.env.local` file in the root directory with the following variables:
+
+```env
+# Supabase Configuration (Required)
+NEXT_PUBLIC_SUPABASE_URL=https://your-project-id.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-public-key-here
+
+# Database URL (Required)
+DATABASE_URL="postgresql://postgres:[YOUR_PASSWORD]@db.your-project-id.supabase.co:5432/postgres"
+
+# Clerk Authentication (Optional - if using Clerk)
+NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY="pk_test_[YOUR_PUBLISHABLE_KEY]"
+CLERK_SECRET_KEY="sk_test_[YOUR_SECRET_KEY]"
+
+# Next.js
+NEXTAUTH_URL="http://localhost:3000"
+```
+
+**To get your Supabase credentials:**
+
+1. Go to [supabase.com](https://supabase.com) and create a project
+2. Navigate to Settings > API
+3. Copy your Project URL and anon public key
+4. Update the environment variables above
+
+### 2. Database Setup
+
+Run the following commands to set up your database:
+
+```bash
+# Install dependencies
+npm install
+
+# Generate Prisma client
+npm run db:generate
+
+# Push database schema
+npm run db:push
+```
+
+### 3. Start Development Server
+
+```bash
+npm run dev
+```
 
 ## Getting Started
 

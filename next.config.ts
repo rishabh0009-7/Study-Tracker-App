@@ -3,7 +3,7 @@ import type { NextConfig } from "next";
 const nextConfig: NextConfig = {
   // Enable experimental features for better performance
   experimental: {
-    optimizePackageImports: ["@clerk/nextjs", "lucide-react"],
+    optimizePackageImports: ["lucide-react"],
   },
 
   // Optimize images

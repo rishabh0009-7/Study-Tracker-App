@@ -3,10 +3,10 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev --turbopack",
-    "dev:fast": "next dev --turbopack --port 3000",
+    "dev": "next dev",
+    "dev:fast": "next dev --port 3000",
     "build": "prisma generate && next build",
-    "build:analyze": "ANALYZE=true next build --turbopack",
+    "build:analyze": "ANALYZE=true next build",
     "start": "next start",
     "start:fast": "next start --port 3000",
     "lint": "eslint",
@@ -17,11 +17,13 @@
     "db:seed": "tsx scripts/seed.ts",
     "db:reseed": "node scripts/reseed.js",
     "postinstall": "prisma generate",
-    "upgrade-clerk": "node scripts/upgrade-clerk.js"
+    "check-env": "node scripts/check-env.js"
   },
   "dependencies": {
-    "@clerk/nextjs": "^6.32.0",
     "@prisma/client": "^6.1.0",
+    "@supabase/auth-helpers-nextjs": "^0.10.0",
+    "@supabase/ssr": "^0.7.0",
+    "@supabase/supabase-js": "^2.57.4",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
     "lucide-react": "^0.468.0",

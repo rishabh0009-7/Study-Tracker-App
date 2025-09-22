@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { UserButton } from "@clerk/nextjs";
+import { useAuth } from "@/contexts/AuthContext";
 import {
   Menu,
   X,
@@ -12,6 +12,8 @@ import {
   BarChart3,
   Home,
   ArrowLeft,
+  LogOut,
+  User,
 } from "lucide-react";
 
 interface NavbarProps {
@@ -29,7 +31,9 @@ export function Navbar({
 }: NavbarProps) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const [showUserMenu, setShowUserMenu] = useState(false);
   const pathname = usePathname();
+  const { user, signOut } = useAuth();
 
   const navItems = [
     { href: "/dashboard", label: "Dashboard", icon: Home },
@@ -53,6 +57,7 @@ export function Navbar({
     const handleEscape = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
         setIsMobileMenuOpen(false);
+        setShowUserMenu(false);
       }
     };
 
@@ -68,6 +73,23 @@ export function Navbar({
       document.body.style.overflow = "unset";
     };
   }, [isMobileMenuOpen]);
+
+  // Close user menu when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (showUserMenu && !(e.target as Element).closest("[data-user-menu]")) {
+        setShowUserMenu(false);
+      }
+    };
+
+    if (showUserMenu) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [showUserMenu]);
 
   // Check if nav item is active
   const isActive = (href: string) => {
@@ -158,14 +180,34 @@ export function Navbar({
               </div>
 
               {/* User Button */}
-              <div className="relative">
-                <UserButton
-                  appearance={{
-                    elements: {
-                      avatarBox: "w-8 h-8 lg:w-9 lg:h-9",
-                    },
-                  }}
-                />
+              <div className="relative" data-user-menu>
+                <button
+                  onClick={() => setShowUserMenu(!showUserMenu)}
+                  className="w-8 h-8 lg:w-9 lg:h-9 rounded-full bg-blue-600 hover:bg-blue-700 transition-colors flex items-center justify-center"
+                >
+                  <User className="h-4 w-4 lg:h-5 lg:w-5 text-white" />
+                </button>
+
+                {showUserMenu && (
+                  <div className="absolute right-0 top-12 w-48 bg-black/95 backdrop-blur-xl border border-white/20 rounded-xl shadow-2xl py-2 z-50">
+                    <div className="px-4 py-2 border-b border-white/10">
+                      <p className="text-sm text-white font-medium">
+                        {user?.email}
+                      </p>
+                      <p className="text-xs text-gray-300">Signed in</p>
+                    </div>
+                    <button
+                      onClick={() => {
+                        signOut();
+                        setShowUserMenu(false);
+                      }}
+                      className="w-full px-4 py-2 text-left text-sm text-gray-300 hover:text-white hover:bg-white/10 transition-colors flex items-center space-x-2"
+                    >
+                      <LogOut className="h-4 w-4" />
+                      <span>Sign out</span>
+                    </button>
+                  </div>
+                )}
               </div>
 
               {/* Mobile Menu Button */}

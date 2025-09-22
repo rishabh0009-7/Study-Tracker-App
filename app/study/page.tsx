@@ -1,5 +1,5 @@
-import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
+import { supabase } from "@/lib/supabaseClient";
 import { StudyTimer } from "@/components/StudyTimer";
 import { getTodayStudyHours } from "@/lib/actions";
 import { formatStudyTime } from "@/lib/utils";
@@ -8,10 +8,12 @@ import Link from "next/link";
 import { Navbar } from "@/components/Navbar";
 
 export default async function StudyPage() {
-  const { userId } = await auth();
+  const {
+    data: { session },
+  } = await supabase.auth.getSession();
 
-  if (!userId) {
-    redirect("/");
+  if (!session) {
+    redirect("/sign-in");
   }
 
   const todayHours = await getTodayStudyHours();

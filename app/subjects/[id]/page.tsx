@@ -1,7 +1,6 @@
-import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
+import { supabase } from "@/lib/supabaseClient";
 import { getSubjectWithProgress } from "@/lib/actions";
-import { UserButton } from "@clerk/nextjs";
 import { ArrowLeft, BookOpen } from "lucide-react";
 import Link from "next/link";
 import { ChapterCheckbox } from "@/components/ChapterCheckbox";
@@ -16,11 +15,13 @@ interface SubjectPageProps {
 }
 
 export default async function SubjectPage({ params }: SubjectPageProps) {
-  const { userId } = await auth();
+  const {
+    data: { session },
+  } = await supabase.auth.getSession();
   const { id } = await params;
 
-  if (!userId) {
-    redirect("/");
+  if (!session) {
+    redirect("/sign-in");
   }
 
   const subject = await getSubjectWithProgress(id);
@@ -105,7 +106,6 @@ export default async function SubjectPage({ params }: SubjectPageProps) {
             </div>
             <div className="flex items-center space-x-4">
               <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse shadow-glow-green"></div>
-              <UserButton />
               <MobileNav />
             </div>
           </div>

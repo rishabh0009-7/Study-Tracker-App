@@ -1,21 +1,91 @@
-import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
+import { createServerClient } from "@supabase/ssr";
+import { NextResponse } from "next/server";
+import type { NextRequest } from "next/server";
 
-const isPublicRoute = createRouteMatcher([
-  "/",
-  "/api/webhooks(.*)",
-  "/sign-in(.*)",
-  "/sign-up(.*)",
-]);
+export async function middleware(req: NextRequest) {
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
-export default clerkMiddleware(async (auth, req) => {
-  // Skip auth for public routes
-  if (isPublicRoute(req)) {
-    return;
+  if (!supabaseUrl || !supabaseAnonKey) {
+    console.error("Missing Supabase environment variables");
+    return NextResponse.next();
   }
 
-  // Protect all other routes
-  await auth.protect();
-});
+  let response = NextResponse.next({
+    request: {
+      headers: req.headers,
+    },
+  });
+
+  const supabase = createServerClient(supabaseUrl, supabaseAnonKey, {
+    cookies: {
+      get(name: string) {
+        return req.cookies.get(name)?.value;
+      },
+      set(name: string, value: string, options: any) {
+        req.cookies.set({
+          name,
+          value,
+          ...options,
+        });
+        response = NextResponse.next({
+          request: {
+            headers: req.headers,
+          },
+        });
+        response.cookies.set({
+          name,
+          value,
+          ...options,
+        });
+      },
+      remove(name: string, options: any) {
+        req.cookies.set({
+          name,
+          value: "",
+          ...options,
+        });
+        response = NextResponse.next({
+          request: {
+            headers: req.headers,
+          },
+        });
+        response.cookies.set({
+          name,
+          value: "",
+          ...options,
+        });
+      },
+    },
+  });
+
+  const {
+    data: { session },
+  } = await supabase.auth.getSession();
+
+  // Public routes that don't require authentication
+  const publicRoutes = ["/", "/sign-in", "/sign-up"];
+  const isPublicRoute = publicRoutes.some(
+    (route) =>
+      req.nextUrl.pathname === route ||
+      req.nextUrl.pathname.startsWith(route + "/")
+  );
+
+  // If user is not authenticated and trying to access protected route
+  if (!session && !isPublicRoute) {
+    return NextResponse.redirect(new URL("/sign-in", req.url));
+  }
+
+  // If user is authenticated and trying to access auth pages, redirect to dashboard
+  if (
+    session &&
+    (req.nextUrl.pathname === "/sign-in" || req.nextUrl.pathname === "/sign-up")
+  ) {
+    return NextResponse.redirect(new URL("/dashboard", req.url));
+  }
+
+  return response;
+}
 
 export const config = {
   matcher: [
