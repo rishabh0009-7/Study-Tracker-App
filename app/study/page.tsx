@@ -95,7 +95,7 @@ export default async function StudyPage() {
                 </div>
                 <div className="ml-4">
                   <h3 className="text-2xl font-bold text-white mb-1">
-                    Today's Progress
+                    Today&apos;s Progress
                   </h3>
                   <p className="text-gray-400">Your daily achievement</p>
                 </div>

@@ -26,7 +26,7 @@ export default async function SubjectPage({ params }: SubjectPageProps) {
             Subject not found
           </h1>
           <p className="text-gray-300">
-            The subject you're looking for doesn't exist.
+            The subject you&apos;re looking for doesn&apos;t exist.
           </p>
         </div>
       </div>
