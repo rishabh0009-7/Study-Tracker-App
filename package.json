@@ -14,7 +14,7 @@
     "setup": "node scripts/setup.js",
     "db:generate": "prisma generate",
     "db:push": "prisma db push",
-    "db:seed": "tsx scripts/seed.ts",
+    "db:seed": "tsx lib/seed.ts",
     "db:reseed": "node scripts/reseed.js",
     "postinstall": "prisma generate",
     "check-env": "node scripts/check-env.js"
@@ -46,5 +46,8 @@
     "tailwindcss": "^4",
     "tsx": "^4.7.0",
     "typescript": "^5"
+  },
+  "prisma": {
+    "seed": "tsx lib/seed.ts"
   }
 }

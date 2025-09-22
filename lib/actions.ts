@@ -1,27 +1,22 @@
 "use server";
 
-import { supabase } from "./supabaseClient";
 import { prisma } from "./prisma";
 import { revalidatePath } from "next/cache";
 
 export async function getOrCreateUser() {
-  const {
-    data: { session },
-  } = await supabase.auth.getSession();
-  if (!session?.user) throw new Error("Unauthorized");
-
-  const userId = session.user.id;
-  const email = session.user.email || "";
+  // Use a default user for demo mode (no auth)
+  const defaultUserId = "demo-user";
+  const defaultEmail = "demo@example.com";
 
   let user = await prisma.user.findUnique({
-    where: { supabaseId: userId },
+    where: { supabaseId: defaultUserId },
   });
 
   if (!user) {
     user = await prisma.user.create({
       data: {
-        supabaseId: userId,
-        email: email,
+        supabaseId: defaultUserId,
+        email: defaultEmail,
       },
     });
   }

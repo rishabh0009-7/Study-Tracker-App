@@ -1,4 +1,6 @@
-import { prisma } from "./prisma";
+import { PrismaClient } from "@prisma/client";
+
+const prisma = new PrismaClient();
 
 const subjectsData = [
   {
@@ -294,4 +296,14 @@ export async function seedDatabase(userId: string) {
   }
 
   console.log("Database seeded successfully");
+}
+
+// Run seed if called directly
+if (require.main === module) {
+  console.log("Seeding database with CS Executive subjects...");
+  // This would need a user ID - for now, we'll just log that manual seeding is needed
+  console.log(
+    "Please run the seed function with a valid user ID after creating a user account."
+  );
+  process.exit(0);
 }

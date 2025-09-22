@@ -1,5 +1,3 @@
-import { redirect } from "next/navigation";
-import { supabase } from "@/lib/supabaseClient";
 import { getStudyHistory } from "@/lib/actions";
 import { BarChart3, Calendar, Clock, Award } from "lucide-react";
 import Link from "next/link";
@@ -7,14 +5,7 @@ import { StudyHistoryChart } from "@/components/StudyHistoryChart";
 import { Navbar } from "@/components/Navbar";
 
 export default async function HistoryPage() {
-  const {
-    data: { session },
-  } = await supabase.auth.getSession();
-
-  if (!session) {
-    redirect("/sign-in");
-  }
-
+  // No auth check - directly load study history
   const sessions = await getStudyHistory();
 
   // Enhanced date grouping with today, yesterday, and date-wise sections

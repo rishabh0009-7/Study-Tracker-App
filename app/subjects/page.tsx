@@ -1,5 +1,3 @@
-import { redirect } from "next/navigation";
-import { supabase } from "@/lib/supabaseClient";
 import { getSubjects } from "@/lib/actions";
 import { calculateSubjectProgress } from "@/lib/utils";
 import { SubjectCard } from "@/components/SubjectCard";
@@ -9,14 +7,7 @@ import { MobileNav } from "@/components/MobileNav";
 import { DynamicHeaderPadding } from "@/components/DynamicHeaderPadding";
 
 export default async function SubjectsPage() {
-  const {
-    data: { session },
-  } = await supabase.auth.getSession();
-
-  if (!session) {
-    redirect("/sign-in");
-  }
-
+  // No auth check - directly load subjects
   const subjects = await getSubjects();
 
   return (

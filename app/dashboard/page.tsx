@@ -1,5 +1,3 @@
-import { redirect } from "next/navigation";
-import { supabase } from "@/lib/supabaseClient";
 import { Countdown } from "@/components/Countdown";
 import { ProgressBar } from "@/components/ProgressBar";
 import { SubjectCard } from "@/components/SubjectCard";
@@ -12,23 +10,10 @@ import { calculateSubjectProgress } from "@/lib/utils";
 import { seedDatabase } from "@/lib/seed";
 import { prisma } from "@/lib/prisma";
 import { Navbar } from "@/components/Navbar";
-import { Suspense } from "react";
-import { AuthLoading } from "@/components/AuthLoading";
 
 export default async function Dashboard() {
-  const {
-    data: { session },
-  } = await supabase.auth.getSession();
-
-  if (!session) {
-    redirect("/sign-in");
-  }
-
-  return (
-    <Suspense fallback={<AuthLoading />}>
-      <DashboardContent />
-    </Suspense>
-  );
+  // No auth check - directly show dashboard content
+  return <DashboardContent />;
 }
 
 async function DashboardContent() {

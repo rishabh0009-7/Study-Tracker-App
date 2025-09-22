@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
-import { AuthProvider } from "@/contexts/AuthContext";
 import { TimerProvider } from "@/contexts/TimerContext";
 import { TimerIndicator } from "@/components/TimerIndicator";
 import { createStudySession } from "@/lib/actions";
@@ -32,12 +31,10 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased dark`}
       >
-        <AuthProvider>
-          <TimerProvider onSessionComplete={createStudySession}>
-            <main className="pt-16 lg:pt-20">{children}</main>
-            <TimerIndicator />
-          </TimerProvider>
-        </AuthProvider>
+        <TimerProvider onSessionComplete={createStudySession}>
+          <main className="pt-16 lg:pt-20">{children}</main>
+          <TimerIndicator />
+        </TimerProvider>
       </body>
     </html>
   );

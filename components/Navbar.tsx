@@ -3,7 +3,6 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useAuth } from "@/contexts/AuthContext";
 import {
   Menu,
   X,
@@ -12,8 +11,6 @@ import {
   BarChart3,
   Home,
   ArrowLeft,
-  LogOut,
-  User,
 } from "lucide-react";
 
 interface NavbarProps {
@@ -31,9 +28,7 @@ export function Navbar({
 }: NavbarProps) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
-  const [showUserMenu, setShowUserMenu] = useState(false);
   const pathname = usePathname();
-  const { user, signOut } = useAuth();
 
   const navItems = [
     { href: "/dashboard", label: "Dashboard", icon: Home },
@@ -57,7 +52,6 @@ export function Navbar({
     const handleEscape = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
         setIsMobileMenuOpen(false);
-        setShowUserMenu(false);
       }
     };
 
@@ -74,259 +68,121 @@ export function Navbar({
     };
   }, [isMobileMenuOpen]);
 
-  // Close user menu when clicking outside
-  useEffect(() => {
-    const handleClickOutside = (e: MouseEvent) => {
-      if (showUserMenu && !(e.target as Element).closest("[data-user-menu]")) {
-        setShowUserMenu(false);
-      }
-    };
-
-    if (showUserMenu) {
-      document.addEventListener("mousedown", handleClickOutside);
-    }
-
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, [showUserMenu]);
-
-  // Check if nav item is active
-  const isActive = (href: string) => {
-    if (href === "/dashboard") {
-      return pathname === "/dashboard";
-    }
-    return pathname.startsWith(href);
-  };
-
   return (
     <>
-      {/* Main Navbar */}
-      <header
+      <nav
         className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
           isScrolled
-            ? "bg-black/95 backdrop-blur-xl border-b border-white/20 shadow-2xl"
-            : "bg-black/90 backdrop-blur-sm border-b border-white/10"
+            ? "bg-black/95 backdrop-blur-xl border-b border-white/10 shadow-lg"
+            : "bg-black/80 backdrop-blur-lg border-b border-white/5"
         }`}
       >
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16 lg:h-20">
-            {/* Left Section - Logo and Back Button */}
+        <div className="w-full px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center h-16 lg:h-20">
+            {/* Left Section - Logo & Title */}
             <div className="flex items-center space-x-3 lg:space-x-4">
-              {showBackButton && (
+              {showBackButton ? (
                 <Link
                   href={backHref}
-                  className="p-2 rounded-xl bg-blue-600/20 hover:bg-blue-600/30 transition-all duration-300 backdrop-blur-sm group"
+                  className="p-2 lg:p-3 hover:bg-white/10 rounded-xl transition-colors mr-2"
                   aria-label="Go back"
                 >
-                  <ArrowLeft className="h-4 w-4 lg:h-5 lg:w-5 text-white group-hover:scale-110 transition-transform duration-200" />
+                  <ArrowLeft className="h-5 w-5 lg:h-6 lg:w-6 text-white" />
                 </Link>
+              ) : (
+                <div className="w-10 h-10 lg:w-12 lg:h-12 bg-blue-600 rounded-xl flex items-center justify-center shadow-lg">
+                  <BookOpen className="h-5 w-5 lg:h-6 lg:w-6 text-white" />
+                </div>
               )}
 
-              <Link
-                href="/dashboard"
-                className="flex items-center space-x-3 group"
-              >
-                <div className="w-8 h-8 lg:w-10 lg:h-10 bg-gradient-primary rounded-xl flex items-center justify-center shadow-glow group-hover:scale-105 transition-transform duration-200">
-                  <BookOpen className="h-4 w-4 lg:h-5 lg:w-5 text-white" />
-                </div>
-                <div className="hidden sm:block">
-                  <h1 className="text-lg lg:text-xl font-bold text-white group-hover:text-blue-300 transition-colors duration-200">
-                    {title}
-                  </h1>
-                  {subtitle && (
-                    <p className="text-xs lg:text-sm text-gray-300 group-hover:text-gray-200 transition-colors duration-200">
-                      {subtitle}
-                    </p>
-                  )}
-                </div>
-              </Link>
+              <div className="flex flex-col">
+                <span className="text-lg lg:text-2xl font-bold text-white leading-tight">
+                  {title}
+                </span>
+                {subtitle && (
+                  <span className="text-xs lg:text-sm text-gray-400 leading-tight">
+                    {subtitle}
+                  </span>
+                )}
+              </div>
             </div>
 
             {/* Center Section - Desktop Navigation */}
-            <nav className="hidden lg:flex items-center space-x-1">
+            <div className="hidden lg:flex items-center space-x-1">
               {navItems.map((item) => {
                 const Icon = item.icon;
-                const active = isActive(item.href);
+                const isActive = pathname === item.href;
 
                 return (
                   <Link
                     key={item.href}
                     href={item.href}
-                    className={`relative group px-4 py-2 rounded-xl transition-all duration-300 ${
-                      active
-                        ? "bg-blue-600/20 text-white shadow-glow"
-                        : "text-gray-300 hover:text-white hover:bg-blue-600/10"
+                    className={`flex items-center space-x-2 px-4 py-2 rounded-xl font-medium transition-all duration-200 ${
+                      isActive
+                        ? "bg-blue-600 text-white shadow-lg"
+                        : "text-gray-300 hover:text-white hover:bg-white/10"
                     }`}
                   >
-                    <div className="flex items-center space-x-2">
-                      <Icon className="h-4 w-4" />
-                      <span className="font-medium">{item.label}</span>
-                    </div>
-                    {active && (
-                      <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-1 h-1 bg-blue-400 rounded-full"></div>
-                    )}
+                    <Icon className="h-4 w-4" />
+                    <span className="text-sm">{item.label}</span>
                   </Link>
                 );
               })}
-            </nav>
+            </div>
 
-            {/* Right Section - Status, User, Mobile Menu */}
-            <div className="flex items-center space-x-3 lg:space-x-4">
-              {/* Status Indicator */}
-              <div className="hidden sm:flex items-center space-x-2">
-                <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse shadow-glow-green"></div>
-                <span className="text-xs text-gray-300">Online</span>
-              </div>
-
-              {/* User Button */}
-              <div className="relative" data-user-menu>
-                <button
-                  onClick={() => setShowUserMenu(!showUserMenu)}
-                  className="w-8 h-8 lg:w-9 lg:h-9 rounded-full bg-blue-600 hover:bg-blue-700 transition-colors flex items-center justify-center"
-                >
-                  <User className="h-4 w-4 lg:h-5 lg:w-5 text-white" />
-                </button>
-
-                {showUserMenu && (
-                  <div className="absolute right-0 top-12 w-48 bg-black/95 backdrop-blur-xl border border-white/20 rounded-xl shadow-2xl py-2 z-50">
-                    <div className="px-4 py-2 border-b border-white/10">
-                      <p className="text-sm text-white font-medium">
-                        {user?.email}
-                      </p>
-                      <p className="text-xs text-gray-300">Signed in</p>
-                    </div>
-                    <button
-                      onClick={() => {
-                        signOut();
-                        setShowUserMenu(false);
-                      }}
-                      className="w-full px-4 py-2 text-left text-sm text-gray-300 hover:text-white hover:bg-white/10 transition-colors flex items-center space-x-2"
-                    >
-                      <LogOut className="h-4 w-4" />
-                      <span>Sign out</span>
-                    </button>
-                  </div>
-                )}
-              </div>
-
+            {/* Right Section - Mobile Menu */}
+            <div className="flex items-center space-x-2 lg:space-x-4">
               {/* Mobile Menu Button */}
               <button
                 onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                className="lg:hidden p-2 rounded-xl bg-white/10 hover:bg-white/20 transition-all duration-300 backdrop-blur-sm group"
+                className="lg:hidden p-2 hover:bg-white/10 rounded-xl transition-colors"
                 aria-label="Toggle mobile menu"
               >
                 {isMobileMenuOpen ? (
-                  <X className="h-5 w-5 text-white group-hover:scale-110 transition-transform duration-200" />
+                  <X className="h-5 w-5 text-white" />
                 ) : (
-                  <Menu className="h-5 w-5 text-white group-hover:scale-110 transition-transform duration-200" />
+                  <Menu className="h-5 w-5 text-white" />
                 )}
               </button>
             </div>
           </div>
         </div>
-      </header>
 
-      {/* Mobile Menu Overlay */}
-      {isMobileMenuOpen && (
-        <div className="lg:hidden fixed inset-0 z-50">
-          {/* Backdrop */}
-          <div
-            className="absolute inset-0 bg-black/70 backdrop-blur-sm animate-fade-in"
-            onClick={() => setIsMobileMenuOpen(false)}
-          />
+        {/* Mobile Menu */}
+        {isMobileMenuOpen && (
+          <div className="lg:hidden border-t border-white/10 bg-black/95 backdrop-blur-xl">
+            <div className="px-4 py-4 space-y-2">
+              {navItems.map((item) => {
+                const Icon = item.icon;
+                const isActive = pathname === item.href;
 
-          {/* Mobile Menu Panel */}
-          <div className="absolute right-0 top-0 h-full w-80 max-w-[85vw] bg-black/95 backdrop-blur-xl border-l border-white/20 shadow-2xl animate-slide-in-right">
-            <div className="h-full flex flex-col">
-              {/* Mobile Menu Header */}
-              <div className="flex items-center justify-between p-6 border-b border-white/10">
-                <div className="flex items-center space-x-3">
-                  <div className="w-10 h-10 bg-gradient-primary rounded-xl flex items-center justify-center shadow-glow">
-                    <BookOpen className="h-6 w-6 text-white" />
-                  </div>
-                  <div>
-                    <h2 className="text-lg font-bold text-white">
-                      CS Executive
-                    </h2>
-                    <p className="text-xs text-gray-300">Study Tracker</p>
-                  </div>
-                </div>
-                <button
-                  onClick={() => setIsMobileMenuOpen(false)}
-                  className="p-2 rounded-xl bg-white/10 hover:bg-white/20 transition-all duration-300 group"
-                  aria-label="Close menu"
-                >
-                  <X className="h-5 w-5 text-white group-hover:scale-110 transition-transform duration-200" />
-                </button>
-              </div>
-
-              {/* Mobile Navigation Items */}
-              <nav className="flex-1 p-6 space-y-2 overflow-y-auto">
-                {navItems.map((item, index) => {
-                  const Icon = item.icon;
-                  const active = isActive(item.href);
-
-                  return (
-                    <Link
-                      key={item.href}
-                      href={item.href}
-                      onClick={() => setIsMobileMenuOpen(false)}
-                      className={`flex items-center space-x-4 p-4 rounded-xl transition-all duration-300 group border ${
-                        active
-                          ? "bg-blue-600/20 border-blue-600/30 shadow-glow"
-                          : "bg-blue-600/10 border-blue-600/20 hover:bg-blue-600/20 hover:border-blue-600/40"
-                      }`}
-                      style={{ animationDelay: `${index * 0.1}s` }}
-                    >
-                      <div
-                        className={`w-10 h-10 rounded-xl flex items-center justify-center transition-all duration-300 ${
-                          active
-                            ? "bg-blue-600 shadow-glow"
-                            : "bg-blue-600/50 group-hover:bg-blue-600"
-                        }`}
-                      >
-                        <Icon className="h-5 w-5 text-white" />
-                      </div>
-                      <div className="flex-1">
-                        <span
-                          className={`text-white font-medium text-lg ${
-                            active ? "text-blue-200" : ""
-                          }`}
-                        >
-                          {item.label}
-                        </span>
-                        {active && (
-                          <div className="text-xs text-blue-300 mt-1">
-                            Current page
-                          </div>
-                        )}
-                      </div>
-                      {active && (
-                        <div className="w-2 h-2 bg-blue-400 rounded-full animate-pulse"></div>
-                      )}
-                    </Link>
-                  );
-                })}
-              </nav>
-
-              {/* Mobile Menu Footer */}
-              <div className="p-6 border-t border-white/10">
-                <div className="p-4 rounded-xl bg-white/10 backdrop-blur-sm border border-white/20">
-                  <div className="flex items-center space-x-3">
-                    <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse shadow-glow-green"></div>
-                    <span className="text-sm text-white/90 font-medium">
-                      Online
-                    </span>
-                  </div>
-                  <p className="text-xs text-gray-300 mt-1">
-                    All systems operational
-                  </p>
-                </div>
-              </div>
+                return (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    className={`flex items-center space-x-3 px-4 py-3 rounded-xl font-medium transition-all duration-200 ${
+                      isActive
+                        ? "bg-blue-600 text-white shadow-lg"
+                        : "text-gray-300 hover:text-white hover:bg-white/10"
+                    }`}
+                  >
+                    <Icon className="h-5 w-5" />
+                    <span>{item.label}</span>
+                  </Link>
+                );
+              })}
             </div>
           </div>
-        </div>
+        )}
+      </nav>
+
+      {/* Overlay for mobile menu */}
+      {isMobileMenuOpen && (
+        <div
+          className="fixed inset-0 bg-black/50 backdrop-blur-sm z-40 lg:hidden"
+          onClick={() => setIsMobileMenuOpen(false)}
+        />
       )}
     </>
   );

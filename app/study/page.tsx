@@ -1,5 +1,3 @@
-import { redirect } from "next/navigation";
-import { supabase } from "@/lib/supabaseClient";
 import { StudyTimer } from "@/components/StudyTimer";
 import { getTodayStudyHours } from "@/lib/actions";
 import { formatStudyTime } from "@/lib/utils";
@@ -8,14 +6,7 @@ import Link from "next/link";
 import { Navbar } from "@/components/Navbar";
 
 export default async function StudyPage() {
-  const {
-    data: { session },
-  } = await supabase.auth.getSession();
-
-  if (!session) {
-    redirect("/sign-in");
-  }
-
+  // No auth check - directly load study data
   const todayHours = await getTodayStudyHours();
   const todayMinutes = todayHours * 60; // Convert to minutes for formatting
 
