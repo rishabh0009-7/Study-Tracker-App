@@ -12,79 +12,99 @@ export default async function StudyPage() {
 
   return (
     <div className="min-h-screen relative overflow-hidden bg-black">
-      {/* Black background with subtle pattern */}
+      {/* Enhanced Animated Background */}
       <div className="absolute inset-0 bg-black">
+        {/* Gradient overlay */}
+        <div className="absolute inset-0 bg-gradient-to-br from-blue-900/20 via-black to-cyan-900/20"></div>
+
+        {/* Dynamic grid pattern */}
         <div
           className="absolute inset-0 opacity-10"
           style={{
             backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Ccircle cx='30' cy='30' r='2'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
           }}
         ></div>
-        {/* Subtle floating elements */}
-        <div className="absolute top-20 left-10 w-20 h-20 bg-blue-500 rounded-full opacity-10 animate-float"></div>
+
+        {/* Enhanced floating elements with timer theme */}
+        <div className="absolute top-20 left-10 w-20 h-20 bg-blue-500 rounded-full opacity-20 animate-float blur-xl"></div>
         <div
-          className="absolute top-40 right-20 w-16 h-16 bg-blue-400 rounded-full opacity-15 animate-float"
+          className="absolute top-40 right-20 w-16 h-16 bg-blue-500 rounded-full opacity-25 animate-float blur-lg"
           style={{ animationDelay: "2s" }}
         ></div>
         <div
-          className="absolute bottom-40 left-20 w-12 h-12 bg-blue-600 rounded-full opacity-10 animate-float"
+          className="absolute bottom-40 left-20 w-12 h-12 bg-cyan-600 rounded-full opacity-15 animate-float blur-lg"
           style={{ animationDelay: "4s" }}
         ></div>
         <div
-          className="absolute bottom-20 right-10 w-24 h-24 bg-blue-500 rounded-full opacity-8 animate-float"
+          className="absolute bottom-20 right-10 w-24 h-24 bg-blue-500 rounded-full opacity-20 animate-float blur-xl"
           style={{ animationDelay: "1s" }}
+        ></div>
+        <div
+          className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-32 h-32 bg-blue-400 rounded-full opacity-10 animate-pulse blur-2xl"
+          style={{ animationDelay: "3s" }}
         ></div>
       </div>
 
       {/* Navigation */}
       <Navbar title="Study Timer" showBackButton={true} backHref="/dashboard" />
 
-      <main className="relative z-10 container mx-auto pb-8 md:pb-12">
-        <div className="max-w-4xl mx-auto">
+      <main className="relative z-10 container mx-auto pb-8 md:pb-12 pt-20">
+        <div className="max-w-6xl mx-auto">
           {/* Hero Section */}
-          <div className="text-center mb-8 md:mb-12 animate-fade-in-scale">
-            <div className="flex items-center justify-center mb-6">
-              <div className="w-12 h-12 md:w-16 md:h-16 bg-blue-600 rounded-2xl flex items-center justify-center animate-pulse mr-4">
-                <Clock className="h-6 w-6 md:h-8 md:w-8 text-white" />
-              </div>
-              <h2 className="text-3xl md:text-4xl font-bold text-white">
-                Focus on Your Studies
-              </h2>
+          <div className="text-center mb-12 animate-fade-in-up">
+            <div className="inline-flex items-center px-4 py-2 bg-blue-500/10 border border-blue-500/20 rounded-full mb-8">
+              <Clock className="h-4 w-4 text-blue-400 mr-2 animate-pulse" />
+              <span className="text-blue-300 text-sm font-medium">
+                Focus Mode Active
+              </span>
             </div>
-            <p className="text-lg md:text-xl text-gray-300 max-w-2xl mx-auto leading-relaxed">
-              Start a study session and track your time to build consistent
-              study habits with our premium timer.
+
+            <h1 className="text-5xl lg:text-6xl font-bold text-white mb-6">
+              Master Your
+              <span className="block bg-gradient-to-r from-blue-400 via-cyan-500 to-blue-600 bg-clip-text text-transparent mt-2">
+                Study Time
+              </span>
+            </h1>
+
+            <p className="text-xl lg:text-2xl text-gray-300 max-w-4xl mx-auto mb-8">
+              Transform your productivity with our intelligent study timer.
+              Build consistent habits and achieve your academic goals.
             </p>
           </div>
 
           {/* Study Timer */}
           <div
-            className="mb-8 md:mb-12 animate-fade-in-up"
+            className="mb-12 animate-fade-in-up"
             style={{ animationDelay: "0.1s" }}
           >
-            <StudyTimer todayTotalHours={todayHours} />
+            <div className="max-w-2xl mx-auto p-8 bg-gradient-to-br from-white/5 to-white/10 backdrop-blur-sm rounded-3xl border border-white/10 hover:border-blue-500/30 transition-all duration-300 shadow-2xl">
+              <StudyTimer todayTotalHours={todayHours} />
+            </div>
           </div>
 
           {/* Stats and Tips Grid */}
           <div
-            className="grid sm:grid-cols-2 gap-4 md:gap-8 mb-8 md:mb-12 animate-fade-in-scale"
+            className="grid sm:grid-cols-2 gap-8 mb-12 animate-fade-in-scale"
             style={{ animationDelay: "0.2s" }}
           >
-            {/* Today&apos;s Progress Card */}
-            <div className="card-premium rounded-2xl p-8 card-hover">
+            {/* Today's Progress Card */}
+            <div className="group p-8 bg-gradient-to-br from-white/5 to-white/10 backdrop-blur-sm rounded-3xl border border-white/10 hover:border-blue-500/30 transition-all duration-300 hover:scale-105">
               <div className="flex items-center mb-6">
-                <div className="w-12 h-12 bg-gradient-accent rounded-2xl flex items-center justify-center shadow-glow mr-4">
-                  <BarChart3 className="h-6 w-6 text-white" />
+                <div className="w-16 h-16 bg-gradient-to-r from-blue-500 to-cyan-600 rounded-2xl flex items-center justify-center shadow-lg shadow-blue-500/25 group-hover:scale-110 transition-transform">
+                  <BarChart3 className="h-8 w-8 text-white" />
                 </div>
-                <h3 className="text-2xl font-bold text-white">
-                  Today&apos;s Progress
-                </h3>
+                <div className="ml-4">
+                  <h3 className="text-2xl font-bold text-white mb-1">
+                    Today's Progress
+                  </h3>
+                  <p className="text-gray-400">Your daily achievement</p>
+                </div>
               </div>
-              <div className="text-5xl font-bold gradient-text-accent mb-4">
+              <div className="text-6xl font-bold bg-gradient-to-r from-blue-400 to-cyan-500 bg-clip-text text-transparent mb-4">
                 {formatStudyTime(todayMinutes)}
               </div>
-              <p className="text-muted-foreground text-lg">
-                Total study time today
+              <p className="text-gray-300 text-lg mb-6">
+                Total focused study time today
               </p>
 
               {/* Progress Ring */}
@@ -135,54 +155,66 @@ export default async function StudyPage() {
             </div>
 
             {/* Study Tips Card */}
-            <div className="card-premium rounded-2xl p-8 card-hover">
-              <div className="flex items-center mb-6">
-                <div className="w-12 h-12 bg-gradient-success rounded-2xl flex items-center justify-center shadow-glow-green mr-4">
-                  <Clock className="h-6 w-6 text-white" />
+            <div className="group p-8 bg-gradient-to-br from-white/5 to-white/10 backdrop-blur-sm rounded-3xl border border-white/10 hover:border-cyan-500/30 transition-all duration-300 hover:scale-105">
+              <div className="flex items-center mb-8">
+                <div className="w-16 h-16 bg-gradient-to-r from-cyan-500 to-blue-600 rounded-2xl flex items-center justify-center shadow-lg shadow-cyan-500/25 group-hover:scale-110 transition-transform">
+                  <Clock className="h-8 w-8 text-white" />
                 </div>
-                <h3 className="text-2xl font-bold text-white">Study Tips</h3>
+                <div className="ml-4">
+                  <h3 className="text-2xl font-bold text-white mb-1">
+                    Study Tips
+                  </h3>
+                  <p className="text-gray-400">Maximize your efficiency</p>
+                </div>
               </div>
-              <ul className="space-y-4">
-                <li className="flex items-start space-x-3">
-                  <div className="w-2 h-2 bg-green-400 rounded-full mt-2 flex-shrink-0"></div>
-                  <span className="text-muted-foreground">
-                    Take 5-minute breaks every 25 minutes
+              <ul className="space-y-6">
+                <li className="flex items-start space-x-4">
+                  <div className="w-3 h-3 bg-gradient-to-r from-blue-400 to-cyan-500 rounded-full mt-2 flex-shrink-0 shadow-lg shadow-blue-400/50"></div>
+                  <span className="text-gray-300 text-lg leading-relaxed">
+                    Take 5-minute breaks every 25 minutes (Pomodoro Technique)
                   </span>
                 </li>
-                <li className="flex items-start space-x-3">
-                  <div className="w-2 h-2 bg-blue-400 rounded-full mt-2 flex-shrink-0"></div>
-                  <span className="text-muted-foreground">
-                    Stay hydrated and well-rested
+                <li className="flex items-start space-x-4">
+                  <div className="w-3 h-3 bg-gradient-to-r from-cyan-400 to-blue-500 rounded-full mt-2 flex-shrink-0 shadow-lg shadow-cyan-400/50"></div>
+                  <span className="text-gray-300 text-lg leading-relaxed">
+                    Stay hydrated and maintain proper posture
                   </span>
                 </li>
-                <li className="flex items-start space-x-3">
-                  <div className="w-2 h-2 bg-purple-400 rounded-full mt-2 flex-shrink-0"></div>
-                  <span className="text-muted-foreground">
-                    Review previous chapters regularly
+                <li className="flex items-start space-x-4">
+                  <div className="w-3 h-3 bg-gradient-to-r from-blue-400 to-cyan-500 rounded-full mt-2 flex-shrink-0 shadow-lg shadow-blue-400/50"></div>
+                  <span className="text-gray-300 text-lg leading-relaxed">
+                    Review and revise previous chapters regularly
                   </span>
                 </li>
-                <li className="flex items-start space-x-3">
-                  <div className="w-2 h-2 bg-yellow-400 rounded-full mt-2 flex-shrink-0"></div>
-                  <span className="text-muted-foreground">
-                    Practice mock tests weekly
+                <li className="flex items-start space-x-4">
+                  <div className="w-3 h-3 bg-gradient-to-r from-cyan-400 to-blue-500 rounded-full mt-2 flex-shrink-0 shadow-lg shadow-cyan-400/50"></div>
+                  <span className="text-gray-300 text-lg leading-relaxed">
+                    Practice mock tests weekly to track progress
                   </span>
                 </li>
               </ul>
             </div>
           </div>
 
-          {/* Action Button */}
+          {/* Action Buttons */}
           <div
             className="text-center animate-fade-in-scale"
             style={{ animationDelay: "0.3s" }}
           >
-            <Link
-              href="/history"
-              className="inline-flex items-center px-8 py-4 bg-gradient-primary hover:shadow-glow btn-premium text-white font-semibold rounded-2xl transition-all duration-300"
-            >
-              <BarChart3 className="h-5 w-5 mr-3" />
-              View Study History
-            </Link>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+              <Link href="/history">
+                <button className="px-8 py-4 bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white font-semibold rounded-2xl shadow-lg hover:shadow-blue-500/25 transition-all duration-300 hover:scale-105 group">
+                  <BarChart3 className="h-5 w-5 mr-3 inline group-hover:translate-x-1 transition-transform" />
+                  View Study History
+                </button>
+              </Link>
+              <Link href="/subjects">
+                <button className="px-8 py-4 bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-700 hover:to-blue-700 text-white font-semibold rounded-2xl shadow-lg hover:shadow-cyan-500/25 transition-all duration-300 hover:scale-105 group">
+                  <Clock className="h-5 w-5 mr-3 inline group-hover:rotate-12 transition-transform" />
+                  Browse Subjects
+                </button>
+              </Link>
+            </div>
           </div>
         </div>
       </main>

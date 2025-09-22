@@ -32,7 +32,7 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased dark`}
       >
         <TimerProvider onSessionComplete={createStudySession}>
-          <main className="pt-16 lg:pt-20">{children}</main>
+          <main>{children}</main>
           <TimerIndicator />
         </TimerProvider>
       </body>

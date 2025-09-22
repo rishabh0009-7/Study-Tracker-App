@@ -22,7 +22,7 @@ export function StudyTimer({ todayTotalHours }: StudyTimerProps) {
   };
 
   return (
-    <div className="card-premium rounded-2xl p-8 card-hover">
+    <div className="text-center p-6">
       <div className="text-center mb-8">
         <div className="flex items-center justify-center mb-4">
           <div className="w-12 h-12 bg-gradient-primary rounded-2xl flex items-center justify-center shadow-glow mr-4">
@@ -36,11 +36,11 @@ export function StudyTimer({ todayTotalHours }: StudyTimerProps) {
       </div>
 
       <div className="text-center mb-8">
-        <div className="relative inline-block">
-          <div className="text-8xl font-mono font-bold gradient-text mb-4 text-shadow">
+        <div className="relative inline-block max-w-full overflow-hidden">
+          <div className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-mono font-bold gradient-text mb-4 text-shadow break-all">
             {formatTime(time)}
           </div>
-          <div className="absolute inset-0 text-8xl font-mono font-bold text-white/10 blur-sm">
+          <div className="absolute inset-0 text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-mono font-bold text-white/10 blur-sm break-all">
             {formatTime(time)}
           </div>
         </div>
@@ -58,12 +58,12 @@ export function StudyTimer({ todayTotalHours }: StudyTimerProps) {
         </div>
       </div>
 
-      <div className="flex justify-center space-x-4 mb-8">
+      <div className="flex flex-col sm:flex-row justify-center gap-4 mb-8">
         {!isRunning ? (
           <Button
             onClick={startTimer}
             size="lg"
-            className="px-12 py-4 bg-gradient-success hover:shadow-glow-green btn-premium text-white font-semibold rounded-xl"
+            className="px-8 py-4 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white font-semibold rounded-2xl shadow-lg hover:shadow-green-500/25 transition-all duration-300 hover:scale-105"
           >
             <Clock className="h-5 w-5 mr-3" />
             Start Session
@@ -73,7 +73,7 @@ export function StudyTimer({ todayTotalHours }: StudyTimerProps) {
             onClick={pauseTimer}
             variant="outline"
             size="lg"
-            className="px-12 py-4 border-white/20 hover:bg-white/10 btn-premium text-white font-semibold rounded-xl"
+            className="px-8 py-4 border-white/20 hover:bg-white/10 text-white font-semibold rounded-2xl transition-all duration-300 hover:scale-105"
           >
             <Clock className="h-5 w-5 mr-3" />
             Pause
@@ -83,7 +83,7 @@ export function StudyTimer({ todayTotalHours }: StudyTimerProps) {
           onClick={stopTimer}
           variant="destructive"
           size="lg"
-          className="px-12 py-4 bg-gradient-to-r from-red-500 to-pink-500 hover:shadow-lg btn-premium text-white font-semibold rounded-xl disabled:opacity-50 disabled:cursor-not-allowed"
+          className="px-8 py-4 bg-gradient-to-r from-red-600 to-pink-600 hover:from-red-700 hover:to-pink-700 text-white font-semibold rounded-2xl shadow-lg hover:shadow-red-500/25 transition-all duration-300 hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
           disabled={time === 0}
         >
           <Clock className="h-5 w-5 mr-3" />

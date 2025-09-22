@@ -22,18 +22,26 @@
   --input: 0 0% 15%;
   --ring: 217 91% 60%;
   --radius: 0.75rem;
-  --gradient-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  --gradient-primary: linear-gradient(135deg, #667eea 0%, #00d4ff 100%);
   --gradient-secondary: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
   --gradient-accent: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
   --gradient-success: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
-  --gradient-warning: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+  --gradient-warning: linear-gradient(135deg, #60a5fa 0%, #00d4ff 100%);
   --shadow-glow: 0 0 20px rgba(59, 130, 246, 0.3);
   --shadow-glow-green: 0 0 20px rgba(67, 233, 123, 0.3);
-  --shadow-glow-purple: 0 0 20px rgba(118, 75, 162, 0.3);
+  --shadow-glow-blue: 0 0 20px rgba(0, 212, 255, 0.3);
 }
 
 * {
   border-color: hsl(var(--border));
+  box-sizing: border-box;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  overflow-x: hidden;
 }
 
 body {
@@ -941,8 +949,8 @@ body {
     box-shadow: var(--shadow-glow-green);
   }
   
-  .shadow-glow-purple {
-    box-shadow: var(--shadow-glow-purple);
+  .shadow-glow-blue {
+    box-shadow: var(--shadow-glow-blue);
   }
   
   .backdrop-blur-premium {

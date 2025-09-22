@@ -12,27 +12,36 @@ export default async function SubjectsPage() {
 
   return (
     <div className="min-h-screen relative overflow-hidden bg-black">
-      {/* Black background with subtle pattern */}
+      {/* Enhanced Animated Background */}
       <div className="absolute inset-0 bg-black">
+        {/* Gradient overlay */}
+        <div className="absolute inset-0 bg-gradient-to-br from-blue-900/20 via-black to-cyan-900/20"></div>
+
+        {/* Dynamic grid pattern */}
         <div
           className="absolute inset-0 opacity-10"
           style={{
             backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Ccircle cx='30' cy='30' r='2'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
           }}
         ></div>
-        {/* Subtle floating elements */}
-        <div className="absolute top-20 left-10 w-20 h-20 bg-blue-500 rounded-full opacity-10 animate-float"></div>
+
+        {/* Enhanced floating elements */}
+        <div className="absolute top-20 left-10 w-20 h-20 bg-blue-500 rounded-full opacity-20 animate-float blur-xl"></div>
         <div
-          className="absolute top-40 right-20 w-16 h-16 bg-blue-400 rounded-full opacity-15 animate-float"
+          className="absolute top-40 right-20 w-16 h-16 bg-cyan-500 rounded-full opacity-25 animate-float blur-lg"
           style={{ animationDelay: "2s" }}
         ></div>
         <div
-          className="absolute bottom-40 left-20 w-12 h-12 bg-blue-600 rounded-full opacity-10 animate-float"
+          className="absolute bottom-40 left-20 w-12 h-12 bg-blue-600 rounded-full opacity-15 animate-float blur-lg"
           style={{ animationDelay: "4s" }}
         ></div>
         <div
-          className="absolute bottom-20 right-10 w-24 h-24 bg-blue-500 rounded-full opacity-8 animate-float"
+          className="absolute bottom-20 right-10 w-24 h-24 bg-blue-500 rounded-full opacity-20 animate-float blur-xl"
           style={{ animationDelay: "1s" }}
+        ></div>
+        <div
+          className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-32 h-32 bg-blue-400 rounded-full opacity-10 animate-pulse blur-2xl"
+          style={{ animationDelay: "3s" }}
         ></div>
       </div>
 
@@ -68,9 +77,8 @@ export default async function SubjectsPage() {
       <DynamicHeaderPadding />
 
       <main
-        className="relative z-10 container mx-auto pb-8 md:pb-12"
+        className="relative z-10 container mx-auto pb-8 md:pb-12 pt-20"
         id="main-content"
-        style={{ paddingTop: "200px" }}
       >
         {/* Hero Section */}
         <div className="text-center mb-8 md:mb-12 animate-fade-in-scale">
@@ -152,25 +160,30 @@ export default async function SubjectsPage() {
         </div>
 
         {/* Subjects Grid */}
-        <div className="grid sm:grid-cols-2 gap-4 md:gap-6">
+        <div
+          className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 animate-fade-in-up"
+          style={{ animationDelay: "0.2s" }}
+        >
           {subjects.map((subject, index) => {
             const subjectProgress = calculateSubjectProgress(subject);
 
             return (
               <div
                 key={subject.id}
-                className="animate-slide-in-up"
-                style={{ animationDelay: `${0.2 + index * 0.1}s` }}
+                className="group animate-fade-in-up hover:scale-105 transition-all duration-300"
+                style={{ animationDelay: `${0.3 + index * 0.1}s` }}
               >
-                <SubjectCard
-                  id={subject.id}
-                  name={subject.name}
-                  description={subject.description || undefined}
-                  progress={subjectProgress.progress}
-                  completed={subjectProgress.completed}
-                  total={subjectProgress.total}
-                  todayHours={0}
-                />
+                <div className="h-full p-1 bg-gradient-to-br from-white/5 to-white/10 backdrop-blur-sm rounded-3xl border border-white/10 hover:border-blue-500/30 transition-all duration-300">
+                  <SubjectCard
+                    id={subject.id}
+                    name={subject.name}
+                    description={subject.description || undefined}
+                    progress={subjectProgress.progress}
+                    completed={subjectProgress.completed}
+                    total={subjectProgress.total}
+                    todayHours={0}
+                  />
+                </div>
               </div>
             );
           })}

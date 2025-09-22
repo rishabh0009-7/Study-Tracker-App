@@ -32,7 +32,7 @@ export function SubjectCard({
   const getProgressGlow = (progress: number) => {
     if (progress >= 80) return "shadow-glow-green";
     if (progress >= 50) return "shadow-glow";
-    if (progress >= 25) return "shadow-glow-purple";
+    if (progress >= 25) return "shadow-glow";
     return "";
   };
 

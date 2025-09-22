@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 
-const EXAM_DATE = new Date("2025-12-22");
+const EXAM_DATE = new Date("2026-05-23");
 
 export function Countdown() {
   const [timeLeft, setTimeLeft] = useState({
@@ -83,9 +83,7 @@ export function Countdown() {
         {/* Exam Date */}
         <div className="text-center">
           <div className="text-sm text-muted-foreground mb-2">Exam Date</div>
-          <div className="text-lg font-semibold text-white">
-            December 22, 2025
-          </div>
+          <div className="text-lg font-semibold text-white">May 23, 2026</div>
         </div>
 
         {/* Motivational Message */}
