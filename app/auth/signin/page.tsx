@@ -13,6 +13,7 @@ export default function SignInPage() {
   const [isSignUp, setIsSignUp] = useState(false);
   const [message, setMessage] = useState("");
   const router = useRouter();
+  const supabase = createClient();
 
   const handleEmailAuth = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -20,23 +21,19 @@ export default function SignInPage() {
     setMessage("");
 
     try {
-      // Demo mode - just validate email format and redirect
-      if (!email || !password) {
-        throw new Error("Please enter both email and password");
-      }
-
-      if (password.length < 6) {
-        throw new Error("Password must be at least 6 characters");
-      }
-
-      // Simulate loading
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-
       if (isSignUp) {
-        setMessage("Account created! You can now sign in.");
-        setIsSignUp(false);
+        const { error } = await supabase.auth.signUp({
+          email,
+          password,
+        });
+        if (error) throw error;
+        setMessage("Check your email for the confirmation link!");
       } else {
-        // Redirect to dashboard
+        const { error } = await supabase.auth.signInWithPassword({
+          email,
+          password,
+        });
+        if (error) throw error;
         router.push("/dashboard");
       }
     } catch (error: unknown) {

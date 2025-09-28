@@ -7,35 +7,39 @@ import { redirect } from "next/navigation";
 import { seedDatabase } from "./seed";
 
 export async function getOrCreateUser() {
-  // Fallback to demo mode - disable Supabase auth for now
+  const supabase = await createClient();
+
+  const {
+    data: { user },
+    error,
+  } = await supabase.auth.getUser();
+
+  if (error || !user) {
+    redirect("/auth/signin");
+  }
+
   try {
-    let user = await prisma.user.findUnique({
-      where: { supabaseId: "demo-user" },
+    let dbUser = await prisma.user.findUnique({
+      where: { supabaseId: user.id },
     });
 
-    if (!user) {
-      user = await prisma.user.create({
+    if (!dbUser) {
+      // Create user in our database if they don't exist
+      dbUser = await prisma.user.create({
         data: {
-          supabaseId: "demo-user",
-          email: "demo@example.com",
+          supabaseId: user.id,
+          email: user.email!,
         },
       });
 
-      // Seed database for demo user
-      await seedDatabase(user.id);
+      // Seed database for new user
+      await seedDatabase(dbUser.id);
     }
 
-    return user;
+    return dbUser;
   } catch (error) {
-    console.error("Database error:", error);
-    // Return fallback user if database fails
-    return {
-      id: "fallback-user",
-      supabaseId: "demo-user",
-      email: "demo@example.com",
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    };
+    console.error("Error getting current user:", error);
+    redirect("/auth/signin");
   }
 }
 
