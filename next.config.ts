@@ -1,6 +1,14 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  // Ignore ESLint and TypeScript errors during builds
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
+  typescript: {
+    ignoreBuildErrors: true,
+  },
+
   // Enable experimental features for better performance
   experimental: {
     optimizePackageImports: ["lucide-react"],

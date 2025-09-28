@@ -15,7 +15,7 @@ export default function SignInPage() {
   const router = useRouter();
   const supabase = createClient();
 
-  const handleEmailAuth = async (e: React.FormEvent) => {
+  const handleEmailAuth = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsLoading(true);
     setMessage("");
@@ -36,8 +36,10 @@ export default function SignInPage() {
         if (error) throw error;
         router.push("/dashboard");
       }
-    } catch (error: any) {
-      setMessage(error.message);
+    } catch (error: unknown) {
+      const errorMessage =
+        error instanceof Error ? error.message : "An unexpected error occurred";
+      setMessage(errorMessage);
     } finally {
       setIsLoading(false);
     }
