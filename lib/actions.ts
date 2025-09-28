@@ -8,24 +8,35 @@ import { seedDatabase } from "./seed";
 
 export async function getOrCreateUser() {
   try {
+    console.log("getOrCreateUser: Creating Supabase client...");
     const supabase = await createClient();
 
+    console.log("getOrCreateUser: Getting user from Supabase...");
     const {
       data: { user },
       error,
     } = await supabase.auth.getUser();
 
-    if (error || !user) {
-      console.error("Auth error:", error);
+    if (error) {
+      console.error("Supabase auth error:", error);
       redirect("/auth/signin");
     }
 
+    if (!user) {
+      console.log("No user found, redirecting to sign in");
+      redirect("/auth/signin");
+    }
+
+    console.log("getOrCreateUser: User authenticated:", user.email);
+
     try {
+      console.log("getOrCreateUser: Looking up user in database...");
       let dbUser = await prisma.user.findUnique({
         where: { supabaseId: user.id },
       });
 
       if (!dbUser) {
+        console.log("getOrCreateUser: Creating new user in database...");
         // Create user in our database if they don't exist
         dbUser = await prisma.user.create({
           data: {
@@ -33,20 +44,25 @@ export async function getOrCreateUser() {
             email: user.email!,
           },
         });
+        console.log("getOrCreateUser: User created successfully");
 
         // Seed database for new user
         try {
+          console.log("getOrCreateUser: Seeding database for new user...");
           await seedDatabase(dbUser.id);
+          console.log("getOrCreateUser: Database seeded successfully");
         } catch (seedError) {
           console.error("Error seeding database for new user:", seedError);
           // Continue without seeding if there's an error
         }
+      } else {
+        console.log("getOrCreateUser: Existing user found:", dbUser.email);
       }
 
       return dbUser;
     } catch (dbError) {
       console.error("Database error:", dbError);
-      redirect("/auth/signin");
+      throw new Error(`Database connection failed: ${dbError}`);
     }
   } catch (error) {
     console.error("Supabase client error:", error);
