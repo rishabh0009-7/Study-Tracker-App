@@ -1,5 +1,9 @@
 import { StudyTimer } from "@/components/StudyTimer";
 import { getTodayStudyHours } from "@/lib/actions";
+
+// Force dynamic rendering for this page
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
 import { formatStudyTime } from "@/lib/utils";
 import { Clock, BarChart3 } from "lucide-react";
 import Link from "next/link";

@@ -6,6 +6,10 @@ import Link from "next/link";
 import { MobileNav } from "@/components/MobileNav";
 import { DynamicHeaderPadding } from "@/components/DynamicHeaderPadding";
 
+// Force dynamic rendering for this page
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 export default async function SubjectsPage() {
   // No auth check - directly load subjects
   const subjects = await getSubjects();

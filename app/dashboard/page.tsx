@@ -11,6 +11,10 @@ import { seedDatabase } from "@/lib/seed";
 import { prisma } from "@/lib/prisma";
 import { Navbar } from "@/components/Navbar";
 
+// Force dynamic rendering for this page
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 export default async function Dashboard() {
   // No auth check - directly show dashboard content
   return <DashboardContent />;

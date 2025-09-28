@@ -1,4 +1,8 @@
 import { getSubjectWithProgress } from "@/lib/actions";
+
+// Force dynamic rendering for this page
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
 import { ArrowLeft, BookOpen } from "lucide-react";
 import Link from "next/link";
 import { ChapterCheckbox } from "@/components/ChapterCheckbox";

@@ -4,6 +4,10 @@ import Link from "next/link";
 import { StudyHistoryChart } from "@/components/StudyHistoryChart";
 import { Navbar } from "@/components/Navbar";
 
+// Force dynamic rendering for this page
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 export default async function HistoryPage() {
   // No auth check - directly load study history
   const sessions = await getStudyHistory();

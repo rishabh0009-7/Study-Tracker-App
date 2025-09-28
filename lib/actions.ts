@@ -7,38 +7,49 @@ import { redirect } from "next/navigation";
 import { seedDatabase } from "./seed";
 
 export async function getOrCreateUser() {
-  const supabase = await createClient();
-
-  const {
-    data: { user },
-    error,
-  } = await supabase.auth.getUser();
-
-  if (error || !user) {
-    redirect("/auth/signin");
-  }
-
   try {
-    let dbUser = await prisma.user.findUnique({
-      where: { supabaseId: user.id },
-    });
+    const supabase = await createClient();
 
-    if (!dbUser) {
-      // Create user in our database if they don't exist
-      dbUser = await prisma.user.create({
-        data: {
-          supabaseId: user.id,
-          email: user.email!,
-        },
-      });
+    const {
+      data: { user },
+      error,
+    } = await supabase.auth.getUser();
 
-      // Seed database for new user
-      await seedDatabase(dbUser.id);
+    if (error || !user) {
+      console.error("Auth error:", error);
+      redirect("/auth/signin");
     }
 
-    return dbUser;
+    try {
+      let dbUser = await prisma.user.findUnique({
+        where: { supabaseId: user.id },
+      });
+
+      if (!dbUser) {
+        // Create user in our database if they don't exist
+        dbUser = await prisma.user.create({
+          data: {
+            supabaseId: user.id,
+            email: user.email!,
+          },
+        });
+
+        // Seed database for new user
+        try {
+          await seedDatabase(dbUser.id);
+        } catch (seedError) {
+          console.error("Error seeding database for new user:", seedError);
+          // Continue without seeding if there's an error
+        }
+      }
+
+      return dbUser;
+    } catch (dbError) {
+      console.error("Database error:", dbError);
+      redirect("/auth/signin");
+    }
   } catch (error) {
-    console.error("Error getting current user:", error);
+    console.error("Supabase client error:", error);
     redirect("/auth/signin");
   }
 }
