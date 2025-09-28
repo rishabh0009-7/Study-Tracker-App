@@ -69,7 +69,7 @@ export default async function Home() {
                 </span>
               </div>
             </div>
-            <Link href="/dashboard">
+            <Link href="/auth/signin">
               <Button className="bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white px-8 py-3 rounded-xl font-semibold shadow-lg hover:shadow-blue-500/25 transition-all duration-300 hover:scale-105">
                 <Play className="h-4 w-4 mr-2" />
                 Get Started
@@ -117,7 +117,7 @@ export default async function Home() {
               className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-16 animate-fade-in-up"
               style={{ animationDelay: "0.3s" }}
             >
-              <Link href="/dashboard">
+              <Link href="/auth/signin">
                 <Button
                   size="lg"
                   className="px-12 py-6 text-lg bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white font-semibold rounded-2xl shadow-lg hover:shadow-blue-500/25 transition-all duration-300 hover:scale-105 group"
@@ -307,7 +307,7 @@ export default async function Home() {
                 Join thousands of successful CS Executive candidates who have
                 achieved their goals with our platform.
               </p>
-              <Link href="/dashboard">
+              <Link href="/auth/signin">
                 <Button
                   size="lg"
                   className="px-12 py-6 text-lg bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white font-semibold rounded-2xl shadow-lg hover:shadow-blue-500/25 transition-all duration-300 hover:scale-105 group animate-fade-in-up"

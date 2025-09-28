@@ -2,37 +2,44 @@
 
 import { prisma } from "./prisma";
 import { revalidatePath } from "next/cache";
+import { createClient } from "@/lib/supabase/server";
+import { redirect } from "next/navigation";
+import { seedDatabase } from "./seed";
 
 export async function getOrCreateUser() {
-  // Use a default user for demo mode (no auth)
-  const defaultUserId = "demo-user";
-  const defaultEmail = "demo@example.com";
+  const supabase = await createClient();
+
+  const {
+    data: { user },
+    error,
+  } = await supabase.auth.getUser();
+
+  if (error || !user) {
+    redirect("/auth/signin");
+  }
 
   try {
-    let user = await prisma.user.findUnique({
-      where: { supabaseId: defaultUserId },
+    let dbUser = await prisma.user.findUnique({
+      where: { supabaseId: user.id },
     });
 
-    if (!user) {
-      user = await prisma.user.create({
+    if (!dbUser) {
+      // Create user in our database if they don't exist
+      dbUser = await prisma.user.create({
         data: {
-          supabaseId: defaultUserId,
-          email: defaultEmail,
+          supabaseId: user.id,
+          email: user.email!,
         },
       });
+
+      // Seed database for new user
+      await seedDatabase(dbUser.id);
     }
 
-    return user;
+    return dbUser;
   } catch (error) {
-    // Fallback for build time when database is not available
-    console.warn("Database not available, using fallback user:", error);
-    return {
-      id: "fallback-user",
-      supabaseId: defaultUserId,
-      email: defaultEmail,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    };
+    console.error("Error getting current user:", error);
+    redirect("/auth/signin");
   }
 }
 

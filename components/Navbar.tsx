@@ -2,7 +2,8 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
+import { createClient } from "@/lib/supabase/client";
 import {
   Menu,
   X,
@@ -11,6 +12,7 @@ import {
   BarChart3,
   Home,
   ArrowLeft,
+  LogOut,
 } from "lucide-react";
 
 interface NavbarProps {
@@ -28,7 +30,10 @@ export function Navbar({
 }: NavbarProps) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const [isSigningOut, setIsSigningOut] = useState(false);
   const pathname = usePathname();
+  const router = useRouter();
+  const supabase = createClient();
 
   const navItems = [
     { href: "/dashboard", label: "Dashboard", icon: Home },
@@ -36,6 +41,18 @@ export function Navbar({
     { href: "/history", label: "History", icon: BarChart3 },
     { href: "/subjects", label: "Subjects", icon: BookOpen },
   ];
+
+  const handleSignOut = async () => {
+    setIsSigningOut(true);
+    try {
+      await supabase.auth.signOut();
+      router.push("/");
+    } catch (error) {
+      console.error("Error signing out:", error);
+    } finally {
+      setIsSigningOut(false);
+    }
+  };
 
   // Handle scroll effect
   useEffect(() => {
@@ -130,8 +147,21 @@ export function Navbar({
               })}
             </div>
 
-            {/* Right Section - Mobile Menu */}
+            {/* Right Section - Sign Out & Mobile Menu */}
             <div className="flex items-center space-x-2 lg:space-x-4">
+              {/* Desktop Sign Out Button */}
+              <button
+                onClick={handleSignOut}
+                disabled={isSigningOut}
+                className="hidden lg:flex items-center space-x-2 px-4 py-2 text-gray-300 hover:text-white hover:bg-red-500/20 rounded-xl font-medium transition-all duration-200 disabled:opacity-50"
+                aria-label="Sign out"
+              >
+                <LogOut className="h-4 w-4" />
+                <span className="text-sm">
+                  {isSigningOut ? "Signing out..." : "Sign Out"}
+                </span>
+              </button>
+
               {/* Mobile Menu Button */}
               <button
                 onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
@@ -172,6 +202,21 @@ export function Navbar({
                   </Link>
                 );
               })}
+
+              {/* Mobile Sign Out Button */}
+              <div className="border-t border-white/10 pt-2 mt-2">
+                <button
+                  onClick={() => {
+                    setIsMobileMenuOpen(false);
+                    handleSignOut();
+                  }}
+                  disabled={isSigningOut}
+                  className="flex items-center space-x-3 px-4 py-3 rounded-xl font-medium transition-all duration-200 text-gray-300 hover:text-white hover:bg-red-500/20 w-full disabled:opacity-50"
+                >
+                  <LogOut className="h-5 w-5" />
+                  <span>{isSigningOut ? "Signing out..." : "Sign Out"}</span>
+                </button>
+              </div>
             </div>
           </div>
         )}
