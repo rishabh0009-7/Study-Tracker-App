@@ -44,7 +44,7 @@ export default async function Dashboard() {
 async function DashboardContent() {
   try {
     console.log("DashboardContent: Starting to load user data...");
-    
+
     // Get or create user
     let user;
     try {
@@ -59,7 +59,9 @@ async function DashboardContent() {
             <h1 className="text-2xl font-bold text-white mb-4">
               Please Sign In
             </h1>
-            <p className="text-gray-300 mb-6">You need to be signed in to access your dashboard</p>
+            <p className="text-gray-300 mb-6">
+              You need to be signed in to access your dashboard
+            </p>
             <a
               href="/auth/signin"
               className="inline-block px-6 py-3 bg-blue-600 text-white rounded-xl font-semibold hover:bg-blue-700 transition-colors"
