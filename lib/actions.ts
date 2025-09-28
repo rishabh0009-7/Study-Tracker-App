@@ -36,24 +36,41 @@ export async function getOrCreateUser() {
       });
 
       if (!dbUser) {
-        console.log("getOrCreateUser: Creating new user in database...");
-        // Create user in our database if they don't exist
-        dbUser = await prisma.user.create({
-          data: {
-            supabaseId: user.id,
-            email: user.email!,
-          },
+        // Also check by email in case user exists with different supabaseId
+        dbUser = await prisma.user.findUnique({
+          where: { email: user.email! },
         });
-        console.log("getOrCreateUser: User created successfully");
 
-        // Seed database for new user
-        try {
-          console.log("getOrCreateUser: Seeding database for new user...");
-          await seedDatabase(dbUser.id);
-          console.log("getOrCreateUser: Database seeded successfully");
-        } catch (seedError) {
-          console.error("Error seeding database for new user:", seedError);
-          // Continue without seeding if there's an error
+        if (dbUser) {
+          // Update existing user with new supabaseId
+          console.log(
+            "getOrCreateUser: Updating existing user with new supabaseId..."
+          );
+          dbUser = await prisma.user.update({
+            where: { id: dbUser.id },
+            data: { supabaseId: user.id },
+          });
+          console.log("getOrCreateUser: User updated successfully");
+        } else {
+          // Create new user
+          console.log("getOrCreateUser: Creating new user in database...");
+          dbUser = await prisma.user.create({
+            data: {
+              supabaseId: user.id,
+              email: user.email!,
+            },
+          });
+          console.log("getOrCreateUser: User created successfully");
+
+          // Seed database for new user
+          try {
+            console.log("getOrCreateUser: Seeding database for new user...");
+            await seedDatabase(dbUser.id);
+            console.log("getOrCreateUser: Database seeded successfully");
+          } catch (seedError) {
+            console.error("Error seeding database for new user:", seedError);
+            // Continue without seeding if there's an error
+          }
         }
       } else {
         console.log("getOrCreateUser: Existing user found:", dbUser.email);
