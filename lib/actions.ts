@@ -19,12 +19,12 @@ export async function getOrCreateUser() {
 
     if (error) {
       console.error("Supabase auth error:", error);
-      redirect("/auth/signin");
+      throw new Error(`Authentication failed: ${error.message}`);
     }
 
     if (!user) {
       console.log("No user found, redirecting to sign in");
-      redirect("/auth/signin");
+      throw new Error("No authenticated user found");
     }
 
     console.log("getOrCreateUser: User authenticated:", user.email);
@@ -66,7 +66,7 @@ export async function getOrCreateUser() {
     }
   } catch (error) {
     console.error("Supabase client error:", error);
-    redirect("/auth/signin");
+    throw new Error(`Supabase client initialization failed: ${error}`);
   }
 }
 

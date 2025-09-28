@@ -44,10 +44,32 @@ export default async function Dashboard() {
 async function DashboardContent() {
   try {
     console.log("DashboardContent: Starting to load user data...");
-
+    
     // Get or create user
-    const user = await getOrCreateUser();
-    console.log("DashboardContent: User loaded successfully:", user.email);
+    let user;
+    try {
+      user = await getOrCreateUser();
+      console.log("DashboardContent: User loaded successfully:", user.email);
+    } catch (authError) {
+      console.error("DashboardContent: Auth error:", authError);
+      // Return sign-in prompt instead of redirecting
+      return (
+        <div className="min-h-screen bg-black flex items-center justify-center">
+          <div className="text-center">
+            <h1 className="text-2xl font-bold text-white mb-4">
+              Please Sign In
+            </h1>
+            <p className="text-gray-300 mb-6">You need to be signed in to access your dashboard</p>
+            <a
+              href="/auth/signin"
+              className="inline-block px-6 py-3 bg-blue-600 text-white rounded-xl font-semibold hover:bg-blue-700 transition-colors"
+            >
+              Sign In
+            </a>
+          </div>
+        </div>
+      );
+    }
 
     // Only seed if user has no subjects
     try {
