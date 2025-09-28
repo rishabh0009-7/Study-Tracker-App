@@ -22,19 +22,39 @@ export default async function Dashboard() {
     console.error("Dashboard component error:", error);
     return (
       <div className="min-h-screen bg-black flex items-center justify-center">
-        <div className="text-center">
-          <h1 className="text-2xl font-bold text-white mb-4">
-            Authentication Required
+        <div className="text-center max-w-2xl mx-auto p-6">
+          <h1 className="text-2xl font-bold text-red-400 mb-4">
+            Dashboard Error
           </h1>
           <p className="text-gray-300 mb-6">
-            Please sign in to access your dashboard
+            There was an error loading your dashboard. This is likely a database connection issue.
           </p>
-          <a
-            href="/auth/signin"
-            className="inline-block px-6 py-3 bg-blue-600 text-white rounded-xl font-semibold hover:bg-blue-700 transition-colors"
-          >
-            Sign In
-          </a>
+          <div className="bg-red-900/20 border border-red-500/30 rounded-xl p-4 mb-6 text-left">
+            <ul className="text-red-300 text-sm space-y-2">
+              <li>• Database server may be paused or unreachable</li>
+              <li>• Server configuration problems</li>
+              <li>• Network connectivity issues</li>
+            </ul>
+          </div>
+          <div className="bg-gray-900/50 border border-gray-600/30 rounded-xl p-4 mb-6">
+            <p className="text-gray-400 text-xs font-mono break-all">
+              Error: {error instanceof Error ? error.message : 'Unknown error'}
+            </p>
+          </div>
+          <div className="space-y-3">
+            <button
+              onClick={() => window.location.reload()}
+              className="inline-block px-6 py-3 bg-blue-600 text-white rounded-xl font-semibold hover:bg-blue-700 transition-colors mr-4"
+            >
+              Retry Dashboard
+            </button>
+            <a
+              href="/api/debug"
+              className="inline-block px-6 py-3 bg-purple-600 text-white rounded-xl font-semibold hover:bg-purple-700 transition-colors"
+            >
+              View Debug Info
+            </a>
+          </div>
         </div>
       </div>
     );
@@ -52,22 +72,42 @@ async function DashboardContent() {
       console.log("DashboardContent: User loaded successfully:", user.email);
     } catch (authError) {
       console.error("DashboardContent: Auth error:", authError);
-      // Return sign-in prompt instead of redirecting
+      // Show proper error message instead of sign-in button
       return (
         <div className="min-h-screen bg-black flex items-center justify-center">
-          <div className="text-center">
-            <h1 className="text-2xl font-bold text-white mb-4">
-              Please Sign In
+          <div className="text-center max-w-2xl mx-auto p-6">
+            <h1 className="text-2xl font-bold text-red-400 mb-4">
+              Database Connection Error
             </h1>
             <p className="text-gray-300 mb-6">
-              You need to be signed in to access your dashboard
+              You are signed in successfully, but we cannot connect to the database.
             </p>
-            <a
-              href="/auth/signin"
-              className="inline-block px-6 py-3 bg-blue-600 text-white rounded-xl font-semibold hover:bg-blue-700 transition-colors"
-            >
-              Sign In
-            </a>
+            <div className="bg-red-900/20 border border-red-500/30 rounded-xl p-4 mb-6 text-left">
+              <ul className="text-red-300 text-sm space-y-2">
+                <li>• Database server may be paused or unreachable</li>
+                <li>• Connection string configuration issue</li>
+                <li>• Network connectivity problems</li>
+              </ul>
+            </div>
+            <div className="bg-gray-900/50 border border-gray-600/30 rounded-xl p-4 mb-6">
+              <p className="text-gray-400 text-xs font-mono break-all">
+                Error: {authError instanceof Error ? authError.message : 'Database connection failed'}
+              </p>
+            </div>
+            <div className="space-y-3">
+              <button
+                onClick={() => window.location.reload()}
+                className="inline-block px-6 py-3 bg-blue-600 text-white rounded-xl font-semibold hover:bg-blue-700 transition-colors mr-4"
+              >
+                Retry Dashboard
+              </button>
+              <a
+                href="/api/debug"
+                className="inline-block px-6 py-3 bg-purple-600 text-white rounded-xl font-semibold hover:bg-purple-700 transition-colors"
+              >
+                View Debug Info
+              </a>
+            </div>
           </div>
         </div>
       );
@@ -229,11 +269,39 @@ async function DashboardContent() {
     console.error("Dashboard error:", error);
     return (
       <div className="min-h-screen bg-black flex items-center justify-center">
-        <div className="text-center">
-          <h1 className="text-2xl font-bold text-white mb-4">
-            Something went wrong
+        <div className="text-center max-w-2xl mx-auto p-6">
+          <h1 className="text-2xl font-bold text-red-400 mb-4">
+            Dashboard Loading Error
           </h1>
-          <p className="text-gray-300">Please try refreshing the page</p>
+          <p className="text-gray-300 mb-6">
+            There was an error loading your dashboard content. This is likely a database connection issue.
+          </p>
+          <div className="bg-red-900/20 border border-red-500/30 rounded-xl p-4 mb-6 text-left">
+            <ul className="text-red-300 text-sm space-y-2">
+              <li>• Database connection problems</li>
+              <li>• Data loading issues</li>
+              <li>• Server configuration errors</li>
+            </ul>
+          </div>
+          <div className="bg-gray-900/50 border border-gray-600/30 rounded-xl p-4 mb-6">
+            <p className="text-gray-400 text-xs font-mono break-all">
+              Error: {error instanceof Error ? error.message : 'Unknown error'}
+            </p>
+          </div>
+          <div className="space-y-3">
+            <button
+              onClick={() => window.location.reload()}
+              className="inline-block px-6 py-3 bg-blue-600 text-white rounded-xl font-semibold hover:bg-blue-700 transition-colors mr-4"
+            >
+              Retry Dashboard
+            </button>
+            <a
+              href="/api/debug"
+              className="inline-block px-6 py-3 bg-purple-600 text-white rounded-xl font-semibold hover:bg-purple-700 transition-colors"
+            >
+              View Debug Info
+            </a>
+          </div>
         </div>
       </div>
     );
