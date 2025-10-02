@@ -6,6 +6,26 @@ import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 import { seedDatabase } from "./seed";
 
+// Helper function to check database connectivity with retry
+async function checkDatabaseConnection(retries = 3): Promise<boolean> {
+  for (let i = 0; i < retries; i++) {
+    try {
+      // Try a simple query to check connection
+      await prisma.$queryRaw`SELECT 1`;
+      return true;
+    } catch (error) {
+      console.log(`Database connection attempt ${i + 1} failed:`, error);
+      if (i < retries - 1) {
+        // Wait before retrying (exponential backoff)
+        await new Promise((resolve) =>
+          setTimeout(resolve, Math.pow(2, i) * 1000)
+        );
+      }
+    }
+  }
+  return false;
+}
+
 export async function getOrCreateUser() {
   try {
     console.log("getOrCreateUser: Creating Supabase client...");
@@ -28,6 +48,15 @@ export async function getOrCreateUser() {
     }
 
     console.log("getOrCreateUser: User authenticated:", user.email);
+
+    // Check database connectivity with retry
+    const isConnected = await checkDatabaseConnection();
+    if (!isConnected) {
+      console.error("Database is not reachable after retries");
+      throw new Error(
+        "Database server is not reachable. Please try again later."
+      );
+    }
 
     try {
       console.log("getOrCreateUser: Looking up user in database...");
@@ -122,8 +151,9 @@ export async function getSubjects() {
 
     return subjects;
   } catch (error) {
-    console.warn("Database not available during build, using fallback:", error);
-    return [];
+    console.warn("Error getting subjects:", error);
+    // Throw the error to be handled by the dashboard
+    throw error;
   }
 }
 
@@ -335,11 +365,8 @@ export async function calculateOverallProgress() {
       total: totalTasks,
     };
   } catch (error) {
-    console.warn("Database not available during build, using fallback:", error);
-    return {
-      progress: 0,
-      completed: 0,
-      total: 0,
-    };
+    console.warn("Error calculating progress:", error);
+    // Throw the error to be handled by the dashboard
+    throw error;
   }
 }
