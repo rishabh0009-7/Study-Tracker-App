@@ -60,8 +60,6 @@ export default async function Dashboard() {
 
 async function DashboardContent() {
   try {
-    console.log("DashboardContent: Starting to load data...");
-
     // Initialize database and seed if needed
     try {
       const existingSubjects = await prisma.subject.findMany();
