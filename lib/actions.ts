@@ -7,26 +7,44 @@ import { seedDatabase } from "./seed";
 // Single-user app - no user management needed
 export async function initializeDatabase() {
   try {
-    console.log("initializeDatabase: Checking if database needs seeding...");
+    console.log("initializeDatabase: Starting database initialization...");
+    console.log("initializeDatabase: DATABASE_URL exists:", !!process.env.DATABASE_URL);
+
+    // Test database connection first
+    await prisma.$connect();
+    console.log("initializeDatabase: Database connected successfully");
 
     // Check if we have any subjects
     const subjectCount = await prisma.subject.count();
+    console.log(`initializeDatabase: Found ${subjectCount} existing subjects`);
 
     if (subjectCount === 0) {
-      console.log("initializeDatabase: Seeding database...");
+      console.log("initializeDatabase: No subjects found, seeding database...");
       await seedDatabase();
+      
+      // Verify seeding worked
+      const newSubjectCount = await prisma.subject.count();
+      console.log(`initializeDatabase: After seeding, found ${newSubjectCount} subjects`);
+      
+      if (newSubjectCount === 0) {
+        throw new Error("Seeding completed but no subjects were created");
+      }
+      
       console.log("initializeDatabase: Database seeded successfully");
     } else {
-      console.log("initializeDatabase: Database already has data");
+      console.log("initializeDatabase: Database already has data, skipping seeding");
     }
   } catch (error) {
-    console.error("Database initialization error:", error);
+    console.error("initializeDatabase: Database initialization error:", error);
     throw new Error(`Database initialization failed: ${error}`);
+  } finally {
+    await prisma.$disconnect();
   }
 }
 
 export async function getSubjects() {
   try {
+    console.log("getSubjects: Starting to fetch subjects...");
     await initializeDatabase();
 
     const subjects = await prisma.subject.findMany({
@@ -53,8 +71,10 @@ export async function getSubjects() {
       orderBy: { createdAt: "asc" },
     });
 
+    console.log(`getSubjects: Found ${subjects.length} subjects`);
     return subjects;
   } catch (error) {
+    console.error("getSubjects: Error fetching subjects:", error);
     console.warn("Database not available during build, using fallback:", error);
     return [];
   }

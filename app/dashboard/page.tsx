@@ -60,22 +60,33 @@ export default async function Dashboard() {
 
 async function DashboardContent() {
   try {
+    console.log("DashboardContent: Starting to load data...");
+    
     // Initialize database and seed if needed
     try {
+      console.log("DashboardContent: Checking existing subjects...");
       const existingSubjects = await prisma.subject.findMany();
+      console.log(`DashboardContent: Found ${existingSubjects.length} existing subjects`);
 
       if (existingSubjects.length === 0) {
+        console.log("DashboardContent: No subjects found, seeding database...");
         await seedDatabase();
+        console.log("DashboardContent: Database seeded successfully");
+      } else {
+        console.log("DashboardContent: Database already has subjects");
       }
     } catch (seedError) {
-      console.error("Error checking/seeding database:", seedError);
+      console.error("DashboardContent: Error checking/seeding database:", seedError);
       // Continue without seeding if there's an error
     }
 
+    console.log("DashboardContent: Fetching subjects and progress...");
     const [subjects, overallProgress] = await Promise.all([
       getSubjects(),
       calculateOverallProgress(),
     ]);
+    
+    console.log(`DashboardContent: Loaded ${subjects.length} subjects`);
 
     return (
       <div className="min-h-screen relative overflow-hidden bg-black">
@@ -181,31 +192,49 @@ async function DashboardContent() {
               </div>
             </div>
 
-            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
-              {subjects.map((subject, index) => {
-                const subjectProgress = calculateSubjectProgress(subject);
-
-                return (
-                  <div
-                    key={subject.id}
-                    className="group animate-fade-in-up hover:scale-105 transition-all duration-300"
-                    style={{ animationDelay: `${0.3 + index * 0.1}s` }}
+            {subjects.length === 0 ? (
+              <div className="text-center py-12">
+                <div className="bg-gradient-to-br from-red-500/10 to-orange-500/10 backdrop-blur-sm rounded-3xl border border-red-500/20 p-8 max-w-md mx-auto">
+                  <div className="text-6xl mb-4">⚠️</div>
+                  <h3 className="text-xl font-bold text-white mb-2">No Subjects Found</h3>
+                  <p className="text-gray-300 mb-4">
+                    The database might not be properly seeded. Please check the logs or try refreshing the page.
+                  </p>
+                  <button 
+                    onClick={() => window.location.reload()} 
+                    className="px-6 py-3 bg-blue-600 text-white rounded-xl font-semibold hover:bg-blue-700 transition-colors"
                   >
-                    <div className="p-6 bg-gradient-to-br from-white/5 to-white/10 backdrop-blur-sm rounded-3xl border border-white/10 hover:border-blue-500/30 transition-all duration-300 h-full">
-                      <SubjectCard
-                        id={subject.id}
-                        name={subject.name}
-                        description={subject.description || "Study subject"}
-                        progress={subjectProgress.progress}
-                        completed={subjectProgress.completed}
-                        total={subjectProgress.total}
-                        todayHours={0} // TODO: Calculate per-subject study hours
-                      />
+                    Refresh Page
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+                {subjects.map((subject, index) => {
+                  const subjectProgress = calculateSubjectProgress(subject);
+
+                  return (
+                    <div
+                      key={subject.id}
+                      className="group animate-fade-in-up hover:scale-105 transition-all duration-300"
+                      style={{ animationDelay: `${0.3 + index * 0.1}s` }}
+                    >
+                      <div className="p-6 bg-gradient-to-br from-white/5 to-white/10 backdrop-blur-sm rounded-3xl border border-white/10 hover:border-blue-500/30 transition-all duration-300 h-full">
+                        <SubjectCard
+                          id={subject.id}
+                          name={subject.name}
+                          description={subject.description || "Study subject"}
+                          progress={subjectProgress.progress}
+                          completed={subjectProgress.completed}
+                          total={subjectProgress.total}
+                          todayHours={0} // TODO: Calculate per-subject study hours
+                        />
+                      </div>
                     </div>
-                  </div>
-                );
-              })}
-            </div>
+                  );
+                })}
+              </div>
+            )}
           </div>
         </main>
       </div>
