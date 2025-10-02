@@ -10,20 +10,7 @@ datasource db {
     url      = env("DATABASE_URL")
 }
 
-model User {
-    id         String   @id @default(cuid())
-    supabaseId String   @unique
-    email      String   @unique
-    createdAt  DateTime @default(now())
-    updatedAt  DateTime @updatedAt
-
-    subjects        Subject[]
-    studySessions   StudySession[]
-    chapterProgress ChapterProgress[]
-    mockProgress    MockProgress[]
-
-    @@map("users")
-}
+// Single user app - no user model needed
 
 model Subject {
     id          String   @id @default(cuid())
@@ -32,8 +19,6 @@ model Subject {
     createdAt   DateTime @default(now())
     updatedAt   DateTime @updatedAt
 
-    userId    String
-    user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
     chapters  Chapter[]
     mockTests MockTest[]
 
@@ -64,12 +49,10 @@ model ChapterProgress {
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
 
-    userId    String
-    user      User    @relation(fields: [userId], references: [id], onDelete: Cascade)
     chapterId String
     chapter   Chapter @relation(fields: [chapterId], references: [id], onDelete: Cascade)
 
-    @@unique([userId, chapterId])
+    @@unique([chapterId])
     @@map("chapter_progress")
 }
 
@@ -94,12 +77,10 @@ model MockProgress {
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
 
-    userId     String
-    user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
     mockTestId String
     mockTest   MockTest @relation(fields: [mockTestId], references: [id], onDelete: Cascade)
 
-    @@unique([userId, mockTestId])
+    @@unique([mockTestId])
     @@map("mock_progress")
 }
 
@@ -109,9 +90,6 @@ model StudySession {
     date      DateTime @default(now())
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
-
-    userId String
-    user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
     @@map("study_sessions")
 }

@@ -1,11 +1,7 @@
 import { Countdown } from "@/components/Countdown";
 import { ProgressBar } from "@/components/ProgressBar";
 import { SubjectCard } from "@/components/SubjectCard";
-import {
-  getSubjects,
-  calculateOverallProgress,
-  getOrCreateUser,
-} from "@/lib/actions";
+import { getSubjects, calculateOverallProgress } from "@/lib/actions";
 import { calculateSubjectProgress } from "@/lib/utils";
 import { seedDatabase } from "@/lib/seed";
 import { prisma } from "@/lib/prisma";
@@ -27,7 +23,8 @@ export default async function Dashboard() {
             Dashboard Error
           </h1>
           <p className="text-gray-300 mb-6">
-            There was an error loading your dashboard. This is likely a database connection issue.
+            There was an error loading your dashboard. This is likely a database
+            connection issue.
           </p>
           <div className="bg-red-900/20 border border-red-500/30 rounded-xl p-4 mb-6 text-left">
             <ul className="text-red-300 text-sm space-y-2">
@@ -38,7 +35,7 @@ export default async function Dashboard() {
           </div>
           <div className="bg-gray-900/50 border border-gray-600/30 rounded-xl p-4 mb-6">
             <p className="text-gray-400 text-xs font-mono break-all">
-              Error: {error instanceof Error ? error.message : 'Unknown error'}
+              Error: {error instanceof Error ? error.message : "Unknown error"}
             </p>
           </div>
           <div className="space-y-3">
@@ -63,64 +60,14 @@ export default async function Dashboard() {
 
 async function DashboardContent() {
   try {
-    console.log("DashboardContent: Starting to load user data...");
+    console.log("DashboardContent: Starting to load data...");
 
-    // Get or create user
-    let user;
+    // Initialize database and seed if needed
     try {
-      user = await getOrCreateUser();
-      console.log("DashboardContent: User loaded successfully:", user.email);
-    } catch (authError) {
-      console.error("DashboardContent: Auth error:", authError);
-      // Show proper error message instead of sign-in button
-      return (
-        <div className="min-h-screen bg-black flex items-center justify-center">
-          <div className="text-center max-w-2xl mx-auto p-6">
-            <h1 className="text-2xl font-bold text-red-400 mb-4">
-              Database Connection Error
-            </h1>
-            <p className="text-gray-300 mb-6">
-              You are signed in successfully, but we cannot connect to the database.
-            </p>
-            <div className="bg-red-900/20 border border-red-500/30 rounded-xl p-4 mb-6 text-left">
-              <ul className="text-red-300 text-sm space-y-2">
-                <li>• Database server may be paused or unreachable</li>
-                <li>• Connection string configuration issue</li>
-                <li>• Network connectivity problems</li>
-              </ul>
-            </div>
-            <div className="bg-gray-900/50 border border-gray-600/30 rounded-xl p-4 mb-6">
-              <p className="text-gray-400 text-xs font-mono break-all">
-                Error: {authError instanceof Error ? authError.message : 'Database connection failed'}
-              </p>
-            </div>
-            <div className="space-y-3">
-              <button
-                onClick={() => window.location.reload()}
-                className="inline-block px-6 py-3 bg-blue-600 text-white rounded-xl font-semibold hover:bg-blue-700 transition-colors mr-4"
-              >
-                Retry Dashboard
-              </button>
-              <a
-                href="/api/debug"
-                className="inline-block px-6 py-3 bg-purple-600 text-white rounded-xl font-semibold hover:bg-purple-700 transition-colors"
-              >
-                View Debug Info
-              </a>
-            </div>
-          </div>
-        </div>
-      );
-    }
-
-    // Only seed if user has no subjects
-    try {
-      const existingSubjects = await prisma.subject.findMany({
-        where: { userId: user.id },
-      });
+      const existingSubjects = await prisma.subject.findMany();
 
       if (existingSubjects.length === 0) {
-        await seedDatabase(user.id);
+        await seedDatabase();
       }
     } catch (seedError) {
       console.error("Error checking/seeding database:", seedError);
@@ -274,7 +221,8 @@ async function DashboardContent() {
             Dashboard Loading Error
           </h1>
           <p className="text-gray-300 mb-6">
-            There was an error loading your dashboard content. This is likely a database connection issue.
+            There was an error loading your dashboard content. This is likely a
+            database connection issue.
           </p>
           <div className="bg-red-900/20 border border-red-500/30 rounded-xl p-4 mb-6 text-left">
             <ul className="text-red-300 text-sm space-y-2">
@@ -285,7 +233,7 @@ async function DashboardContent() {
           </div>
           <div className="bg-gray-900/50 border border-gray-600/30 rounded-xl p-4 mb-6">
             <p className="text-gray-400 text-xs font-mono break-all">
-              Error: {error instanceof Error ? error.message : 'Unknown error'}
+              Error: {error instanceof Error ? error.message : "Unknown error"}
             </p>
           </div>
           <div className="space-y-3">

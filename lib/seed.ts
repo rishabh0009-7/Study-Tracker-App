@@ -185,13 +185,11 @@ const subjectsData = [
   },
 ];
 
-export async function seedDatabase(userId: string) {
-  // Check if user already has subjects
-  const existingSubjects = await prisma.subject.findMany({
-    where: { userId },
-  });
+export async function seedDatabase() {
+  // Check if database already has subjects
+  const existingSubjects = await prisma.subject.findMany();
 
-  // If user has subjects, check if we need to add missing subjects
+  // If database has subjects, check if we need to add missing subjects
   if (existingSubjects.length > 0) {
     const hasJurisprudence = existingSubjects.some(
       (subject) =>
@@ -202,7 +200,7 @@ export async function seedDatabase(userId: string) {
     );
 
     if (hasJurisprudence && hasTaxLaws) {
-      console.log("User already has all subjects, skipping seed");
+      console.log("Database already has all subjects, skipping seed");
       return;
     }
 
@@ -231,7 +229,6 @@ export async function seedDatabase(userId: string) {
         data: {
           name: subjectData.name,
           description: subjectData.description,
-          userId,
         },
       });
 
@@ -268,7 +265,6 @@ export async function seedDatabase(userId: string) {
       data: {
         name: subjectData.name,
         description: subjectData.description,
-        userId,
       },
     });
 
@@ -301,9 +297,13 @@ export async function seedDatabase(userId: string) {
 // Run seed if called directly
 if (require.main === module) {
   console.log("Seeding database with CS Executive subjects...");
-  // This would need a user ID - for now, we'll just log that manual seeding is needed
-  console.log(
-    "Please run the seed function with a valid user ID after creating a user account."
-  );
-  process.exit(0);
+  seedDatabase()
+    .then(() => {
+      console.log("Seeding completed successfully");
+      process.exit(0);
+    })
+    .catch((error) => {
+      console.error("Seeding failed:", error);
+      process.exit(1);
+    });
 }

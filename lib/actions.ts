@@ -2,112 +2,45 @@
 
 import { prisma } from "./prisma";
 import { revalidatePath } from "next/cache";
-import { createClient } from "@/lib/supabase/server";
-import { redirect } from "next/navigation";
 import { seedDatabase } from "./seed";
 
-export async function getOrCreateUser() {
+// Single-user app - no user management needed
+export async function initializeDatabase() {
   try {
-    console.log("getOrCreateUser: Creating Supabase client...");
-    const supabase = await createClient();
+    console.log("initializeDatabase: Checking if database needs seeding...");
 
-    console.log("getOrCreateUser: Getting user from Supabase...");
-    const {
-      data: { user },
-      error,
-    } = await supabase.auth.getUser();
+    // Check if we have any subjects
+    const subjectCount = await prisma.subject.count();
 
-    if (error) {
-      console.error("Supabase auth error:", error);
-      throw new Error(`Authentication failed: ${error.message}`);
-    }
-
-    if (!user) {
-      console.log("No user found, redirecting to sign in");
-      throw new Error("No authenticated user found");
-    }
-
-    console.log("getOrCreateUser: User authenticated:", user.email);
-
-    try {
-      console.log("getOrCreateUser: Looking up user in database...");
-      let dbUser = await prisma.user.findUnique({
-        where: { supabaseId: user.id },
-      });
-
-      if (!dbUser) {
-        // Also check by email in case user exists with different supabaseId
-        dbUser = await prisma.user.findUnique({
-          where: { email: user.email! },
-        });
-
-        if (dbUser) {
-          // Update existing user with new supabaseId
-          console.log(
-            "getOrCreateUser: Updating existing user with new supabaseId..."
-          );
-          dbUser = await prisma.user.update({
-            where: { id: dbUser.id },
-            data: { supabaseId: user.id },
-          });
-          console.log("getOrCreateUser: User updated successfully");
-        } else {
-          // Create new user
-          console.log("getOrCreateUser: Creating new user in database...");
-          dbUser = await prisma.user.create({
-            data: {
-              supabaseId: user.id,
-              email: user.email!,
-            },
-          });
-          console.log("getOrCreateUser: User created successfully");
-
-          // Seed database for new user
-          try {
-            console.log("getOrCreateUser: Seeding database for new user...");
-            await seedDatabase(dbUser.id);
-            console.log("getOrCreateUser: Database seeded successfully");
-          } catch (seedError) {
-            console.error("Error seeding database for new user:", seedError);
-            // Continue without seeding if there's an error
-          }
-        }
-      } else {
-        console.log("getOrCreateUser: Existing user found:", dbUser.email);
-      }
-
-      return dbUser;
-    } catch (dbError) {
-      console.error("Database error:", dbError);
-      throw new Error(`Database connection failed: ${dbError}`);
+    if (subjectCount === 0) {
+      console.log("initializeDatabase: Seeding database...");
+      await seedDatabase();
+      console.log("initializeDatabase: Database seeded successfully");
+    } else {
+      console.log("initializeDatabase: Database already has data");
     }
   } catch (error) {
-    console.error("Supabase client error:", error);
-    throw new Error(`Supabase client initialization failed: ${error}`);
+    console.error("Database initialization error:", error);
+    throw new Error(`Database initialization failed: ${error}`);
   }
 }
 
 export async function getSubjects() {
   try {
-    const user = await getOrCreateUser();
+    await initializeDatabase();
 
     const subjects = await prisma.subject.findMany({
-      where: { userId: user.id },
       include: {
         chapters: {
           orderBy: { order: "asc" },
           include: {
-            progress: {
-              where: { userId: user.id },
-            },
+            progress: true,
           },
         },
         mockTests: {
           orderBy: { order: "asc" },
           include: {
-            progress: {
-              where: { userId: user.id },
-            },
+            progress: true,
           },
         },
         _count: {
@@ -129,28 +62,23 @@ export async function getSubjects() {
 
 export async function getSubjectWithProgress(subjectId: string) {
   try {
-    const user = await getOrCreateUser();
+    await initializeDatabase();
 
     const subject = await prisma.subject.findFirst({
       where: {
         id: subjectId,
-        userId: user.id,
       },
       include: {
         chapters: {
           orderBy: { order: "asc" },
           include: {
-            progress: {
-              where: { userId: user.id },
-            },
+            progress: true,
           },
         },
         mockTests: {
           orderBy: { order: "asc" },
           include: {
-            progress: {
-              where: { userId: user.id },
-            },
+            progress: true,
           },
         },
       },
@@ -168,20 +96,14 @@ export async function updateChapterProgress(
   field: "completed" | "revision1" | "revision2" | "revision3",
   value: boolean
 ) {
-  const user = await getOrCreateUser();
-
   await prisma.chapterProgress.upsert({
     where: {
-      userId_chapterId: {
-        userId: user.id,
-        chapterId,
-      },
+      chapterId,
     },
     update: {
       [field]: value,
     },
     create: {
-      userId: user.id,
       chapterId,
       [field]: value,
     },
@@ -195,20 +117,14 @@ export async function updateMockProgress(
   mockTestId: string,
   completed: boolean
 ) {
-  const user = await getOrCreateUser();
-
   await prisma.mockProgress.upsert({
     where: {
-      userId_mockTestId: {
-        userId: user.id,
-        mockTestId,
-      },
+      mockTestId,
     },
     update: {
       completed,
     },
     create: {
-      userId: user.id,
       mockTestId,
       completed,
     },
@@ -219,14 +135,11 @@ export async function updateMockProgress(
 }
 
 export async function createStudySession(duration: number) {
-  const user = await getOrCreateUser();
-
   // Convert seconds to minutes (duration is passed in seconds from timer)
   const durationInMinutes = Math.round(duration / 60);
 
   await prisma.studySession.create({
     data: {
-      userId: user.id,
       duration: durationInMinutes,
     },
   });
@@ -236,14 +149,11 @@ export async function createStudySession(duration: number) {
 }
 
 export async function getTodayStudyHours() {
-  const user = await getOrCreateUser();
-
   const today = new Date();
   today.setHours(0, 0, 0, 0);
 
   const sessions = await prisma.studySession.findMany({
     where: {
-      userId: user.id,
       date: {
         gte: today,
       },
@@ -259,10 +169,7 @@ export async function getTodayStudyHours() {
 
 export async function getStudyHistory() {
   try {
-    const user = await getOrCreateUser();
-
     const sessions = await prisma.studySession.findMany({
-      where: { userId: user.id },
       orderBy: { date: "desc" },
       take: 30, // Last 30 days
     });
@@ -276,23 +183,16 @@ export async function getStudyHistory() {
 
 export async function calculateOverallProgress() {
   try {
-    const user = await getOrCreateUser();
-
     const subjects = await prisma.subject.findMany({
-      where: { userId: user.id },
       include: {
         chapters: {
           include: {
-            progress: {
-              where: { userId: user.id },
-            },
+            progress: true,
           },
         },
         mockTests: {
           include: {
-            progress: {
-              where: { userId: user.id },
-            },
+            progress: true,
           },
         },
       },

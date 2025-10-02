@@ -3,11 +3,7 @@ import { NextResponse } from "next/server";
 export async function GET() {
   try {
     // Check if required environment variables are present
-    const requiredEnvVars = [
-      "DATABASE_URL",
-      "NEXT_PUBLIC_SUPABASE_URL",
-      "NEXT_PUBLIC_SUPABASE_ANON_KEY",
-    ];
+    const requiredEnvVars = ["DATABASE_URL"];
 
     const missingVars = requiredEnvVars.filter(
       (varName) => !process.env[varName]
@@ -26,7 +22,8 @@ export async function GET() {
 
     return NextResponse.json({
       status: "ok",
-      message: "All environment variables are present",
+      message:
+        "Single-user app - all required environment variables are present",
       timestamp: new Date().toISOString(),
     });
   } catch (error) {

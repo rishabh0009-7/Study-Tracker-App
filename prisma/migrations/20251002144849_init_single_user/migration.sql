@@ -1,22 +1,10 @@
 -- CreateTable
-CREATE TABLE "public"."users" (
-    "id" TEXT NOT NULL,
-    "clerkId" TEXT NOT NULL,
-    "email" TEXT NOT NULL,
-    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updatedAt" TIMESTAMP(3) NOT NULL,
-
-    CONSTRAINT "users_pkey" PRIMARY KEY ("id")
-);
-
--- CreateTable
 CREATE TABLE "public"."subjects" (
     "id" TEXT NOT NULL,
     "name" TEXT NOT NULL,
     "description" TEXT,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
-    "userId" TEXT NOT NULL,
 
     CONSTRAINT "subjects_pkey" PRIMARY KEY ("id")
 );
@@ -42,7 +30,6 @@ CREATE TABLE "public"."chapter_progress" (
     "revision3" BOOLEAN NOT NULL DEFAULT false,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
-    "userId" TEXT NOT NULL,
     "chapterId" TEXT NOT NULL,
 
     CONSTRAINT "chapter_progress_pkey" PRIMARY KEY ("id")
@@ -66,7 +53,6 @@ CREATE TABLE "public"."mock_progress" (
     "completed" BOOLEAN NOT NULL DEFAULT false,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
-    "userId" TEXT NOT NULL,
     "mockTestId" TEXT NOT NULL,
 
     CONSTRAINT "mock_progress_pkey" PRIMARY KEY ("id")
@@ -79,31 +65,18 @@ CREATE TABLE "public"."study_sessions" (
     "date" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
-    "userId" TEXT NOT NULL,
 
     CONSTRAINT "study_sessions_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateIndex
-CREATE UNIQUE INDEX "users_clerkId_key" ON "public"."users"("clerkId");
+CREATE UNIQUE INDEX "chapter_progress_chapterId_key" ON "public"."chapter_progress"("chapterId");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "users_email_key" ON "public"."users"("email");
-
--- CreateIndex
-CREATE UNIQUE INDEX "chapter_progress_userId_chapterId_key" ON "public"."chapter_progress"("userId", "chapterId");
-
--- CreateIndex
-CREATE UNIQUE INDEX "mock_progress_userId_mockTestId_key" ON "public"."mock_progress"("userId", "mockTestId");
-
--- AddForeignKey
-ALTER TABLE "public"."subjects" ADD CONSTRAINT "subjects_userId_fkey" FOREIGN KEY ("userId") REFERENCES "public"."users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+CREATE UNIQUE INDEX "mock_progress_mockTestId_key" ON "public"."mock_progress"("mockTestId");
 
 -- AddForeignKey
 ALTER TABLE "public"."chapters" ADD CONSTRAINT "chapters_subjectId_fkey" FOREIGN KEY ("subjectId") REFERENCES "public"."subjects"("id") ON DELETE CASCADE ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "public"."chapter_progress" ADD CONSTRAINT "chapter_progress_userId_fkey" FOREIGN KEY ("userId") REFERENCES "public"."users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "public"."chapter_progress" ADD CONSTRAINT "chapter_progress_chapterId_fkey" FOREIGN KEY ("chapterId") REFERENCES "public"."chapters"("id") ON DELETE CASCADE ON UPDATE CASCADE;
@@ -112,10 +85,4 @@ ALTER TABLE "public"."chapter_progress" ADD CONSTRAINT "chapter_progress_chapter
 ALTER TABLE "public"."mock_tests" ADD CONSTRAINT "mock_tests_subjectId_fkey" FOREIGN KEY ("subjectId") REFERENCES "public"."subjects"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "public"."mock_progress" ADD CONSTRAINT "mock_progress_userId_fkey" FOREIGN KEY ("userId") REFERENCES "public"."users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
-
--- AddForeignKey
 ALTER TABLE "public"."mock_progress" ADD CONSTRAINT "mock_progress_mockTestId_fkey" FOREIGN KEY ("mockTestId") REFERENCES "public"."mock_tests"("id") ON DELETE CASCADE ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "public"."study_sessions" ADD CONSTRAINT "study_sessions_userId_fkey" FOREIGN KEY ("userId") REFERENCES "public"."users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
