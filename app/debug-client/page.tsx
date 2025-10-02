@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { createClient } from "@/lib/supabase/client";
 
 export default function ClientDebugPage() {
   const [debug, setDebug] = useState<any>(null);
@@ -12,40 +11,12 @@ export default function ClientDebugPage() {
       const debugInfo = {
         timestamp: new Date().toISOString(),
         environment: "production",
-        clientAuth: "Unknown",
+        appType: "Single-user app (no authentication needed)",
         serverDebug: "Unknown",
-        userInfo: null as any,
         error: null as any,
       };
 
       try {
-        // Test client-side authentication
-        console.log("Testing client-side Supabase authentication...");
-        const supabase = createClient();
-
-        const {
-          data: { user },
-          error: authError,
-        } = await supabase.auth.getUser();
-
-        if (authError) {
-          debugInfo.clientAuth = `❌ Client Auth Error: ${authError.message}`;
-          debugInfo.error = authError.message;
-        } else if (user) {
-          debugInfo.clientAuth = `✅ Client User Found: ${user.email}`;
-          debugInfo.userInfo = {
-            id: user.id,
-            email: user.email,
-            emailConfirmed: user.email_confirmed_at
-              ? "✅ Confirmed"
-              : "❌ Not confirmed",
-            lastSignIn: user.last_sign_in_at,
-          };
-        } else {
-          debugInfo.clientAuth = "❌ No user found on client";
-          debugInfo.error = "No authenticated user on client";
-        }
-
         // Test server-side debug endpoint
         try {
           const response = await fetch("/api/debug");
@@ -55,7 +26,6 @@ export default function ClientDebugPage() {
           debugInfo.serverDebug = `❌ Server Debug Error: ${serverError}`;
         }
       } catch (error) {
-        debugInfo.clientAuth = `❌ Client Exception: ${error}`;
         debugInfo.error = String(error);
       }
 
@@ -98,54 +68,22 @@ export default function ClientDebugPage() {
 
           <div className="space-y-4">
             <div>
-              <h4 className="text-sm font-semibold text-blue-400 mb-2">
-                Client Authentication
+              <h4 className="text-sm font-semibold text-green-400 mb-2">
+                App Type
               </h4>
               <div className="bg-black/50 rounded-lg p-3 text-xs font-mono">
                 <p>
-                  <span className="text-gray-400">Status:</span>{" "}
-                  <span
-                    className={
-                      debug.clientAuth.includes("✅")
-                        ? "text-green-400"
-                        : "text-red-400"
-                    }
-                  >
-                    {debug.clientAuth}
+                  <span className="text-gray-400">Type:</span>{" "}
+                  <span className="text-green-400">
+                    {debug.appType}
                   </span>
                 </p>
-                {debug.userInfo && (
-                  <>
-                    <p>
-                      <span className="text-gray-400">ID:</span>{" "}
-                      <span className="text-blue-400">{debug.userInfo.id}</span>
-                    </p>
-                    <p>
-                      <span className="text-gray-400">Email:</span>{" "}
-                      <span className="text-blue-400">
-                        {debug.userInfo.email}
-                      </span>
-                    </p>
-                    <p>
-                      <span className="text-gray-400">Email Confirmed:</span>{" "}
-                      <span
-                        className={
-                          debug.userInfo.emailConfirmed.includes("✅")
-                            ? "text-green-400"
-                            : "text-yellow-400"
-                        }
-                      >
-                        {debug.userInfo.emailConfirmed}
-                      </span>
-                    </p>
-                    <p>
-                      <span className="text-gray-400">Last Sign In:</span>{" "}
-                      <span className="text-gray-300">
-                        {debug.userInfo.lastSignIn || "Never"}
-                      </span>
-                    </p>
-                  </>
-                )}
+                <p>
+                  <span className="text-gray-400">Status:</span>{" "}
+                  <span className="text-green-400">
+                    ✅ Ready to use - no authentication required
+                  </span>
+                </p>
               </div>
             </div>
 
@@ -183,10 +121,10 @@ export default function ClientDebugPage() {
             Back to Dashboard
           </a>
           <a
-            href="/auth/signin"
+            href="/subjects"
             className="inline-block px-6 py-3 bg-gray-600 text-white rounded-xl font-semibold hover:bg-gray-700 transition-colors"
           >
-            Sign In
+            View Subjects
           </a>
         </div>
       </div>
