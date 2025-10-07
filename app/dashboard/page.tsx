@@ -3,8 +3,6 @@ import { ProgressBar } from "@/components/ProgressBar";
 import { SubjectCard } from "@/components/SubjectCard";
 import { getSubjects, calculateOverallProgress } from "@/lib/actions";
 import { calculateSubjectProgress } from "@/lib/utils";
-import { seedDatabase } from "@/lib/seed";
-import { prisma } from "@/lib/prisma";
 import { Navbar } from "@/components/Navbar";
 
 // Force dynamic rendering for this page
@@ -61,31 +59,13 @@ export default async function Dashboard() {
 async function DashboardContent() {
   try {
     console.log("DashboardContent: Starting to load data...");
-    
-    // Initialize database and seed if needed
-    try {
-      console.log("DashboardContent: Checking existing subjects...");
-      const existingSubjects = await prisma.subject.findMany();
-      console.log(`DashboardContent: Found ${existingSubjects.length} existing subjects`);
-
-      if (existingSubjects.length === 0) {
-        console.log("DashboardContent: No subjects found, seeding database...");
-        await seedDatabase();
-        console.log("DashboardContent: Database seeded successfully");
-      } else {
-        console.log("DashboardContent: Database already has subjects");
-      }
-    } catch (seedError) {
-      console.error("DashboardContent: Error checking/seeding database:", seedError);
-      // Continue without seeding if there's an error
-    }
 
     console.log("DashboardContent: Fetching subjects and progress...");
     const [subjects, overallProgress] = await Promise.all([
       getSubjects(),
       calculateOverallProgress(),
     ]);
-    
+
     console.log(`DashboardContent: Loaded ${subjects.length} subjects`);
 
     return (
@@ -196,16 +176,41 @@ async function DashboardContent() {
               <div className="text-center py-12">
                 <div className="bg-gradient-to-br from-red-500/10 to-orange-500/10 backdrop-blur-sm rounded-3xl border border-red-500/20 p-8 max-w-md mx-auto">
                   <div className="text-6xl mb-4">⚠️</div>
-                  <h3 className="text-xl font-bold text-white mb-2">No Subjects Found</h3>
+                  <h3 className="text-xl font-bold text-white mb-2">
+                    No Subjects Found
+                  </h3>
                   <p className="text-gray-300 mb-4">
-                    The database might not be properly seeded. Please check the logs or try refreshing the page.
+                    The database might not be properly seeded. Click below to
+                    seed the database or refresh the page.
                   </p>
-                  <button 
-                    onClick={() => window.location.reload()} 
-                    className="px-6 py-3 bg-blue-600 text-white rounded-xl font-semibold hover:bg-blue-700 transition-colors"
-                  >
-                    Refresh Page
-                  </button>
+                  <div className="space-y-3">
+                    <button
+                      onClick={async () => {
+                        try {
+                          const response = await fetch("/api/seed", {
+                            method: "POST",
+                          });
+                          const result = await response.json();
+                          if (result.success) {
+                            window.location.reload();
+                          } else {
+                            console.error("Seed failed:", result.error);
+                          }
+                        } catch (error) {
+                          console.error("Seed request failed:", error);
+                        }
+                      }}
+                      className="px-6 py-3 bg-green-600 text-white rounded-xl font-semibold hover:bg-green-700 transition-colors mr-3"
+                    >
+                      Seed Database
+                    </button>
+                    <button
+                      onClick={() => window.location.reload()}
+                      className="px-6 py-3 bg-blue-600 text-white rounded-xl font-semibold hover:bg-blue-700 transition-colors"
+                    >
+                      Refresh Page
+                    </button>
+                  </div>
                 </div>
               </div>
             ) : (
