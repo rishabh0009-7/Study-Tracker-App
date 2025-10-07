@@ -4,6 +4,7 @@ import { SubjectCard } from "@/components/SubjectCard";
 import { getSubjects, calculateOverallProgress } from "@/lib/actions";
 import { calculateSubjectProgress } from "@/lib/utils";
 import { Navbar } from "@/components/Navbar";
+import { ErrorActions } from "@/components/ErrorActions";
 
 // Force dynamic rendering for this page
 export const dynamic = "force-dynamic";
@@ -36,20 +37,7 @@ export default async function Dashboard() {
               Error: {error instanceof Error ? error.message : "Unknown error"}
             </p>
           </div>
-          <div className="space-y-3">
-            <button
-              onClick={() => window.location.reload()}
-              className="inline-block px-6 py-3 bg-blue-600 text-white rounded-xl font-semibold hover:bg-blue-700 transition-colors mr-4"
-            >
-              Retry Dashboard
-            </button>
-            <a
-              href="/api/debug"
-              className="inline-block px-6 py-3 bg-purple-600 text-white rounded-xl font-semibold hover:bg-purple-700 transition-colors"
-            >
-              View Debug Info
-            </a>
-          </div>
+          <ErrorActions />
         </div>
       </div>
     );
@@ -183,34 +171,7 @@ async function DashboardContent() {
                     The database might not be properly seeded. Click below to
                     seed the database or refresh the page.
                   </p>
-                  <div className="space-y-3">
-                    <button
-                      onClick={async () => {
-                        try {
-                          const response = await fetch("/api/seed", {
-                            method: "POST",
-                          });
-                          const result = await response.json();
-                          if (result.success) {
-                            window.location.reload();
-                          } else {
-                            console.error("Seed failed:", result.error);
-                          }
-                        } catch (error) {
-                          console.error("Seed request failed:", error);
-                        }
-                      }}
-                      className="px-6 py-3 bg-green-600 text-white rounded-xl font-semibold hover:bg-green-700 transition-colors mr-3"
-                    >
-                      Seed Database
-                    </button>
-                    <button
-                      onClick={() => window.location.reload()}
-                      className="px-6 py-3 bg-blue-600 text-white rounded-xl font-semibold hover:bg-blue-700 transition-colors"
-                    >
-                      Refresh Page
-                    </button>
-                  </div>
+                  <ErrorActions showSeedButton={true} />
                 </div>
               </div>
             ) : (
@@ -268,20 +229,7 @@ async function DashboardContent() {
               Error: {error instanceof Error ? error.message : "Unknown error"}
             </p>
           </div>
-          <div className="space-y-3">
-            <button
-              onClick={() => window.location.reload()}
-              className="inline-block px-6 py-3 bg-blue-600 text-white rounded-xl font-semibold hover:bg-blue-700 transition-colors mr-4"
-            >
-              Retry Dashboard
-            </button>
-            <a
-              href="/api/debug"
-              className="inline-block px-6 py-3 bg-purple-600 text-white rounded-xl font-semibold hover:bg-purple-700 transition-colors"
-            >
-              View Debug Info
-            </a>
-          </div>
+          <ErrorActions />
         </div>
       </div>
     );
